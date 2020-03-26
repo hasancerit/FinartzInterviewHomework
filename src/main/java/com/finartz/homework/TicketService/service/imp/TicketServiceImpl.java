@@ -31,4 +31,9 @@ public class TicketServiceImpl implements TicketService {
         ticketRepository.save(ticket);
         return modelMapper.map(ticket,TicketResponseDTO.class);
     }
+
+    @Override
+    public TicketResponseDTO getTicket(String id) {
+        return modelMapper.map(ticketRepository.getOne(id),TicketResponseDTO.class);
+    }
 }

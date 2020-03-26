@@ -20,8 +20,8 @@ public class TicketController {
         return new ResponseEntity<>(ticketService.saveTicket(airportDto), HttpStatus.OK);
     }
 
-    /*@GetMapping("/{id}")
-    public ResponseEntity<ResponseEntity> saveTicket(@PathVariable String id){
+    @GetMapping("/{id}")
+    public ResponseEntity<TicketResponseDTO> saveTicket(@PathVariable String id){
         return new ResponseEntity<>(ticketService.getTicket(id), HttpStatus.OK);
-    }*/
+    }
 }
