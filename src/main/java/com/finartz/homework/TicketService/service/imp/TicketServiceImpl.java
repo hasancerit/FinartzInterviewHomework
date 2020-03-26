@@ -1,5 +1,6 @@
 package com.finartz.homework.TicketService.service.imp;
 
+import com.finartz.homework.TicketService.domain.Flight;
 import com.finartz.homework.TicketService.domain.Ticket;
 import com.finartz.homework.TicketService.dto.request.TicketRequestDTO;
 import com.finartz.homework.TicketService.dto.response.TicketResponseDTO;
@@ -10,6 +11,9 @@ import com.finartz.homework.TicketService.service.TicketService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Service
 public class TicketServiceImpl implements TicketService {
@@ -26,9 +30,29 @@ public class TicketServiceImpl implements TicketService {
     @Override
     public TicketResponseDTO saveTicket(TicketRequestDTO ticketDto) {
         Ticket ticket = modelMapper.map(ticketDto,Ticket.class);
-        ticket.setFlight(flightRepository.getOne(ticketDto.getFlightId()));
+
+        /*Ticket To Ticket DTO*/
+        ticket.setFlight(flightRepository.getOne(ticketDto.getFlightId())); //Olmayan Flight hatası
         //ticket.setUser(userRepository.getOne(ticketDto.getUserId()));
+
+        /*Uçuştaki dolu yerleri güncelle*/
+        Flight flight = ticket.getFlight();
+        if(ticket.getFlightClass().equalsIgnoreCase("Business")){
+            System.out.println("Business");
+            flight.setTakenSeatsBusiness(
+                    Stream.concat(flight.getTakenSeatsBusiness().stream(), Stream.of(ticket.getNo()))
+                    .collect(Collectors.toList()));
+            }else if(ticket.getFlightClass().equalsIgnoreCase("Economi")){
+            System.out.println("Economic");
+            flight.setTakenSeatsBusiness(
+                    Stream.concat(flight.getTakenSeatsEconomi().stream(), Stream.of(ticket.getNo()))
+                            .collect(Collectors.toList()));
+        }
+        flightRepository.save(flight);
+
+        /*Bileti Al*/
         ticketRepository.save(ticket);
+
         return modelMapper.map(ticket,TicketResponseDTO.class);
     }
 

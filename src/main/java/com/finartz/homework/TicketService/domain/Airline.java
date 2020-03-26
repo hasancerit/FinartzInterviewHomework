@@ -16,6 +16,7 @@ public class Airline{
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private String id;
 
+    @Column(unique = true)
     private String name;
     private String desc;
 

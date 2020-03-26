@@ -10,6 +10,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/airport")
 public class AirportController {
@@ -26,4 +28,13 @@ public class AirportController {
         return new ResponseEntity<>(airportService.getAirport(id), HttpStatus.OK);
     }
 
+    @GetMapping("/city/{city}")
+    public ResponseEntity<List<AirportResponseDTO>> getAirportsByCity(@PathVariable String city){
+        return new ResponseEntity<>(airportService.getAirportsByCity(city), HttpStatus.OK);
+    }
+
+    @GetMapping("/name/{name}")
+    public ResponseEntity<AirportResponseDTO> getAirportsByName(@PathVariable String name){
+        return new ResponseEntity<>(airportService.getAirportByName(name), HttpStatus.OK);
+    }
 }

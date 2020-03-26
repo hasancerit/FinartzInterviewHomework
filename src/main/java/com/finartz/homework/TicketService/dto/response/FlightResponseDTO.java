@@ -34,8 +34,8 @@ public class FlightResponseDTO {
     private int capasityBusiness;
     private int capasityEconomic;
 
-    private List<String> emptyChairsBusiness;
-    private List<String> emptyChairsEconomi;
+    private List<String> takenSeatsEconomi;
+    private List<String> takenSeatsBusiness;
 
 
 }

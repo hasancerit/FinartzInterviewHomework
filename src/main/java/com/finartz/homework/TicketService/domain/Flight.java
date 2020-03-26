@@ -6,13 +6,14 @@ import lombok.Getter;
 import lombok.Setter;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 
 @Getter
 @Setter
 @Entity
-public class Flight{
+public class Flight implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private String id;
@@ -36,8 +37,8 @@ public class Flight{
     private int capasityEconomic;
 
     @ElementCollection
-    private List<String> emptyChairsBusiness;
+    private List<String> takenSeatsBusiness;
 
     @ElementCollection
-    private List<String> emptyChairsEconomi;
+    private List<String> takenSeatsEconomi;
 }

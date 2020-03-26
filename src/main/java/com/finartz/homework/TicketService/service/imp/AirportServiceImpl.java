@@ -10,6 +10,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Service
 public class AirportServiceImpl implements AirportService {
     @Autowired
@@ -27,6 +30,22 @@ public class AirportServiceImpl implements AirportService {
     @Override
     public AirportResponseDTO getAirport(String id) {
         Airport airport = airportRepository.getOne(id);
+        return modelMapper.map(airport,AirportResponseDTO.class);
+    }
+
+    @Override
+    public List<AirportResponseDTO> getAirportsByCity(String city) {
+        List<Airport> airports = airportRepository.findByCity(city);
+        List<AirportResponseDTO> airportResponseDTOList =new ArrayList<>();
+        airports.stream().forEach(airport -> {
+            airportResponseDTOList.add(modelMapper.map(airport,AirportResponseDTO.class));
+        });
+        return airportResponseDTOList;
+    }
+
+    @Override
+    public AirportResponseDTO getAirportByName(String name) {
+        Airport airport = airportRepository.findByName(name);
         return modelMapper.map(airport,AirportResponseDTO.class);
     }
 }

@@ -27,4 +27,10 @@ public class AirlineController {
     public ResponseEntity<AirlineResponseDTO> saveAirline(@PathVariable String id){
         return new ResponseEntity<>(airlineService.getAirline(id), HttpStatus.OK);
     }
+
+    @GetMapping("/name/{name}")
+    public ResponseEntity<AirlineResponseDTO> getAirlineByName(@PathVariable String name){
+        return new ResponseEntity<>(airlineService.getAirlineByName(name), HttpStatus.OK);
+    }
+
 }

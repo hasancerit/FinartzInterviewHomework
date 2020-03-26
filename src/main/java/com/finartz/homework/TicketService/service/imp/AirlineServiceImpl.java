@@ -3,6 +3,7 @@ package com.finartz.homework.TicketService.service.imp;
 import com.finartz.homework.TicketService.domain.Airline;
 import com.finartz.homework.TicketService.dto.request.AirlineRequestDTO;
 import com.finartz.homework.TicketService.dto.response.AirlineResponseDTO;
+import com.finartz.homework.TicketService.dto.response.AirportResponseDTO;
 import com.finartz.homework.TicketService.repositories.AirlineRepository;
 import com.finartz.homework.TicketService.service.AirlineService;
 import org.modelmapper.ModelMapper;
@@ -26,5 +27,11 @@ public class AirlineServiceImpl implements AirlineService {
     @Override
     public AirlineResponseDTO getAirline(String id) {
         return modelMapper.map(airlineRepository.getOne(id),AirlineResponseDTO.class);
+    }
+
+    @Override
+    public AirlineResponseDTO getAirlineByName(String name) {
+        Airline airline = airlineRepository.findByName(name);
+        return modelMapper.map(airline,AirlineResponseDTO.class);
     }
 }

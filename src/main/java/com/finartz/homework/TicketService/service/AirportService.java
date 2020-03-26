@@ -6,8 +6,14 @@ import com.finartz.homework.TicketService.dto.response.AirportResponseDTO;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 public interface AirportService {
     AirportResponseDTO saveAirport(AirportRequestDTO airportDto);
 
     AirportResponseDTO getAirport(String id);
+
+    List<AirportResponseDTO> getAirportsByCity(String city);
+
+    AirportResponseDTO getAirportByName(String name);
 }
