@@ -63,7 +63,7 @@ public class FlightServiceImpl implements FlightService {
     }
 
 
-    /**Kalkış Havaalanı Arama**/
+    /**Kalkış Havaalanına göre Arama**/
     /*Kalkış Havaalanı İsmi ile Arama*/
     @Override
     public List<FlightResponseDTO> getFlightsByDepartureName(String departureName) {
@@ -86,7 +86,7 @@ public class FlightServiceImpl implements FlightService {
     }
 
 
-    /**Varış Havaalanı Arama**/
+    /**Varış Havaalanına göre Arama**/
     /*Varış Havaalanı İsmi ile Arama*/
     @Override
     public List<FlightResponseDTO> getFlightsByArrivalName(String arrivalName) {
@@ -109,6 +109,20 @@ public class FlightServiceImpl implements FlightService {
                 airportRepository.findByNameIgnoreCaseIsContainingOrCityIgnoreCaseIsContaining(arrivalNameOrCity,arrivalNameOrCity));
     }
 
+    /**Kalkış Havaalanı ve İniş Havaalanına göre arama**/
+    /*Kalkış Havaalanı isimi ve İniş Havaalanı isimi ile arama*/
+    @Override
+    public List<FlightResponseDTO> getFlightsByDepartureAndArrivalName(String departureName, String arrivalName) {
+        return flightListToFlightResponseDtoList(
+                flightRepository.findByDeparture_NameIsContainingIgnoreCaseAndArrival_NameIsContainingIgnoreCase(departureName,arrivalName));
+    }
+
+    /*Kalkış Havaalanı şehiri ve İniş Havaalanı şehiri ile arama*/
+    @Override
+    public List<FlightResponseDTO> getFlightsByDepartureAndArrivalCity(String departureCity, String arrivalCity) {
+        return flightListToFlightResponseDtoList(
+                flightRepository.findByDeparture_CityIsContainingIgnoreCaseAndArrival_CityIsContainingIgnoreCase(departureCity,arrivalCity));
+    }
 
 
     private List<FlightResponseDTO> getArrivalFlightResponseDtoListFromAirportList(List<Airport> airports){
@@ -127,6 +141,13 @@ public class FlightServiceImpl implements FlightService {
                 flightResponseDTOList.add(modelMapper.map(flight,FlightResponseDTO.class));  //Listeye ekle(Dönüstürerek)
             });
         });
+        return flightResponseDTOList;
+    }
+    private List<FlightResponseDTO> flightListToFlightResponseDtoList(List<Flight> flights){
+        List<FlightResponseDTO> flightResponseDTOList = new ArrayList<>();
+            flights.stream().forEach(flight -> {  //Her bir flight
+                flightResponseDTOList.add(modelMapper.map(flight,FlightResponseDTO.class));  //Listeye ekle(Dönüstürerek)
+            });
         return flightResponseDTOList;
     }
 }

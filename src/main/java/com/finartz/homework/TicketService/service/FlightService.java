@@ -24,4 +24,8 @@ public interface FlightService {
     List<FlightResponseDTO> getFlightsByArrivalCity(String arrivalCity);
 
     List<FlightResponseDTO> getFlightsByArrivalNameOrCity(String arrivalNameOrCity);
+
+    List<FlightResponseDTO> getFlightsByDepartureAndArrivalName(String departureName, String arrivalName);
+
+    List<FlightResponseDTO> getFlightsByDepartureAndArrivalCity(String departureCity, String arrivalCity);
 }
