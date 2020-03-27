@@ -28,6 +28,11 @@ public class AirportServiceImpl implements AirportService {
         return modelMapper.map(airport,AirportResponseDTO.class);
     }
 
+    @Override
+    public List<AirportResponseDTO> getAll() {
+        return airportListToAirpostDtoList(airportRepository.findAll());
+    }
+
 
     /*İd İle Arama*/
     @Override

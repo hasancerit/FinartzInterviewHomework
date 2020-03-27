@@ -4,13 +4,18 @@ import com.finartz.homework.TicketService.domain.Airline;
 import com.finartz.homework.TicketService.domain.Airport;
 import com.finartz.homework.TicketService.domain.Flight;
 import com.finartz.homework.TicketService.dto.request.FlightRequestDTO;
+import com.finartz.homework.TicketService.dto.response.AirportResponseDTO;
 import com.finartz.homework.TicketService.dto.response.FlightResponseDTO;
+import com.finartz.homework.TicketService.dto.response.FlightsResponseDTO;
 import com.finartz.homework.TicketService.repositories.AirlineRepository;
 import com.finartz.homework.TicketService.repositories.AirportRepository;
 import com.finartz.homework.TicketService.repositories.FlightRepository;
 import com.finartz.homework.TicketService.service.FlightService;
+import com.finartz.homework.TicketService.util.SearchType;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -27,7 +32,7 @@ public class FlightServiceImpl implements FlightService {
     @Autowired
     private ModelMapper modelMapper;
 
-    /*Ekleme*/
+    /**Ekleme**/
     @Override
     public FlightResponseDTO saveFlight(FlightRequestDTO flightDto) {
         Flight flight = modelMapper.map(flightDto,Flight.class);
@@ -41,15 +46,19 @@ public class FlightServiceImpl implements FlightService {
         return modelMapper.map(flight,FlightResponseDTO.class);
     }
 
+    @Override
+    public List<FlightResponseDTO> getAll() {
+        return flightListToFlightResponseDtoList(flightRepository.findAll());
+    }
 
-    /*Id ile Arama*/
+
+    /**Id ile Arama**/
     @Override
     public FlightResponseDTO getFlight(String id){
         return modelMapper.map(flightRepository.getOne(id),FlightResponseDTO.class);
     }
 
-
-    /*Havayolu İsmi ile Arama*/
+    /**Havayolu İsmi ile Arama.**/
     @Override
     public List<FlightResponseDTO> getFlightsByAirlineName(String airlineName) {
         List<FlightResponseDTO> flightResponseDTOList = new ArrayList<>();
@@ -62,67 +71,37 @@ public class FlightServiceImpl implements FlightService {
         return flightResponseDTOList;
     }
 
-
-    /**Kalkış Havaalanına göre Arama**/
-    /*Kalkış Havaalanı İsmi ile Arama*/
+    /**Kalkış Havaalanına göre Arama(value'den kalkan ucuslar)**/
     @Override
-    public List<FlightResponseDTO> getFlightsByDepartureName(String departureName) {
-        return getDepartureFlightResponseDtoListFromAirportList(
-                airportRepository.findByNameIsContainingIgnoreCase(departureName));
+    public List<FlightResponseDTO> getFlightsByDeparture(SearchType searchType,String nameOrCity) {
+        if(searchType == SearchType.byName){        /*Kalkış Havaalanı İsmi ile Arama*/
+            return getDepartureFlightResponseDtoListFromAirportList(
+                    airportRepository.findByNameIsContainingIgnoreCase(nameOrCity));
+        }else if(searchType == SearchType.byCity){  /*Kalkış Havaalanı Şehiri ile Arama*/
+            return getDepartureFlightResponseDtoListFromAirportList(
+                    airportRepository.findByCityIsContainingIgnoreCase(nameOrCity));
+        }else{                                      /*Kalkış Havaalanı Şehiri VEYA ismi ile Arama*/
+            return getDepartureFlightResponseDtoListFromAirportList(
+                    airportRepository.findByNameIgnoreCaseIsContainingOrCityIgnoreCaseIsContaining(nameOrCity,nameOrCity));
+        }
     }
 
-    /*Kalkış Havaalanı Şehiri ile Arama*/
+    /**Varış Havaalanına göre Arama(value'ye inen ucuslar)**/
     @Override
-    public List<FlightResponseDTO> getFlightsByDepartureCity(String departureCity) {
-        return getDepartureFlightResponseDtoListFromAirportList(
-                airportRepository.findByCityIsContainingIgnoreCase(departureCity));
-    }
-
-    /*Kalkış Havaalanı Şehiri VEYA ismi ile Arama*/
-    @Override
-    public List<FlightResponseDTO> getFlightsByDepartureNameOrCity(String departureNameOrCity) {
-        return getDepartureFlightResponseDtoListFromAirportList(
-                airportRepository.findByNameIgnoreCaseIsContainingOrCityIgnoreCaseIsContaining(departureNameOrCity,departureNameOrCity));
-    }
-
-
-    /**Varış Havaalanına göre Arama**/
-    /*Varış Havaalanı İsmi ile Arama*/
-    @Override
-    public List<FlightResponseDTO> getFlightsByArrivalName(String arrivalName) {
-       return getArrivalFlightResponseDtoListFromAirportList(
-               airportRepository.findByNameIsContainingIgnoreCase(arrivalName));
-
-    }
-
-    /*Varış Havaalanı Şehiri ile Arama*/
-    @Override
-    public List<FlightResponseDTO> getFlightsByArrivalCity(String arrivalCity) {
-        return getArrivalFlightResponseDtoListFromAirportList(
-                airportRepository.findByCityIsContainingIgnoreCase(arrivalCity));
-    }
-
-    /*Varış Havaalanı Şehiri VEYA ismi ile Arama*/
-    @Override
-    public List<FlightResponseDTO> getFlightsByArrivalNameOrCity(String arrivalNameOrCity) {
-        return getArrivalFlightResponseDtoListFromAirportList(
-                airportRepository.findByNameIgnoreCaseIsContainingOrCityIgnoreCaseIsContaining(arrivalNameOrCity,arrivalNameOrCity));
+    public List<FlightResponseDTO> getFlightsByArrival(SearchType searchType,String nameOrCity) {
+        if(searchType == SearchType.byName){        /*Kalkış Havaalanı İsmi ile Arama*/
+            return getArrivalFlightResponseDtoListFromAirportList(
+                    airportRepository.findByNameIsContainingIgnoreCase(nameOrCity));
+        }else if(searchType == SearchType.byCity){  /*Kalkış Havaalanı Şehiri ile Arama*/
+            return getArrivalFlightResponseDtoListFromAirportList(
+                    airportRepository.findByCityIsContainingIgnoreCase(nameOrCity));
+        }else{                                      /*Kalkış Havaalanı Şehiri VEYA ismi ile Arama*/
+            return getArrivalFlightResponseDtoListFromAirportList(
+                    airportRepository.findByNameIgnoreCaseIsContainingOrCityIgnoreCaseIsContaining(nameOrCity,nameOrCity));
+        }
     }
 
     /**Kalkış Havaalanı ve İniş Havaalanına göre arama**/
-    /*Kalkış Havaalanı isimi ve İniş Havaalanı isimi ile arama*/
-    @Override
-    public List<FlightResponseDTO> getFlightsByDepartureAndArrivalName(String departureName, String arrivalName) {
-        return flightListToFlightResponseDtoList(
-                flightRepository.findByDeparture_NameIsContainingIgnoreCaseAndArrival_NameIsContainingIgnoreCase(departureName,arrivalName));
-    }
-
-    /*Kalkış Havaalanı şehiri ve İniş Havaalanı şehiri ile arama*/
-    @Override
-    public List<FlightResponseDTO> getFlightsByDepartureAndArrivalCity(String departureCity, String arrivalCity) {
-        return flightListToFlightResponseDtoList(
-                flightRepository.findByDeparture_CityIsContainingIgnoreCaseAndArrival_CityIsContainingIgnoreCase(departureCity,arrivalCity));
-    }
 
 
     private List<FlightResponseDTO> getArrivalFlightResponseDtoListFromAirportList(List<Airport> airports){

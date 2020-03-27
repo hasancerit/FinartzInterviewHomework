@@ -22,6 +22,10 @@ public class AirlineController {
         return new ResponseEntity<>(airlineService.saveAirline(airlineRequestDTO), HttpStatus.OK);
     }
 
+    @GetMapping("/all")
+    public ResponseEntity<List<AirlineResponseDTO>> getAll(){
+        return new ResponseEntity<>(airlineService.getAll(), HttpStatus.OK);
+    }
 
     /*İd İle Arama*/
     @GetMapping("/{id}")

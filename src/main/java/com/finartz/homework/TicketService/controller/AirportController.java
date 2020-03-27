@@ -24,6 +24,11 @@ public class AirportController {
         return new ResponseEntity<>(airportService.saveAirport(airportDto), HttpStatus.OK);
     }
 
+    @GetMapping("/all")
+    public ResponseEntity<List<AirportResponseDTO>> getAll(){
+        return new ResponseEntity<>(airportService.getAll(), HttpStatus.OK);
+    }
+
 
     /*İd İle Arama*/
     @GetMapping("/{id}")

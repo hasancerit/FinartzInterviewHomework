@@ -3,29 +3,22 @@ package com.finartz.homework.TicketService.service;
 import com.finartz.homework.TicketService.domain.Flight;
 import com.finartz.homework.TicketService.dto.request.FlightRequestDTO;
 import com.finartz.homework.TicketService.dto.response.FlightResponseDTO;
+import com.finartz.homework.TicketService.dto.response.FlightsResponseDTO;
+import com.finartz.homework.TicketService.util.SearchType;
 
 import java.util.List;
 
 public interface FlightService {
     FlightResponseDTO saveFlight(FlightRequestDTO flightDto);
 
+    List<FlightResponseDTO> getAll();
+
     FlightResponseDTO getFlight(String id);
 
     List<FlightResponseDTO> getFlightsByAirlineName(String airlineName);
 
-    List<FlightResponseDTO> getFlightsByDepartureName(String departureName);
+    List<FlightResponseDTO> getFlightsByDeparture(SearchType searchType,String nameOrCity);
 
-    List<FlightResponseDTO> getFlightsByDepartureCity(String departureCity);
+    List<FlightResponseDTO> getFlightsByArrival(SearchType searchType,String nameOrCity);
 
-    List<FlightResponseDTO> getFlightsByDepartureNameOrCity(String departureNameOrCity);
-
-    List<FlightResponseDTO> getFlightsByArrivalName(String arrivalName);
-
-    List<FlightResponseDTO> getFlightsByArrivalCity(String arrivalCity);
-
-    List<FlightResponseDTO> getFlightsByArrivalNameOrCity(String arrivalNameOrCity);
-
-    List<FlightResponseDTO> getFlightsByDepartureAndArrivalName(String departureName, String arrivalName);
-
-    List<FlightResponseDTO> getFlightsByDepartureAndArrivalCity(String departureCity, String arrivalCity);
 }

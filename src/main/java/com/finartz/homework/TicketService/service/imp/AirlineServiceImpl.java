@@ -28,6 +28,11 @@ public class AirlineServiceImpl implements AirlineService {
         return modelMapper.map(airline,AirlineResponseDTO.class);
     }
 
+    @Override
+    public List<AirlineResponseDTO> getAll() {
+        return airlineListToAirlineDtoList(airlineRepository.findAll());
+    }
+
 
     /*İd İle Arama*/
     @Override
@@ -38,14 +43,15 @@ public class AirlineServiceImpl implements AirlineService {
     /*İsim ile arama*/
     @Override
     public List<AirlineResponseDTO> getAirlinesByName(String name) {
-        List<Airline> airports = airlineRepository.findByNameIsContainingIgnoreCase(name);
+        return airlineListToAirlineDtoList(airlineRepository.findByNameIsContainingIgnoreCase(name));
+    }
+
+
+    private List<AirlineResponseDTO> airlineListToAirlineDtoList(List<Airline> airlines){
         List<AirlineResponseDTO> airlineResponseDTOList =new ArrayList<>();
-        airports.stream().forEach(airline -> {
+        airlines.stream().forEach(airline -> {
             airlineResponseDTOList.add(modelMapper.map(airline,AirlineResponseDTO.class));
         });
         return airlineResponseDTOList;
     }
-
-
-
 }

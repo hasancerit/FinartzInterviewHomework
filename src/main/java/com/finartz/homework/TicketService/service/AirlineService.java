@@ -13,4 +13,7 @@ public interface AirlineService {
     AirlineResponseDTO getAirline(String id);
 
     List<AirlineResponseDTO> getAirlinesByName(String name);
+
+    List<AirlineResponseDTO> getAll();
+
 }

@@ -1,6 +1,5 @@
 package com.finartz.homework.TicketService.controller;
 
-import com.finartz.homework.TicketService.domain.Ticket;
 import com.finartz.homework.TicketService.dto.request.TicketRequestDTO;
 import com.finartz.homework.TicketService.dto.response.TicketResponseDTO;
 import com.finartz.homework.TicketService.service.TicketService;
@@ -20,8 +19,14 @@ public class TicketController {
         return new ResponseEntity<>(ticketService.saveTicket(airportDto), HttpStatus.OK);
     }
 
+
     @GetMapping("/{id}")
     public ResponseEntity<TicketResponseDTO> saveTicket(@PathVariable String id){
         return new ResponseEntity<>(ticketService.getTicket(id), HttpStatus.OK);
+    }
+
+    @GetMapping("/all")
+    public ResponseEntity getAll(){
+        return new ResponseEntity<>(ticketService.getAll(), HttpStatus.OK);
     }
 }

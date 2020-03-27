@@ -13,6 +13,8 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -58,5 +60,14 @@ public class TicketServiceImpl implements TicketService {
     @Override
     public TicketResponseDTO getTicket(String id) {
         return modelMapper.map(ticketRepository.getOne(id), TicketResponseDTO.class);
+    }
+
+    @Override
+    public List<TicketResponseDTO> getAll() {
+        List<TicketResponseDTO> ticketResponseDTOList = new ArrayList<>();
+        ticketRepository.findAll().stream().forEach( ticket -> {
+            ticketResponseDTOList.add(modelMapper.map(ticket,TicketResponseDTO.class));
+        });
+        return null;
     }
 }

@@ -18,4 +18,6 @@ public interface AirportService {
     List<AirportResponseDTO> getAirportsByName(String name);
 
     List<AirportResponseDTO> getAirportsByNameOrCity(String name);
+
+    List<AirportResponseDTO> getAll();
 }
