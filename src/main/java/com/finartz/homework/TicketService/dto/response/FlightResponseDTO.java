@@ -15,10 +15,10 @@ public class FlightResponseDTO {
     @JsonIgnoreProperties("activeFlights") //Sonsuz donguyu engellemek icin
     private AirlineResponseDTO airline;
 
-    @JsonIgnoreProperties("departureFlights")
+    @JsonIgnoreProperties({"departureFlights","arrivalFlights"})
     private AirportResponseDTO departure;
 
-    @JsonIgnoreProperties("departureFlights")
+    @JsonIgnoreProperties({"departureFlights","arrivalFlights"})
     private AirportResponseDTO arrival;
 
     /*

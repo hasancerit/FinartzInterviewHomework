@@ -13,6 +13,8 @@ public class AirportResponseDTO {
     private String name;
     private String city; //Maple
     private String desc;
-    @JsonIgnoreProperties("departure")
+    @JsonIgnoreProperties({"departure","arrival"})
     private List<FlightResponseDTO> departureFlights = new ArrayList<>();
+    @JsonIgnoreProperties({"departure","arrival"})
+    private List<FlightResponseDTO> arrivalFlights = new ArrayList<>();
 }

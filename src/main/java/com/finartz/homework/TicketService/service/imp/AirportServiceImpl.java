@@ -21,30 +21,36 @@ public class AirportServiceImpl implements AirportService {
     @Autowired
     private ModelMapper modelMapper;
 
+    /*Ekleme*/
     @Override
     public AirportResponseDTO saveAirport(AirportRequestDTO airportDto) {
         Airport airport = airportRepository.save(modelMapper.map(airportDto,Airport.class));
         return modelMapper.map(airport,AirportResponseDTO.class);
     }
 
+
+    /*İd İle Arama*/
     @Override
     public AirportResponseDTO getAirport(String id) {
         Airport airport = airportRepository.getOne(id);
         return modelMapper.map(airport,AirportResponseDTO.class);
     }
 
+    /*Şehir ile arama*/
     @Override
     public List<AirportResponseDTO> getAirportsByCity(String city) {
         List<Airport> airports = airportRepository.findByCityIsContainingIgnoreCase(city);
         return airportListToAirpostDtoList(airports);
     }
 
+    /*İsim ile arama*/
     @Override
     public List<AirportResponseDTO> getAirportsByName(String name) {
         List<Airport> airports = airportRepository.findByNameIsContainingIgnoreCase(name);
         return airportListToAirpostDtoList(airports);
     }
 
+    /*İsim veya şehir ile arama*/
     @Override
     public List<AirportResponseDTO> getAirportsByNameOrCity(String nameCity) {
         List<Airport> airports = airportRepository.findByNameIgnoreCaseIsContainingOrCityIgnoreCaseIsContaining(nameCity,nameCity);

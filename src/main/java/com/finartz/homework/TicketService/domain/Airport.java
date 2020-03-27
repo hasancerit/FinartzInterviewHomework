@@ -24,4 +24,7 @@ public class Airport{
 
     @OneToMany(mappedBy = "departure")
     private List<Flight> departureFlights = new ArrayList<>();
+
+    @OneToMany(mappedBy = "arrival")
+    private List<Flight> arrivalFlights = new ArrayList<>();
 }

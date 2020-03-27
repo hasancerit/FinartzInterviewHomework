@@ -18,21 +18,24 @@ import java.util.List;
 public class AirlineServiceImpl implements AirlineService {
     @Autowired
     private AirlineRepository airlineRepository;
-
     @Autowired
     private ModelMapper modelMapper;
 
+    /*Ekleme*/
     @Override
     public AirlineResponseDTO saveAirline(AirlineRequestDTO airlineDto) {
         Airline airline = airlineRepository.save(modelMapper.map(airlineDto,Airline.class));
         return modelMapper.map(airline,AirlineResponseDTO.class);
     }
 
+
+    /*İd İle Arama*/
     @Override
     public AirlineResponseDTO getAirline(String id) {
         return modelMapper.map(airlineRepository.getOne(id),AirlineResponseDTO.class);
     }
 
+    /*İsim ile arama*/
     @Override
     public List<AirlineResponseDTO> getAirlinesByName(String name) {
         List<Airline> airports = airlineRepository.findByNameIsContainingIgnoreCase(name);

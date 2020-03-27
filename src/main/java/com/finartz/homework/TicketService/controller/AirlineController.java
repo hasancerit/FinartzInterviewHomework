@@ -16,16 +16,20 @@ public class AirlineController {
     @Autowired
     private AirlineService airlineService;
 
+    /*Ekleme*/
     @PostMapping("/add")
     public ResponseEntity<AirlineResponseDTO> saveAirline(@RequestBody AirlineRequestDTO airlineRequestDTO){
         return new ResponseEntity<>(airlineService.saveAirline(airlineRequestDTO), HttpStatus.OK);
     }
 
+
+    /*İd İle Arama*/
     @GetMapping("/{id}")
     public ResponseEntity<AirlineResponseDTO> getAirline(@PathVariable String id){
         return new ResponseEntity<>(airlineService.getAirline(id), HttpStatus.OK);
     }
 
+    /*İsim ile arama*/
     @GetMapping("/name/{name}")
     public ResponseEntity<List<AirlineResponseDTO>> getAirlinesByName(@PathVariable String name){
         return new ResponseEntity<>(airlineService.getAirlinesByName(name), HttpStatus.OK);

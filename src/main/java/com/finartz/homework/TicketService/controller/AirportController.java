@@ -18,21 +18,26 @@ public class AirportController {
     @Autowired
     AirportService airportService;
 
+    /*Ekleme*/
     @PostMapping("/add")
     public ResponseEntity<AirportResponseDTO> saveAirport(@RequestBody AirportRequestDTO airportDto){
         return new ResponseEntity<>(airportService.saveAirport(airportDto), HttpStatus.OK);
     }
 
+
+    /*İd İle Arama*/
     @GetMapping("/{id}")
     public ResponseEntity<AirportResponseDTO> getAirport(@PathVariable String id){
         return new ResponseEntity<>(airportService.getAirport(id), HttpStatus.OK);
     }
 
+    /*Şehir ile arama*/
     @GetMapping("/city/{city}")
     public ResponseEntity<List<AirportResponseDTO>> getAirportsByCity(@PathVariable String city){
         return new ResponseEntity<>(airportService.getAirportsByCity(city), HttpStatus.OK);
     }
 
+    /*İsim ile arama*/
     @GetMapping("/name/{name}")
     public ResponseEntity<List<AirportResponseDTO>> getAirportsByName(@PathVariable String name){
         return new ResponseEntity<>(airportService.getAirportsByName(name), HttpStatus.OK);

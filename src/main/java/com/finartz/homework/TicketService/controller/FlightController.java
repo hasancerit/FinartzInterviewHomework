@@ -59,6 +59,7 @@ public class FlightController {
         return new ResponseEntity<>(flightService.getFlightsByDepartureNameOrCity(departureNameOrCity), HttpStatus.OK);
     }
 
+
     /**Varış Havaalanı Arama**/
     /*Varış Havaalanı İsmi ile Arama*/
     @GetMapping("/arrivalcity/{arrivalcity}")
