@@ -5,6 +5,7 @@ import com.finartz.homework.TicketService.dto.request.AirportRequestDTO;
 import com.finartz.homework.TicketService.dto.response.AirportResponseDTO;
 import com.finartz.homework.TicketService.repositories.AirportRepository;
 import com.finartz.homework.TicketService.service.AirportService;
+import com.finartz.homework.TicketService.util.SearchType;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -41,25 +42,18 @@ public class AirportServiceImpl implements AirportService {
         return modelMapper.map(airport,AirportResponseDTO.class);
     }
 
-    /*Şehir ile arama*/
     @Override
-    public List<AirportResponseDTO> getAirportsByCity(String city) {
-        List<Airport> airports = airportRepository.findByCityIsContainingIgnoreCase(city);
-        return airportListToAirpostDtoList(airports);
-    }
-
-    /*İsim ile arama*/
-    @Override
-    public List<AirportResponseDTO> getAirportsByName(String name) {
-        List<Airport> airports = airportRepository.findByNameIsContainingIgnoreCase(name);
-        return airportListToAirpostDtoList(airports);
-    }
-
-    /*İsim veya şehir ile arama*/
-    @Override
-    public List<AirportResponseDTO> getAirportsByNameOrCity(String nameCity) {
-        List<Airport> airports = airportRepository.findByNameIgnoreCaseIsContainingOrCityIgnoreCaseIsContaining(nameCity,nameCity);
-        return airportListToAirpostDtoList(airports);
+    public List<AirportResponseDTO> getAirports(SearchType searchType, String nameOrCity) {
+        if(searchType == SearchType.byName){        /*İsmi ile Arama*/
+            List<Airport> airports = airportRepository.findByNameIsContainingIgnoreCase(nameOrCity);
+            return airportListToAirpostDtoList(airports);
+        }else if(searchType == SearchType.byCity){  /*Şehiri ile Arama*/
+            List<Airport> airports = airportRepository.findByCityIsContainingIgnoreCase(nameOrCity);
+            return airportListToAirpostDtoList(airports);
+        }else{                                      /*Şehiri VEYA ismi ile Arama*/
+            List<Airport> airports = airportRepository.findByNameIgnoreCaseIsContainingOrCityIgnoreCaseIsContaining(nameOrCity,nameOrCity);
+            return airportListToAirpostDtoList(airports);
+        }
     }
 
     private List<AirportResponseDTO> airportListToAirpostDtoList(List<Airport> airports){

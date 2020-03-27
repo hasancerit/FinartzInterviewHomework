@@ -5,6 +5,7 @@ import com.finartz.homework.TicketService.dto.request.AirportRequestDTO;
 import com.finartz.homework.TicketService.dto.response.AirlineResponseDTO;
 import com.finartz.homework.TicketService.dto.response.AirportResponseDTO;
 import com.finartz.homework.TicketService.service.AirportService;
+import com.finartz.homework.TicketService.util.SearchType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -36,20 +37,9 @@ public class AirportController {
         return new ResponseEntity<>(airportService.getAirport(id), HttpStatus.OK);
     }
 
-    /*Şehir ile arama*/
-    @GetMapping("/city/{city}")
-    public ResponseEntity<List<AirportResponseDTO>> getAirportsByCity(@PathVariable String city){
-        return new ResponseEntity<>(airportService.getAirportsByCity(city), HttpStatus.OK);
-    }
-
-    /*İsim ile arama*/
-    @GetMapping("/name/{name}")
-    public ResponseEntity<List<AirportResponseDTO>> getAirportsByName(@PathVariable String name){
-        return new ResponseEntity<>(airportService.getAirportsByName(name), HttpStatus.OK);
-    }
-
-    @GetMapping("/namecity/{nameorcity}")
-    public ResponseEntity<List<AirportResponseDTO>> getAirportsByNameOrCity(@PathVariable("nameorcity") String nameCity){
-        return new ResponseEntity<>(airportService.getAirportsByNameOrCity(nameCity), HttpStatus.OK);
+    @GetMapping("/search")
+    public ResponseEntity<List<AirportResponseDTO>> getAirports(@RequestParam(required = true,name = "type") SearchType searchType
+            ,@RequestParam(required = true,name = "value") String nameOrCity){
+        return new ResponseEntity<>(airportService.getAirports(searchType,nameOrCity), HttpStatus.OK);
     }
 }

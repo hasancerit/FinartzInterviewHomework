@@ -34,8 +34,8 @@ public class AirlineController {
     }
 
     /*İsim ile arama*/
-    @GetMapping("/name/{name}")
-    public ResponseEntity<List<AirlineResponseDTO>> getAirlinesByName(@PathVariable String name){
+    @GetMapping("/name}")
+    public ResponseEntity<List<AirlineResponseDTO>> getAirlinesByName(@RequestParam(required = true,name = "name") String name){
         return new ResponseEntity<>(airlineService.getAirlinesByName(name), HttpStatus.OK);
     }
 }

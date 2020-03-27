@@ -3,6 +3,7 @@ package com.finartz.homework.TicketService.service;
 import com.finartz.homework.TicketService.domain.Airport;
 import com.finartz.homework.TicketService.dto.request.AirportRequestDTO;
 import com.finartz.homework.TicketService.dto.response.AirportResponseDTO;
+import com.finartz.homework.TicketService.util.SearchType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
@@ -13,11 +14,8 @@ public interface AirportService {
 
     AirportResponseDTO getAirport(String id);
 
-    List<AirportResponseDTO> getAirportsByCity(String city);
-
-    List<AirportResponseDTO> getAirportsByName(String name);
-
-    List<AirportResponseDTO> getAirportsByNameOrCity(String name);
+    List<AirportResponseDTO> getAirports(SearchType searchType, String nameOrCity);
 
     List<AirportResponseDTO> getAll();
+
 }
