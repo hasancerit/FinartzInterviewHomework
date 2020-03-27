@@ -8,6 +8,7 @@ import com.finartz.homework.TicketService.repositories.FlightRepository;
 import com.finartz.homework.TicketService.repositories.TicketRepository;
 import com.finartz.homework.TicketService.repositories.UserRepository;
 import com.finartz.homework.TicketService.service.TicketService;
+import com.finartz.homework.TicketService.util.FlightClass;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -29,7 +30,7 @@ public class TicketServiceImpl implements TicketService {
 
     @Override
     public TicketResponseDTO saveTicket(TicketRequestDTO ticketDto) {
-        Ticket ticket = modelMapper.map(ticketDto,Ticket.class);
+        Ticket ticket = modelMapper.map(ticketDto, Ticket.class);
 
         /*Ticket To Ticket DTO*/
         ticket.setFlight(flightRepository.getOne(ticketDto.getFlightId())); //Olmayan Flight hatası
@@ -37,14 +38,12 @@ public class TicketServiceImpl implements TicketService {
 
         /*Uçuştaki dolu yerleri güncelle*/
         Flight flight = ticket.getFlight();
-        if(ticket.getFlightClass().equalsIgnoreCase("Business")){
-            System.out.println("Business");
+        if (ticket.getFlightClass() == FlightClass.BUSINESS) {
             flight.setTakenSeatsBusiness(
                     Stream.concat(flight.getTakenSeatsBusiness().stream(), Stream.of(ticket.getNo()))
-                    .collect(Collectors.toList()));
-            }else if(ticket.getFlightClass().equalsIgnoreCase("Economi")){
-            System.out.println("Economic");
-            flight.setTakenSeatsBusiness(
+                            .collect(Collectors.toList()));
+        } else if (ticket.getFlightClass() == FlightClass.ECONOMİ) {
+            flight.setTakenSeatsEconomi(
                     Stream.concat(flight.getTakenSeatsEconomi().stream(), Stream.of(ticket.getNo()))
                             .collect(Collectors.toList()));
         }
@@ -53,11 +52,11 @@ public class TicketServiceImpl implements TicketService {
         /*Bileti Al*/
         ticketRepository.save(ticket);
 
-        return modelMapper.map(ticket,TicketResponseDTO.class);
+        return modelMapper.map(ticket, TicketResponseDTO.class);
     }
 
     @Override
     public TicketResponseDTO getTicket(String id) {
-        return modelMapper.map(ticketRepository.getOne(id),TicketResponseDTO.class);
+        return modelMapper.map(ticketRepository.getOne(id), TicketResponseDTO.class);
     }
 }

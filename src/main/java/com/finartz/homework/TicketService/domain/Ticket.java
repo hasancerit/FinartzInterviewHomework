@@ -1,5 +1,6 @@
 package com.finartz.homework.TicketService.domain;
 
+import com.finartz.homework.TicketService.util.FlightClass;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -18,6 +19,8 @@ public class Ticket{
     private User user;
     @ManyToOne
     private Flight flight;
-    private String flightClass;
+
+    @Enumerated(EnumType.STRING)
+    private FlightClass flightClass;
     private String no;
 }

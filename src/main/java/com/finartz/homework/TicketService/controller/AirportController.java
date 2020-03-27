@@ -24,7 +24,7 @@ public class AirportController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<AirportResponseDTO> saveAirport(@PathVariable String id){
+    public ResponseEntity<AirportResponseDTO> getAirport(@PathVariable String id){
         return new ResponseEntity<>(airportService.getAirport(id), HttpStatus.OK);
     }
 
@@ -34,7 +34,7 @@ public class AirportController {
     }
 
     @GetMapping("/name/{name}")
-    public ResponseEntity<AirportResponseDTO> getAirportsByName(@PathVariable String name){
+    public ResponseEntity<List<AirportResponseDTO>> getAirportsByName(@PathVariable String name){
         return new ResponseEntity<>(airportService.getAirportByName(name), HttpStatus.OK);
     }
 }

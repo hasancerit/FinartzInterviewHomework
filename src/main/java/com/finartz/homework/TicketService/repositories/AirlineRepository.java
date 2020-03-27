@@ -5,6 +5,8 @@ import com.finartz.homework.TicketService.domain.Airport;
 import com.finartz.homework.TicketService.domain.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 
+import java.util.List;
+
 public interface AirlineRepository extends JpaRepository<Airline,String> {
-    Airline findByName(String name);
+    List<Airline> findByNameIsContainingIgnoreCase(String name);
 }
