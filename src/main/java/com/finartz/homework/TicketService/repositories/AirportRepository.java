@@ -10,4 +10,5 @@ import java.util.List;
 public interface AirportRepository extends JpaRepository<Airport,String> {
     List<Airport> findByNameIsContainingIgnoreCase(String name);
     List<Airport> findByCityIsContainingIgnoreCase(String city);
+    List<Airport> findByNameIgnoreCaseIsContainingOrCityIgnoreCaseIsContaining(String name,String city);
 }

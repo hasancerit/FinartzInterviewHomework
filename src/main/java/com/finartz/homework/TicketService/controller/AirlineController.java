@@ -28,6 +28,6 @@ public class AirlineController {
 
     @GetMapping("/name/{name}")
     public ResponseEntity<List<AirlineResponseDTO>> getAirlinesByName(@PathVariable String name){
-        return new ResponseEntity<>(airlineService.getAirlineByName(name), HttpStatus.OK);
+        return new ResponseEntity<>(airlineService.getAirlinesByName(name), HttpStatus.OK);
     }
 }

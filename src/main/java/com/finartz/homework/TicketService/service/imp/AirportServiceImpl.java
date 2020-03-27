@@ -36,16 +36,22 @@ public class AirportServiceImpl implements AirportService {
     @Override
     public List<AirportResponseDTO> getAirportsByCity(String city) {
         List<Airport> airports = airportRepository.findByCityIsContainingIgnoreCase(city);
-        List<AirportResponseDTO> airportResponseDTOList =new ArrayList<>();
-        airports.stream().forEach(airport -> {
-            airportResponseDTOList.add(modelMapper.map(airport,AirportResponseDTO.class));
-        });
-        return airportResponseDTOList;
+        return airportListToAirpostDtoList(airports);
     }
 
     @Override
     public List<AirportResponseDTO> getAirportsByName(String name) {
         List<Airport> airports = airportRepository.findByNameIsContainingIgnoreCase(name);
+        return airportListToAirpostDtoList(airports);
+    }
+
+    @Override
+    public List<AirportResponseDTO> getAirportsByNameOrCity(String nameCity) {
+        List<Airport> airports = airportRepository.findByNameIgnoreCaseIsContainingOrCityIgnoreCaseIsContaining(nameCity,nameCity);
+        return airportListToAirpostDtoList(airports);
+    }
+
+    private List<AirportResponseDTO> airportListToAirpostDtoList(List<Airport> airports){
         List<AirportResponseDTO> airportResponseDTOList =new ArrayList<>();
         airports.stream().forEach(airport -> {
             airportResponseDTOList.add(modelMapper.map(airport,AirportResponseDTO.class));
