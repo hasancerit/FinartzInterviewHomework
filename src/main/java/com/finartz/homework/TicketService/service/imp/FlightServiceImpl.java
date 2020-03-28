@@ -13,11 +13,18 @@ import com.finartz.homework.TicketService.repositories.AirportRepository;
 import com.finartz.homework.TicketService.repositories.FlightRepository;
 import com.finartz.homework.TicketService.service.FlightService;
 import com.finartz.homework.TicketService.util.SearchType;
+import org.apache.tomcat.jni.Local;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.Duration;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.Period;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 @Service
@@ -40,6 +47,11 @@ public class FlightServiceImpl implements FlightService {
         flight.setDeparture(airportRepository.getOne(flightDto.getDepartureAirportId()));
         flight.setArrival(airportRepository.getOne(flightDto.getArrivalAirportId()));
         flight.setAirline(airlineRepository.getOne(flightDto.getAirlineId()));
+        if(flight.getArrivalDate().isBefore(flight.getDepartureDate())){
+            //Hata Fırlat
+        }
+        String duration = Duration.between(flight.getArrivalDate(), flight.getDepartureDate()).toString();
+        flight.setDuration(duration.replace("-"," ").substring(3));
 
         flightRepository.save(flight);
         return modelMapper.map(flight,FlightResponseDTO.class);

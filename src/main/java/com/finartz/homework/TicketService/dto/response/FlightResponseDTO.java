@@ -1,11 +1,11 @@
 package com.finartz.homework.TicketService.dto.response;
 
 import com.fasterxml.jackson.annotation.*;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import com.finartz.homework.TicketService.domain.Airline;
-import com.finartz.homework.TicketService.domain.Airport;
 import lombok.Data;
+import org.springframework.format.annotation.DateTimeFormat;
 
+import java.time.LocalDateTime;
+import java.util.Date;
 import java.util.List;
 
 @Data
@@ -21,10 +21,14 @@ public class FlightResponseDTO {
     @JsonIgnoreProperties({"departureFlights","arrivalFlights"})
     private AirportResponseDTO arrival;
 
-    /*
-    private Date departureDate;
-    private Date arrivalDate;
-    */
+
+    @DateTimeFormat
+    @JsonFormat(pattern="dd-MM-yyyy HH:mm")
+    private LocalDateTime departureDate;
+
+    @JsonFormat(pattern="dd-MM-yyyy HH:mm")
+    private LocalDateTime arrivalDate;
+
 
     private String duration;
 

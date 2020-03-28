@@ -7,6 +7,7 @@ import lombok.Setter;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
 
@@ -26,8 +27,8 @@ public class Flight implements Serializable {
     @ManyToOne
     private Airport arrival;
 
-    private Date departureDate;
-    private Date arrivalDate;
+    private LocalDateTime departureDate;
+    private LocalDateTime arrivalDate;
     private String duration;
 
     private Double priceEconomic;

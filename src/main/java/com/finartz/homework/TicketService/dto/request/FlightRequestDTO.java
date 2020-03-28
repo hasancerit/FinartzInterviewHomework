@@ -1,10 +1,13 @@
 package com.finartz.homework.TicketService.dto.request;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Builder;
 import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
+import org.springframework.format.annotation.DateTimeFormat;
 
+import java.time.LocalDateTime;
 import java.util.Date;
 
 @Data
@@ -13,10 +16,12 @@ public class FlightRequestDTO {
 
     private String departureAirportId;
     private String arrivalAirportId;
-    /*
-    private Date departureDate;
-    private Date arrivalDate;
-    */
+
+    @JsonFormat(pattern="dd-MM-yyyy HH:mm")
+    private LocalDateTime departureDate;
+    @JsonFormat(pattern="dd-MM-yyyy HH:mm")
+    private LocalDateTime arrivalDate;
+
     private String duration;
 
     private Double priceEconomic;
