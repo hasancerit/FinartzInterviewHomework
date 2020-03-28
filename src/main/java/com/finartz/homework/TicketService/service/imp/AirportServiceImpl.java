@@ -44,10 +44,10 @@ public class AirportServiceImpl implements AirportService {
 
     @Override
     public List<AirportResponseDTO> getAirports(SearchType searchType, String nameOrCity) {
-        if(searchType == SearchType.byName){        /*İsmi ile Arama*/
+        if(searchType == SearchType.byname){        /*İsmi ile Arama*/
             List<Airport> airports = airportRepository.findByNameIsContainingIgnoreCase(nameOrCity);
             return airportListToAirpostDtoList(airports);
-        }else if(searchType == SearchType.byCity){  /*Şehiri ile Arama*/
+        }else if(searchType == SearchType.bycity){  /*Şehiri ile Arama*/
             List<Airport> airports = airportRepository.findByCityIsContainingIgnoreCase(nameOrCity);
             return airportListToAirpostDtoList(airports);
         }else{                                      /*Şehiri VEYA ismi ile Arama*/

@@ -6,6 +6,6 @@ import java.util.List;
 
 @Data
 public class FlightsResponseDTO {
-    private List<FlightResponseDTO> aktarmasizUcuslar;
-    private List<FlightResponseDTO> aktarmaliUcuslar;
+    private List<FlightResponseDTO> directFlights;
+    private List<IndirectFlightDTO> indirectFlights;
 }

@@ -5,6 +5,7 @@ import com.finartz.homework.TicketService.domain.Airport;
 import com.finartz.homework.TicketService.domain.Flight;
 import com.finartz.homework.TicketService.dto.request.FlightRequestDTO;
 import com.finartz.homework.TicketService.dto.response.AirportResponseDTO;
+import com.finartz.homework.TicketService.dto.response.IndirectFlightDTO;
 import com.finartz.homework.TicketService.dto.response.FlightResponseDTO;
 import com.finartz.homework.TicketService.dto.response.FlightsResponseDTO;
 import com.finartz.homework.TicketService.repositories.AirlineRepository;
@@ -14,8 +15,6 @@ import com.finartz.homework.TicketService.service.FlightService;
 import com.finartz.homework.TicketService.util.SearchType;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -74,30 +73,30 @@ public class FlightServiceImpl implements FlightService {
     /**Kalkış Havaalanına göre Arama(value'den kalkan ucuslar)**/
     @Override
     public List<FlightResponseDTO> getFlightsByDeparture(SearchType searchType,String nameOrCity) {
-        if(searchType == SearchType.byName){        /*Kalkış Havaalanı İsmi ile Arama*/
+        if(searchType == SearchType.byname){        /*Kalkış Havaalanı İsmi ile Arama*/
             return getDepartureFlightResponseDtoListFromAirportList(
                     airportRepository.findByNameIsContainingIgnoreCase(nameOrCity));
-        }else if(searchType == SearchType.byCity){  /*Kalkış Havaalanı Şehiri ile Arama*/
+        }else if(searchType == SearchType.bycity){  /*Kalkış Havaalanı Şehiri ile Arama*/
             return getDepartureFlightResponseDtoListFromAirportList(
                     airportRepository.findByCityIsContainingIgnoreCase(nameOrCity));
         }else{                                      /*Kalkış Havaalanı Şehiri VEYA ismi ile Arama*/
             return getDepartureFlightResponseDtoListFromAirportList(
-                    airportRepository.findByNameIgnoreCaseIsContainingOrCityIgnoreCaseIsContaining(nameOrCity,nameOrCity));
+                    airportRepository.findByNameOrCity(nameOrCity,nameOrCity));
         }
     }
 
     /**Varış Havaalanına göre Arama(value'ye inen ucuslar)**/
     @Override
     public List<FlightResponseDTO> getFlightsByArrival(SearchType searchType,String nameOrCity) {
-        if(searchType == SearchType.byName){        /*Kalkış Havaalanı İsmi ile Arama*/
+        if(searchType == SearchType.byname){        /*Kalkış Havaalanı İsmi ile Arama*/
             return getArrivalFlightResponseDtoListFromAirportList(
                     airportRepository.findByNameIsContainingIgnoreCase(nameOrCity));
-        }else if(searchType == SearchType.byCity){  /*Kalkış Havaalanı Şehiri ile Arama*/
+        }else if(searchType == SearchType.bycity){  /*Kalkış Havaalanı Şehiri ile Arama*/
             return getArrivalFlightResponseDtoListFromAirportList(
                     airportRepository.findByCityIsContainingIgnoreCase(nameOrCity));
         }else{                                      /*Kalkış Havaalanı Şehiri VEYA ismi ile Arama*/
             return getArrivalFlightResponseDtoListFromAirportList(
-                    airportRepository.findByNameIgnoreCaseIsContainingOrCityIgnoreCaseIsContaining(nameOrCity,nameOrCity));
+                    airportRepository.findByNameOrCity(nameOrCity,nameOrCity));
         }
     }
 
@@ -105,25 +104,39 @@ public class FlightServiceImpl implements FlightService {
     @Override
     public FlightsResponseDTO getFlightsByDepartureAndArrival(SearchType searchType, String departure, String arrival) {
         FlightsResponseDTO result = new FlightsResponseDTO();
-        List<FlightResponseDTO> aktarmasiz;
-        List<FlightResponseDTO> aktarmali;
-        if(searchType == SearchType.byName){
-            aktarmasiz = flightListToFlightResponseDtoList(flightRepository.findByDepartureAndArrivalName(departure,arrival));
-            result.setAktarmasizUcuslar(aktarmasiz);
-            result.setAktarmaliUcuslar(null);
-        }else if(searchType == SearchType.byCity){
-            aktarmasiz = flightListToFlightResponseDtoList(flightRepository.findByDepartureAndArrivalCity(departure,arrival));
-            result.setAktarmasizUcuslar(aktarmasiz);
-            result.setAktarmaliUcuslar(null);
-        }else{
-            aktarmasiz = flightListToFlightResponseDtoList(flightRepository.findByDepartureAndArrivalCityOrName(departure,arrival));
-            result.setAktarmasizUcuslar(aktarmasiz);
-            result.setAktarmaliUcuslar(null);
+        List<FlightResponseDTO> direct;
+        if(searchType == SearchType.byname){        /*Kalkış Havaalanı İsmi ile Arama*/
+            direct = flightListToFlightResponseDtoList(flightRepository.findByDepartureAndArrivalName(departure,arrival));
+            result.setDirectFlights(direct);
+            result.setIndirectFlights(getIndırectFlights(searchType,departure,arrival));
+        }else if(searchType == SearchType.bycity){  /*Kalkış Havaalanı Şehiri ile Arama*/
+            direct = flightListToFlightResponseDtoList(flightRepository.findByDepartureAndArrivalCity(departure,arrival));
+            result.setDirectFlights(direct);
+            result.setIndirectFlights(getIndırectFlights(searchType,departure,arrival));
+        }else{                                      /*Kalkış Havaalanı Şehiri VEYA ismi ile Arama*/
+            direct = flightListToFlightResponseDtoList(flightRepository.findByDepartureAndArrivalCityOrName(departure,arrival));
+            result.setDirectFlights(direct);
+            result.setIndirectFlights(getIndırectFlights(searchType,departure,arrival));
         }
-
         return result;
     }
 
+
+    private List<IndirectFlightDTO> getIndırectFlights(SearchType searchType, String departure, String arrival){
+        ArrayList<IndirectFlightDTO> indirectFlights = new ArrayList<>();
+        List<FlightResponseDTO> possibleFirstFlights = this.getFlightsByDeparture(searchType,departure); //Olası ilk Ucuslar
+        possibleFirstFlights.stream().forEach(possibleFirstFlight -> {
+            AirportResponseDTO possibleArrival = possibleFirstFlight.getArrival(); //Olası ilk varis noktası
+            possibleArrival.getDepartureFlights().stream().forEach(possibleSecondFlight->{ //Olası ilk varış noktasından kalkan ucusları al
+                //Olası 2. ucusun varis noktası, istenen nokta'yı iceriyor ise;
+                if(possibleSecondFlight.getArrival().getName().toUpperCase().contains(arrival.toUpperCase())){
+                    //Saat kontrolu yapılacak
+                    indirectFlights.add(new IndirectFlightDTO(possibleFirstFlight,possibleSecondFlight));
+                }
+            });
+        });
+        return indirectFlights;
+    }
 
     private List<FlightResponseDTO> getArrivalFlightResponseDtoListFromAirportList(List<Airport> airports){
         List<FlightResponseDTO> flightResponseDTOList = new ArrayList<>();
