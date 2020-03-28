@@ -21,8 +21,6 @@ public class Bootstrap implements CommandLineRunner {
     FlightRepository flightRepository;
     @Autowired
     TicketRepository ticketRepository;
-    @Autowired
-    UserRepository userRepository;
 
     @Override
     public void run(String... args) throws Exception {

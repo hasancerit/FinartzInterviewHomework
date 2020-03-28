@@ -6,7 +6,6 @@ import com.finartz.homework.TicketService.dto.request.TicketRequestDTO;
 import com.finartz.homework.TicketService.dto.response.TicketResponseDTO;
 import com.finartz.homework.TicketService.repositories.FlightRepository;
 import com.finartz.homework.TicketService.repositories.TicketRepository;
-import com.finartz.homework.TicketService.repositories.UserRepository;
 import com.finartz.homework.TicketService.service.TicketService;
 import com.finartz.homework.TicketService.util.FlightClass;
 import org.modelmapper.ModelMapper;
@@ -24,8 +23,6 @@ public class TicketServiceImpl implements TicketService {
     private TicketRepository ticketRepository;
     @Autowired
     private FlightRepository flightRepository;
-    @Autowired
-    private UserRepository userRepository;
 
     @Autowired
     private ModelMapper modelMapper;
@@ -36,7 +33,6 @@ public class TicketServiceImpl implements TicketService {
 
         /*Ticket To Ticket DTO*/
         ticket.setFlight(flightRepository.getOne(ticketDto.getFlightId())); //Olmayan Flight hatası
-        //ticket.setUser(userRepository.getOne(ticketDto.getUserId()));
 
         /*Uçuştaki dolu yerleri güncelle*/
         Flight flight = ticket.getFlight();

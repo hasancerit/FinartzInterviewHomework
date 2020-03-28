@@ -29,4 +29,6 @@ public class TicketController {
     public ResponseEntity getAll(){
         return new ResponseEntity<>(ticketService.getAll(), HttpStatus.OK);
     }
+
+    /**Sil Ve Güncelle**/
 }

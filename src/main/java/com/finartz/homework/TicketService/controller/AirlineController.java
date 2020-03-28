@@ -50,4 +50,6 @@ public class AirlineController {
         flightRequestDTO.setAirlineId(id);
         return new ResponseEntity<>(flightService.saveFlight(flightRequestDTO), HttpStatus.OK);
     }
+
+    /**Sil Ve Güncelle**/
 }

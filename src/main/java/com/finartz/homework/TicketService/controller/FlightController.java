@@ -64,4 +64,7 @@ public class FlightController {
                                                                         ,@RequestParam(required = true,name = "arrival") String arrival){
         return new ResponseEntity<>(flightService.getFlightsByDepartureAndArrival(searchType,departure,arrival),HttpStatus.OK);
     }
+
+
+    /**Sil Ve Güncelle**/
 }

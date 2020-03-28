@@ -15,8 +15,8 @@ public class Ticket{
     private String id;
 
     private String ticketNo;
-    @ManyToOne
-    private User user;
+    @Embedded
+    private Passanger passanger;
     @ManyToOne
     private Flight flight;
 

@@ -42,4 +42,6 @@ public class AirportController {
             ,@RequestParam(required = true,name = "value") String nameOrCity){
         return new ResponseEntity<>(airportService.getAirports(searchType,nameOrCity), HttpStatus.OK);
     }
+
+    /**Sil Ve Güncelle**/
 }
