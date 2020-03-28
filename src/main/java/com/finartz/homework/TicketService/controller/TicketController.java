@@ -8,6 +8,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
+
 @RestController
 @RequestMapping("/ticket")
 public class TicketController {
@@ -15,7 +17,7 @@ public class TicketController {
     private TicketService ticketService;
 
     @PostMapping("/add")
-    public ResponseEntity<TicketResponseDTO> saveTicket(@RequestBody TicketRequestDTO airportDto){
+    public ResponseEntity<TicketResponseDTO> saveTicket(@Valid @RequestBody TicketRequestDTO airportDto){
         return new ResponseEntity<>(ticketService.saveTicket(airportDto), HttpStatus.OK);
     }
 

@@ -11,6 +11,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 
 @RestController
@@ -21,7 +22,7 @@ public class AirportController {
 
     /*Ekleme*/
     @PostMapping("/add")
-    public ResponseEntity<AirportResponseDTO> saveAirport(@RequestBody AirportRequestDTO airportDto){
+    public ResponseEntity<AirportResponseDTO> saveAirport(@Valid @RequestBody AirportRequestDTO airportDto){
         return new ResponseEntity<>(airportService.saveAirport(airportDto), HttpStatus.OK);
     }
 

@@ -10,6 +10,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 
 @RestController
@@ -20,7 +21,7 @@ public class FlightController {
 
     /**Ekleme**/
     @PostMapping("/add")
-    public ResponseEntity<FlightResponseDTO> saveFlight(@RequestBody FlightRequestDTO flightRequestDTO){
+    public ResponseEntity<FlightResponseDTO> saveFlight(@Valid @RequestBody FlightRequestDTO flightRequestDTO){
         return new ResponseEntity<>(flightService.saveFlight(flightRequestDTO), HttpStatus.OK);
     }
 
