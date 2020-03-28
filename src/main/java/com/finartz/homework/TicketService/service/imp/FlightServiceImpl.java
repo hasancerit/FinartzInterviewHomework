@@ -142,8 +142,12 @@ public class FlightServiceImpl implements FlightService {
             possibleArrival.getDepartureFlights().stream().forEach(possibleSecondFlight->{ //Olası ilk varış noktasından kalkan ucusları al
                 //Olası 2. ucusun varis noktası, istenen nokta'yı iceriyor ise;
                 if(possibleSecondFlight.getArrival().getName().toUpperCase().contains(arrival.toUpperCase())){
-                    //Saat kontrolu yapılacak
-                    indirectFlights.add(new IndirectFlightDTO(possibleFirstFlight,possibleSecondFlight));
+                    if(possibleSecondFlight.getDepartureDate().isAfter(possibleFirstFlight.getArrivalDate())){ //2.nin kalkışı 1.den sonra ise
+                        Duration duration = Duration.between(possibleFirstFlight.getArrivalDate(), possibleSecondFlight.getDepartureDate());
+                        if(duration.toHours() <= 12){ //Yolcu 12 saatten fazla beklemeyecekse
+                            indirectFlights.add(new IndirectFlightDTO(possibleFirstFlight,possibleSecondFlight));
+                        }
+                    }
                 }
             });
         });
