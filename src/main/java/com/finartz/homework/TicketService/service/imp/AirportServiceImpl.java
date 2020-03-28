@@ -51,7 +51,7 @@ public class AirportServiceImpl implements AirportService {
             List<Airport> airports = airportRepository.findByCityIsContainingIgnoreCase(nameOrCity);
             return airportListToAirpostDtoList(airports);
         }else{                                      /*Şehiri VEYA ismi ile Arama*/
-            List<Airport> airports = airportRepository.findByNameIgnoreCaseIsContainingOrCityIgnoreCaseIsContaining(nameOrCity,nameOrCity);
+            List<Airport> airports = airportRepository.findByNameOrCity(nameOrCity,nameOrCity);
             return airportListToAirpostDtoList(airports);
         }
     }
