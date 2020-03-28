@@ -102,6 +102,27 @@ public class FlightServiceImpl implements FlightService {
     }
 
     /**Kalkış Havaalanı ve İniş Havaalanına göre arama**/
+    @Override
+    public FlightsResponseDTO getFlightsByDepartureAndArrival(SearchType searchType, String departure, String arrival) {
+        FlightsResponseDTO result = new FlightsResponseDTO();
+        List<FlightResponseDTO> aktarmasiz;
+        List<FlightResponseDTO> aktarmali;
+        if(searchType == SearchType.byName){
+            aktarmasiz = flightListToFlightResponseDtoList(flightRepository.findByDepartureAndArrivalName(departure,arrival));
+            result.setAktarmasizUcuslar(aktarmasiz);
+            result.setAktarmaliUcuslar(null);
+        }else if(searchType == SearchType.byCity){
+            aktarmasiz = flightListToFlightResponseDtoList(flightRepository.findByDepartureAndArrivalCity(departure,arrival));
+            result.setAktarmasizUcuslar(aktarmasiz);
+            result.setAktarmaliUcuslar(null);
+        }else{
+            aktarmasiz = flightListToFlightResponseDtoList(flightRepository.findByDepartureAndArrivalCityOrName(departure,arrival));
+            result.setAktarmasizUcuslar(aktarmasiz);
+            result.setAktarmaliUcuslar(null);
+        }
+
+        return result;
+    }
 
 
     private List<FlightResponseDTO> getArrivalFlightResponseDtoListFromAirportList(List<Airport> airports){

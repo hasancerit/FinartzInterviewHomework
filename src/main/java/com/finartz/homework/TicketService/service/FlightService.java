@@ -21,4 +21,5 @@ public interface FlightService {
 
     List<FlightResponseDTO> getFlightsByArrival(SearchType searchType,String nameOrCity);
 
+    FlightsResponseDTO  getFlightsByDepartureAndArrival(SearchType searchType, String departure, String arrival);
 }

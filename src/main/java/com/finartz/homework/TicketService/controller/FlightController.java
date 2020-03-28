@@ -58,4 +58,10 @@ public class FlightController {
     }
 
     /**Kalkış Havaalanı ve İniş Havaalanına göre arama**/
+    @GetMapping("/temp")
+    public ResponseEntity<FlightsResponseDTO> getFlightsByDepartureAndArrival(@RequestParam(required = true,name = "type") SearchType searchType
+                                                                        ,@RequestParam(required = true,name = "departure") String departure
+                                                                        ,@RequestParam(required = true,name = "arrival") String arrival){
+        return new ResponseEntity<>(flightService.getFlightsByDepartureAndArrival(searchType,departure,arrival),HttpStatus.OK);
+    }
 }
