@@ -47,11 +47,12 @@ public class FlightServiceImpl implements FlightService {
         flight.setDeparture(airportRepository.getOne(flightDto.getDepartureAirportId()));
         flight.setArrival(airportRepository.getOne(flightDto.getArrivalAirportId()));
         flight.setAirline(airlineRepository.getOne(flightDto.getAirlineId()));
-        if(flight.getArrivalDate().isBefore(flight.getDepartureDate())){
-            //Hata Fırlat
-        }
+
+//        if(flight.getArrivalDate().isBefore(flight.getDepartureDate())){}
         String duration = Duration.between(flight.getArrivalDate(), flight.getDepartureDate()).toString();
         flight.setDuration(duration.replace("-"," ").substring(3));
+
+        flight.setSeatsEmpty();
 
         flightRepository.save(flight);
         return modelMapper.map(flight,FlightResponseDTO.class);

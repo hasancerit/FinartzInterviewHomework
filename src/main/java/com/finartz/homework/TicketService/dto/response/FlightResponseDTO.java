@@ -1,12 +1,14 @@
 package com.finartz.homework.TicketService.dto.response;
 
 import com.fasterxml.jackson.annotation.*;
+import com.finartz.homework.TicketService.util.SeatStatus;
 import lombok.Data;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 @Data
 public class FlightResponseDTO {
@@ -38,8 +40,7 @@ public class FlightResponseDTO {
     private int capasityBusiness;
     private int capasityEconomic;
 
-    private List<String> takenSeatsEconomi;
-    private List<String> takenSeatsBusiness;
-
+    private Map<String, SeatStatus> seatsEconomic;
+    private Map<String, SeatStatus> seatsBusiness;
 
 }

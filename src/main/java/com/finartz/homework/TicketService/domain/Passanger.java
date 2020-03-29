@@ -25,6 +25,7 @@ public class Passanger {
     private String idenityNo;
 
     @NotNull(message = "gender Capacity Id Bos Birakilamaz.")
+    @Enumerated(EnumType.STRING)
     private Gender gender;
 
     @Size(max = 12, min = 10,message = "phoneNumber 10-12 Hane Olmalı")

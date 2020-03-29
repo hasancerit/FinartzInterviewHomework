@@ -1,6 +1,7 @@
 package com.finartz.homework.TicketService.domain;
 
 
+import com.finartz.homework.TicketService.util.SeatStatus;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
@@ -9,7 +10,9 @@ import javax.persistence.*;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Getter
 @Setter
@@ -38,8 +41,28 @@ public class Flight implements Serializable {
     private int capasityEconomic;
 
     @ElementCollection
-    private List<String> takenSeatsBusiness;
+    @CollectionTable(name = "flight_seats_buniness",
+            joinColumns = {@JoinColumn(name = "flight_id", referencedColumnName = "id")})
+    @MapKeyColumn(name = "seat_no")
+    @Column(name = "status")
+    @Enumerated(EnumType.STRING)
+    private Map<String, SeatStatus> seatsBusiness = new HashMap<>();
 
     @ElementCollection
-    private List<String> takenSeatsEconomi;
+    @CollectionTable(name = "flight_seats_economic",
+            joinColumns = {@JoinColumn(name = "flight_id", referencedColumnName = "id")})
+    @MapKeyColumn(name = "seat_no")
+    @Column(name = "status")
+    @Enumerated(EnumType.STRING)
+    private Map<String, SeatStatus> seatsEconomic = new HashMap<>();
+
+
+    public void setSeatsEmpty(){
+        for(int i = 1 ; i <= capasityEconomic ; i++){
+            seatsEconomic.put(Integer.toString(i),SeatStatus.empty);
+        }
+        for(int i = 1 ; i <= capasityBusiness ; i++){
+            seatsBusiness.put(Integer.toString(i),SeatStatus.empty);
+        }
+    }
 }

@@ -4,10 +4,12 @@ import com.finartz.homework.TicketService.domain.Flight;
 import com.finartz.homework.TicketService.domain.Ticket;
 import com.finartz.homework.TicketService.dto.request.TicketRequestDTO;
 import com.finartz.homework.TicketService.dto.response.TicketResponseDTO;
+import com.finartz.homework.TicketService.exception.exception.TakenSeatException;
 import com.finartz.homework.TicketService.repositories.FlightRepository;
 import com.finartz.homework.TicketService.repositories.TicketRepository;
 import com.finartz.homework.TicketService.service.TicketService;
 import com.finartz.homework.TicketService.util.FlightClass;
+import com.finartz.homework.TicketService.util.SeatStatus;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -31,19 +33,20 @@ public class TicketServiceImpl implements TicketService {
     public TicketResponseDTO saveTicket(TicketRequestDTO ticketDto) {
         Ticket ticket = modelMapper.map(ticketDto, Ticket.class);
 
-        /*Ticket To Ticket DTO*/
         ticket.setFlight(flightRepository.getOne(ticketDto.getFlightId())); //Olmayan Flight hatası
-
-        /*Uçuştaki dolu yerleri güncelle*/
         Flight flight = ticket.getFlight();
+
+        String seatNo = ticket.getNo();
         if (ticket.getFlightClass() == FlightClass.BUSINESS) {
-            flight.setTakenSeatsBusiness(
-                    Stream.concat(flight.getTakenSeatsBusiness().stream(), Stream.of(ticket.getNo()))
-                            .collect(Collectors.toList()));
+            SeatStatus status = flight.getSeatsBusiness().get(seatNo);
+            if(status != SeatStatus.empty){} //Alınan Koltuk boş değil ise
+                //Hata Fırlat
+            flight.getSeatsBusiness().replace(seatNo,SeatStatus.taken);
         } else if (ticket.getFlightClass() == FlightClass.ECONOMİ) {
-            flight.setTakenSeatsEconomi(
-                    Stream.concat(flight.getTakenSeatsEconomi().stream(), Stream.of(ticket.getNo()))
-                            .collect(Collectors.toList()));
+            SeatStatus status = flight.getSeatsEconomic().get(seatNo);
+            if(status != SeatStatus.empty){} //Alınan Koltuk boş değil ise
+                //Hata Fırlat
+             flight.getSeatsEconomic().replace(seatNo,SeatStatus.taken);
         }
         flightRepository.save(flight);
 
