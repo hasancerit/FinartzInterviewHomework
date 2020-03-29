@@ -11,15 +11,15 @@ import javax.validation.constraints.Size;
 
 @Data
 public class AirportRequestDTO {
-    @Size(max = 30)
-    @NotBlank
+    @Size(max = 30,message = "Name 30 karakterden büyük olamaz")
+    @NotBlank(message = "Name Bos Birakilamaz")
     private String name;
 
-    @Size(max = 30)
+    @Size(max = 30,message = "Description 30 karakterden büyük olamaz")
     private String desc;
 
-    @Size(max = 20)
-    @NotBlank
+    @Size(max = 20,message = "City 20 karakterden büyük olamaz")
+    @NotBlank(message = "City Bos Birakilamaz")
     private String city; //Maple
 
 }

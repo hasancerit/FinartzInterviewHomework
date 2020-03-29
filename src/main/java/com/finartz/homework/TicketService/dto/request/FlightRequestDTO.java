@@ -1,41 +1,35 @@
 package com.finartz.homework.TicketService.dto.request;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import lombok.Builder;
 import lombok.Data;
-import lombok.Getter;
-import lombok.Setter;
-import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
-import java.util.Date;
 
 @Data
 public class FlightRequestDTO {
-    @NotBlank
+    @NotBlank(message = "Airline Id Bos Birakilamaz.")
     private String airlineId;
-    @NotBlank
+    @NotBlank(message = "Departure Id Bos Birakilamaz.")
     private String departureAirportId;
-    @NotBlank
+    @NotBlank(message = "Arrival Id Bos Birakilamaz.")
     private String arrivalAirportId;
 
-    @NotNull
+    @NotNull(message = "Departure Date Id Bos Birakilamaz.")
     @JsonFormat(pattern="dd-MM-yyyy HH:mm")
     private LocalDateTime departureDate;
-    @NotNull
+    @NotNull(message = "Arrival Date Id Bos Birakilamaz.")
     @JsonFormat(pattern="dd-MM-yyyy HH:mm")
     private LocalDateTime arrivalDate;
 
-    @NotNull
+    @NotNull(message = "Price Economic Id Bos Birakilamaz.")
     private Double priceEconomic;
-    @NotNull
+    @NotNull(message = "Business Economic Id Bos Birakilamaz.")
     private Double priceBusiness;
 
-    @NotNull
+    @NotNull(message = "Business Capacity Id Bos Birakilamaz.")
     private int capasityBusiness;
-    @NotNull
+    @NotNull(message = "Economic Capacity Id Bos Birakilamaz.")
     private int capasityEconomic;
 }

@@ -11,14 +11,16 @@ import javax.validation.constraints.NotNull;
 
 @Data
 public class TicketRequestDTO {
-    @NotBlank
+    @NotBlank(message = "Flight Id Bos Birakilamaz.")
     private String flightId;
 
-    @NotNull
+    @NotNull(message = "Flight Class Bos Birakilamaz.")
     private FlightClass flightClass;
 
     @Valid
-    @NotNull
+    @NotNull(message = "Passanger Bos Birakilamaz.")
     Passanger passanger;
+
+    @NotBlank(message = "No Bos Birakilamaz.")
     private String no;
 }
