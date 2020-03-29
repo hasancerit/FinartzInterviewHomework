@@ -8,6 +8,7 @@ import com.finartz.homework.TicketService.dto.response.AirportResponseDTO;
 import com.finartz.homework.TicketService.dto.response.IndirectFlightDTO;
 import com.finartz.homework.TicketService.dto.response.FlightResponseDTO;
 import com.finartz.homework.TicketService.dto.response.FlightsResponseDTO;
+import com.finartz.homework.TicketService.exception.exception.ArrivalBeforeDepartureException;
 import com.finartz.homework.TicketService.repositories.AirlineRepository;
 import com.finartz.homework.TicketService.repositories.AirportRepository;
 import com.finartz.homework.TicketService.repositories.FlightRepository;
@@ -40,19 +41,20 @@ public class FlightServiceImpl implements FlightService {
 
     /**Ekleme**/
     @Override
-    public FlightResponseDTO saveFlight(FlightRequestDTO flightDto) {
+    public FlightResponseDTO saveFlight(FlightRequestDTO flightDto) throws ArrivalBeforeDepartureException {
         Flight flight = modelMapper.map(flightDto,Flight.class);
+        flight.setSeatsEmpty();
 
         /*Bunları ModelMapper Conf ile yapabilir miyim?*/
         flight.setDeparture(airportRepository.getOne(flightDto.getDepartureAirportId()));
         flight.setArrival(airportRepository.getOne(flightDto.getArrivalAirportId()));
         flight.setAirline(airlineRepository.getOne(flightDto.getAirlineId()));
 
-//        if(flight.getArrivalDate().isBefore(flight.getDepartureDate())){}
+        if(flight.getArrivalDate().isBefore(flight.getDepartureDate()))
+            throw new ArrivalBeforeDepartureException(flight.getArrivalDate(),flight.getDepartureDate());
         String duration = Duration.between(flight.getArrivalDate(), flight.getDepartureDate()).toString();
         flight.setDuration(duration.replace("-"," ").substring(3));
 
-        flight.setSeatsEmpty();
 
         flightRepository.save(flight);
         return modelMapper.map(flight,FlightResponseDTO.class);

@@ -4,6 +4,7 @@ import com.finartz.homework.TicketService.domain.Flight;
 import com.finartz.homework.TicketService.domain.Ticket;
 import com.finartz.homework.TicketService.dto.request.TicketRequestDTO;
 import com.finartz.homework.TicketService.dto.response.TicketResponseDTO;
+import com.finartz.homework.TicketService.exception.exception.AlreadTakenSeat;
 import com.finartz.homework.TicketService.exception.exception.TakenSeatException;
 import com.finartz.homework.TicketService.repositories.FlightRepository;
 import com.finartz.homework.TicketService.repositories.TicketRepository;
@@ -30,7 +31,7 @@ public class TicketServiceImpl implements TicketService {
     private ModelMapper modelMapper;
 
     @Override
-    public TicketResponseDTO saveTicket(TicketRequestDTO ticketDto) {
+    public TicketResponseDTO saveTicket(TicketRequestDTO ticketDto) throws AlreadTakenSeat {
         Ticket ticket = modelMapper.map(ticketDto, Ticket.class);
 
         ticket.setFlight(flightRepository.getOne(ticketDto.getFlightId())); //Olmayan Flight hatası
@@ -39,18 +40,18 @@ public class TicketServiceImpl implements TicketService {
         String seatNo = ticket.getNo();
         if (ticket.getFlightClass() == FlightClass.BUSINESS) {
             SeatStatus status = flight.getSeatsBusiness().get(seatNo);
-            if(status != SeatStatus.empty){} //Alınan Koltuk boş değil ise
-                //Hata Fırlat
+            if(status != SeatStatus.empty)  //Alınan Koltuk boş değil ise
+                throw new AlreadTakenSeat(flight.getId(),ticket.getNo());
             flight.getSeatsBusiness().replace(seatNo,SeatStatus.taken);
-        } else if (ticket.getFlightClass() == FlightClass.ECONOMİ) {
+        }
+        else if (ticket.getFlightClass() == FlightClass.ECONOMİ) {
             SeatStatus status = flight.getSeatsEconomic().get(seatNo);
-            if(status != SeatStatus.empty){} //Alınan Koltuk boş değil ise
-                //Hata Fırlat
+            if(status != SeatStatus.empty) //Alınan Koltuk boş değil ise
+                throw new AlreadTakenSeat(flight.getId(),ticket.getNo());
              flight.getSeatsEconomic().replace(seatNo,SeatStatus.taken);
         }
-        flightRepository.save(flight);
 
-        /*Bileti Al*/
+        flightRepository.save(flight);
         ticketRepository.save(ticket);
 
         return modelMapper.map(ticket, TicketResponseDTO.class);

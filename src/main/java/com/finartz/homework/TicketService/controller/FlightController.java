@@ -3,6 +3,7 @@ package com.finartz.homework.TicketService.controller;
 import com.finartz.homework.TicketService.dto.request.FlightRequestDTO;
 import com.finartz.homework.TicketService.dto.response.FlightResponseDTO;
 import com.finartz.homework.TicketService.dto.response.FlightsResponseDTO;
+import com.finartz.homework.TicketService.exception.exception.ArrivalBeforeDepartureException;
 import com.finartz.homework.TicketService.service.FlightService;
 import com.finartz.homework.TicketService.util.SearchType;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,7 +22,7 @@ public class FlightController {
 
     /**Ekleme**/
     @PostMapping("/add")
-    public ResponseEntity<FlightResponseDTO> saveFlight(@Valid @RequestBody FlightRequestDTO flightRequestDTO){
+    public ResponseEntity<FlightResponseDTO> saveFlight(@Valid @RequestBody FlightRequestDTO flightRequestDTO) throws ArrivalBeforeDepartureException {
         return new ResponseEntity<>(flightService.saveFlight(flightRequestDTO), HttpStatus.OK);
     }
 

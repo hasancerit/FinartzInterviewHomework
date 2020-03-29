@@ -41,21 +41,18 @@ public class Flight implements Serializable {
     private int capasityEconomic;
 
     @ElementCollection
-    @CollectionTable(name = "flight_seats_buniness",
-            joinColumns = {@JoinColumn(name = "flight_id", referencedColumnName = "id")})
+    @CollectionTable(name = "flight_seats_buniness", joinColumns = {@JoinColumn(name = "flight_id", referencedColumnName = "id")})
     @MapKeyColumn(name = "seat_no")
     @Column(name = "status")
     @Enumerated(EnumType.STRING)
     private Map<String, SeatStatus> seatsBusiness = new HashMap<>();
 
     @ElementCollection
-    @CollectionTable(name = "flight_seats_economic",
-            joinColumns = {@JoinColumn(name = "flight_id", referencedColumnName = "id")})
+    @CollectionTable(name = "flight_seats_economic", joinColumns = {@JoinColumn(name = "flight_id", referencedColumnName = "id")})
     @MapKeyColumn(name = "seat_no")
     @Column(name = "status")
     @Enumerated(EnumType.STRING)
     private Map<String, SeatStatus> seatsEconomic = new HashMap<>();
-
 
     public void setSeatsEmpty(){
         for(int i = 1 ; i <= capasityEconomic ; i++){

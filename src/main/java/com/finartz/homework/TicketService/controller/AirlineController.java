@@ -4,6 +4,7 @@ import com.finartz.homework.TicketService.dto.request.AirlineRequestDTO;
 import com.finartz.homework.TicketService.dto.request.FlightRequestDTO;
 import com.finartz.homework.TicketService.dto.response.AirlineResponseDTO;
 import com.finartz.homework.TicketService.dto.response.FlightResponseDTO;
+import com.finartz.homework.TicketService.exception.exception.ArrivalBeforeDepartureException;
 import com.finartz.homework.TicketService.service.AirlineService;
 import com.finartz.homework.TicketService.service.FlightService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -47,7 +48,7 @@ public class AirlineController {
     }
 
     @PostMapping("/{id}/addflight")
-    public ResponseEntity<FlightResponseDTO> addFlightToAirline(@Valid @RequestBody FlightRequestDTO flightRequestDTO,@PathVariable String id){
+    public ResponseEntity<FlightResponseDTO> addFlightToAirline(@Valid @RequestBody FlightRequestDTO flightRequestDTO,@PathVariable String id) throws ArrivalBeforeDepartureException {
         flightRequestDTO.setAirlineId(id);
         return new ResponseEntity<>(flightService.saveFlight(flightRequestDTO), HttpStatus.OK);
     }

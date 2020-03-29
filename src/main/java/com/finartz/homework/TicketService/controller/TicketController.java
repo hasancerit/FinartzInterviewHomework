@@ -2,6 +2,7 @@ package com.finartz.homework.TicketService.controller;
 
 import com.finartz.homework.TicketService.dto.request.TicketRequestDTO;
 import com.finartz.homework.TicketService.dto.response.TicketResponseDTO;
+import com.finartz.homework.TicketService.exception.exception.AlreadTakenSeat;
 import com.finartz.homework.TicketService.service.TicketService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -17,7 +18,7 @@ public class TicketController {
     private TicketService ticketService;
 
     @PostMapping("/add")
-    public ResponseEntity<TicketResponseDTO> saveTicket(@Valid @RequestBody TicketRequestDTO airportDto){
+    public ResponseEntity<TicketResponseDTO> saveTicket(@Valid @RequestBody TicketRequestDTO airportDto) throws AlreadTakenSeat {
         return new ResponseEntity<>(ticketService.saveTicket(airportDto), HttpStatus.OK);
     }
 
