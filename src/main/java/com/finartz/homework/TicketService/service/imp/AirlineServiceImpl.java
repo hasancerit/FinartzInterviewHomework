@@ -1,22 +1,20 @@
 package com.finartz.homework.TicketService.service.imp;
 
 import com.finartz.homework.TicketService.domain.Airline;
-import com.finartz.homework.TicketService.domain.Airport;
-import com.finartz.homework.TicketService.domain.Flight;
 import com.finartz.homework.TicketService.dto.request.AirlineRequestDTO;
-import com.finartz.homework.TicketService.dto.request.FlightRequestDTO;
 import com.finartz.homework.TicketService.dto.response.AirlineResponseDTO;
-import com.finartz.homework.TicketService.dto.response.AirportResponseDTO;
-import com.finartz.homework.TicketService.dto.response.FlightResponseDTO;
+import com.finartz.homework.TicketService.exception.exception.ApiException;
 import com.finartz.homework.TicketService.repositories.AirlineRepository;
 import com.finartz.homework.TicketService.repositories.AirportRepository;
 import com.finartz.homework.TicketService.service.AirlineService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.NoSuchElementException;
 
 @Service
 public class AirlineServiceImpl implements AirlineService {
@@ -29,8 +27,14 @@ public class AirlineServiceImpl implements AirlineService {
 
     /*Ekleme*/
     @Override
-    public AirlineResponseDTO saveAirline(AirlineRequestDTO airlineDto) {
-        Airline airline = airlineRepository.save(modelMapper.map(airlineDto,Airline.class));
+    public AirlineResponseDTO saveAirline(AirlineRequestDTO airlineDto) throws ApiException {
+        Airline airline = null;
+        try {
+            airline = airlineRepository.save(modelMapper.map(airlineDto,Airline.class));
+        } catch (DataIntegrityViolationException e) {
+            throw new ApiException("Airline Name Ayni Olamaz",airlineDto.getClass(),
+                    "name",airlineDto.getName());
+        }
         return modelMapper.map(airline,AirlineResponseDTO.class);
     }
 
@@ -42,7 +46,11 @@ public class AirlineServiceImpl implements AirlineService {
     /*İd İle Arama*/
     @Override
     public AirlineResponseDTO getAirline(String id) {
-        return modelMapper.map(airlineRepository.getOne(id),AirlineResponseDTO.class);
+        try{
+            return modelMapper.map(airlineRepository.findById(id).get(),AirlineResponseDTO.class);
+        }catch (NoSuchElementException ex){
+            return null;
+        }
     }
 
     /*İsim ile arama*/

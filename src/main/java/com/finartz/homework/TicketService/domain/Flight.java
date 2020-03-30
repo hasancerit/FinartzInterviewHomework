@@ -22,12 +22,12 @@ public class Flight implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private String id;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     private Airline airline;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     private Airport departure;
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     private Airport arrival;
 
     private LocalDateTime departureDate;

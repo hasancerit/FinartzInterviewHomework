@@ -9,24 +9,22 @@ import com.finartz.homework.TicketService.dto.response.IndirectFlightDTO;
 import com.finartz.homework.TicketService.dto.response.FlightResponseDTO;
 import com.finartz.homework.TicketService.dto.response.FlightsResponseDTO;
 import com.finartz.homework.TicketService.exception.exception.ArrivalBeforeDepartureException;
+import com.finartz.homework.TicketService.exception.exception.ApiException;
 import com.finartz.homework.TicketService.repositories.AirlineRepository;
 import com.finartz.homework.TicketService.repositories.AirportRepository;
 import com.finartz.homework.TicketService.repositories.FlightRepository;
 import com.finartz.homework.TicketService.service.FlightService;
 import com.finartz.homework.TicketService.util.SearchType;
-import org.apache.tomcat.jni.Local;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 
+import javax.persistence.EntityNotFoundException;
 import java.time.Duration;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.Period;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
+import java.util.NoSuchElementException;
 
 @Service
 public class FlightServiceImpl implements FlightService {
@@ -41,14 +39,31 @@ public class FlightServiceImpl implements FlightService {
 
     /**Ekleme**/
     @Override
-    public FlightResponseDTO saveFlight(FlightRequestDTO flightDto) throws ArrivalBeforeDepartureException {
+    public FlightResponseDTO saveFlight(FlightRequestDTO flightDto) throws ArrivalBeforeDepartureException, ApiException {
         Flight flight = modelMapper.map(flightDto,Flight.class);
         flight.setSeatsEmpty();
 
-        /*Bunları ModelMapper Conf ile yapabilir miyim?*/
-        flight.setDeparture(airportRepository.getOne(flightDto.getDepartureAirportId()));
-        flight.setArrival(airportRepository.getOne(flightDto.getArrivalAirportId()));
-        flight.setAirline(airlineRepository.getOne(flightDto.getAirlineId()));
+        /*Fix!*/
+        try{
+            flight.setAirline(airlineRepository.findById(flightDto.getAirlineId()).get());
+        }catch (NoSuchElementException ex){
+            throw new ApiException("airlineId Not Found",flightDto.getClass(),"airlineId",flightDto.getAirlineId());
+        }
+        try{
+            flight.setDeparture(airportRepository.findById(flightDto.getDepartureAirportId()).get());
+        }catch (NoSuchElementException ex){
+            throw new ApiException("departureId Not Found",flightDto.getClass(),"departureId",flightDto.getAirlineId());
+        }
+        try{
+            flight.setArrival(airportRepository.findById(flightDto.getArrivalAirportId()).get());
+        }catch (NoSuchElementException ex){
+            throw new ApiException("arrivalId Not Found",flightDto.getClass(),"arrivalId",flightDto.getAirlineId());
+        }
+        /**/
+
+        if(flight.getArrival().getCity().equalsIgnoreCase(flight.getDeparture().getCity()))
+            throw new ApiException("Aynı sehirler arası ucus yapılamaz",
+                    flightDto.getClass(),"departureAirportId,arrivalAirportId",flightDto.getAirlineId());
 
         if(flight.getArrivalDate().isBefore(flight.getDepartureDate()))
             throw new ArrivalBeforeDepartureException(flight.getArrivalDate(),flight.getDepartureDate());
@@ -69,7 +84,11 @@ public class FlightServiceImpl implements FlightService {
     /**Id ile Arama**/
     @Override
     public FlightResponseDTO getFlight(String id){
-        return modelMapper.map(flightRepository.getOne(id),FlightResponseDTO.class);
+        try{
+            return modelMapper.map(flightRepository.findById(id).get(),FlightResponseDTO.class);
+        }catch (NoSuchElementException ex){
+            return null;
+        }
     }
 
     /**Havayolu İsmi ile Arama.**/

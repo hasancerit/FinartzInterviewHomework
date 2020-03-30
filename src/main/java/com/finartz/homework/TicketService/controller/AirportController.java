@@ -1,9 +1,8 @@
 package com.finartz.homework.TicketService.controller;
 
-import com.finartz.homework.TicketService.domain.Airport;
 import com.finartz.homework.TicketService.dto.request.AirportRequestDTO;
-import com.finartz.homework.TicketService.dto.response.AirlineResponseDTO;
 import com.finartz.homework.TicketService.dto.response.AirportResponseDTO;
+import com.finartz.homework.TicketService.exception.exception.ApiException;
 import com.finartz.homework.TicketService.service.AirportService;
 import com.finartz.homework.TicketService.util.SearchType;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,7 +21,7 @@ public class AirportController {
 
     /*Ekleme*/
     @PostMapping("/add")
-    public ResponseEntity<AirportResponseDTO> saveAirport(@Valid @RequestBody AirportRequestDTO airportDto){
+    public ResponseEntity<AirportResponseDTO> saveAirport(@Valid @RequestBody AirportRequestDTO airportDto) throws ApiException {
         return new ResponseEntity<>(airportService.saveAirport(airportDto), HttpStatus.OK);
     }
 

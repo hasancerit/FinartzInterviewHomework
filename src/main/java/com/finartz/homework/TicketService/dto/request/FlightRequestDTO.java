@@ -2,9 +2,11 @@ package com.finartz.homework.TicketService.dto.request;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
+import org.springframework.format.annotation.NumberFormat;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
 import java.time.LocalDateTime;
 
 @Data
@@ -25,11 +27,13 @@ public class FlightRequestDTO {
 
     @NotNull(message = "Price Economic Id Bos Birakilamaz.")
     private Double priceEconomic;
+
     @NotNull(message = "Business Economic Id Bos Birakilamaz.")
     private Double priceBusiness;
 
     @NotNull(message = "Business Capacity Id Bos Birakilamaz.")
     private int capasityBusiness;
+
     @NotNull(message = "Economic Capacity Id Bos Birakilamaz.")
     private int capasityEconomic;
 }

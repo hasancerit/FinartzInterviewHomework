@@ -2,7 +2,9 @@ package com.finartz.homework.TicketService.exception.message;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
+@NoArgsConstructor
 @AllArgsConstructor
 @Data
 public class ApiValidationError extends SubError{
