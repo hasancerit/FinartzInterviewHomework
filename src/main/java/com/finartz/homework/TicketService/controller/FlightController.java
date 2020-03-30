@@ -2,7 +2,7 @@ package com.finartz.homework.TicketService.controller;
 
 import com.finartz.homework.TicketService.dto.request.FlightRequestDTO;
 import com.finartz.homework.TicketService.dto.response.FlightResponseDTO;
-import com.finartz.homework.TicketService.dto.response.FlightsResponseDTO;
+import com.finartz.homework.TicketService.dto.response.wrapper.FlightsResponseDTO;
 import com.finartz.homework.TicketService.exception.exception.ApiException;
 import com.finartz.homework.TicketService.exception.exception.ArrivalBeforeDepartureException;
 import com.finartz.homework.TicketService.service.FlightService;
