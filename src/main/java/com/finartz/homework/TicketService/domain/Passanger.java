@@ -19,23 +19,23 @@ import java.util.Date;
 @Setter
 @Embeddable
 public class Passanger {
-    @Size(max = 30,message = "fullName 30 karakterden büyük olamaz")
-    @NotBlank(message = "fullName Capacity Id Bos Birakilamaz.")
+    @Size(max = 30,message = "fullName cannot be longer than 30 characters.")
+    @NotBlank(message = "fullName cannot be null.")
     private String fullName;
 
-    @Size(max = 11, min = 11,message = "idenityNo 11 Hane Olmalı") //
-    @Pattern(regexp="[0-9]+",message = "idenityNo yalnızca sayı icermelidir")
+    @Size(max = 11, min = 11,message = "idenityNo must be 11 characters.") //
+    @Pattern(regexp="[0-9]+",message = "idenityNo must have only numbers.")
     private String idenityNo;
 
-    @NotNull(message = "gender Capacity Id Bos Birakilamaz.")
+    @NotNull(message = "gender cannot be null.")
     @Enumerated(EnumType.STRING)
     private Gender gender;
 
-    @Size(max = 12, min = 10,message = "phoneNumber 10-12 Hane Olmalı")
-    @Pattern(regexp="[0-9]+",message = "phoneNumber yalnızca sayı icermelidir")
+    @Size(max = 12, min = 10,message = "phoneNumber must be 10-12 characters.")
+        @Pattern(regexp="[0-9]+",message = "phoneNumber must have only numbers.")
     private String phoneNumber;
 
-    @NotNull(message = "dateOfBirth Capacity Id Bos Birakilamaz.")
+    @NotNull(message = "dateOfBirth cannot be null.")
     @JsonFormat(pattern="dd-MM-yyyy")
     private LocalDate dateOfBirth;
 }

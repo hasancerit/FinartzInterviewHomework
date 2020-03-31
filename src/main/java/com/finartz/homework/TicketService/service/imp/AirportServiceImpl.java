@@ -31,7 +31,7 @@ public class AirportServiceImpl implements AirportService {
         try {
             airport = airportRepository.save(modelMapper.map(airportDto,Airport.class));
         } catch (DataIntegrityViolationException e) {
-            throw new ApiException("Airport Name Ayni Olamaz",airportDto.getClass(),
+            throw new ApiException("name is already taken.",airportDto.getClass(),
                     "name",airportDto.getName());
         }
         return modelMapper.map(airport,AirportResponseDTO.class);

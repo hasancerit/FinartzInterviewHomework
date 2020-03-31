@@ -13,17 +13,17 @@ import javax.validation.constraints.Pattern;
 
 @Data
 public class TicketRequestDTO {
-    @NotBlank(message = "Flight Id Bos Birakilamaz.")
+    @NotBlank(message = "flightId cannot be null.")
     private String flightId;
 
-    @NotNull(message = "Flight Class Bos Birakilamaz.")
+    @NotNull(message = "flightClass cannot be null.")
     private FlightClass flightClass;
 
     @Valid
-    @NotNull(message = "Passanger Bos Birakilamaz.")
+    @NotNull(message = "passanger cannot be null.")
     Passanger passanger;
 
-    @NotBlank(message = "No Bos Birakilamaz.")
-    @Pattern(regexp="[0-9]+",message = "No yalnızca sayı icermelidir")
+    @NotBlank(message = "no cannot be null.")
+    @Pattern(regexp="[0-9]+",message = "no must have only numbers.")
     private String no;
 }

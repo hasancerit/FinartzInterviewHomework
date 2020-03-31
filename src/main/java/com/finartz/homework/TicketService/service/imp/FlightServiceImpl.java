@@ -60,7 +60,7 @@ public class FlightServiceImpl implements FlightService {
         /**/
 
         if(flight.getArrival().getCity().equalsIgnoreCase(flight.getDeparture().getCity()))
-            throw new ApiException("Aynı sehirler arası ucus yapılamaz",
+            throw new ApiException("Cannot fly between the same cities",
                     flightDto.getClass(),"departureAirportId,arrivalAirportId",flightDto.getAirlineId());
 
         if(flight.getArrivalDate().isBefore(flight.getDepartureDate()))

@@ -30,7 +30,7 @@ public class DuplicatedFieldController {
     @ExceptionHandler(ArrivalBeforeDepartureException.class)
     public ResponseEntity<ApiError> handleConflict(ArrivalBeforeDepartureException ex) {
         ApiError apiError = new ApiError();
-        apiError.setMessage("Arrival Date("+ex.getArrivalDate()+"), Departure Date("+ex.getDepartureDate()+")'den önce olamaz.");
+        apiError.setMessage("Arrival Date("+ex.getArrivalDate()+"), cannot be before from Departure Date("+ex.getDepartureDate()+")");
         apiError.setHttpStatus(HttpStatus.BAD_REQUEST);
         return new ResponseEntity<>(apiError,apiError.getHttpStatus());
     }

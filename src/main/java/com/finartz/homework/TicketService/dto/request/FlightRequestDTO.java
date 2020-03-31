@@ -11,29 +11,29 @@ import java.time.LocalDateTime;
 
 @Data
 public class FlightRequestDTO {
-    @NotBlank(message = "Airline Id Bos Birakilamaz.")
+    @NotBlank(message = "airlineId cannot be null.")
     private String airlineId;
-    @NotBlank(message = "Departure Id Bos Birakilamaz.")
+    @NotBlank(message = "departureAirportId cannot be null.")
     private String departureAirportId;
-    @NotBlank(message = "Arrival Id Bos Birakilamaz.")
+    @NotBlank(message = "arrivalAirportId cannot be null.")
     private String arrivalAirportId;
 
-    @NotNull(message = "Departure Date Id Bos Birakilamaz.")
+    @NotNull(message = "departureDate cannot be null.")
     @JsonFormat(pattern="dd-MM-yyyy HH:mm")
     private LocalDateTime departureDate;
-    @NotNull(message = "Arrival Date Id Bos Birakilamaz.")
+    @NotNull(message = "arrivalDate cannot be null.")
     @JsonFormat(pattern="dd-MM-yyyy HH:mm")
     private LocalDateTime arrivalDate;
 
-    @NotNull(message = "Price Economic Id Bos Birakilamaz.")
+    @NotNull(message = "priceEconomic cannot be null.")
     private Double priceEconomic;
 
-    @NotNull(message = "Business Economic Id Bos Birakilamaz.")
+    @NotNull(message = "priceBusiness cannot be null.")
     private Double priceBusiness;
 
-    @NotNull(message = "Business Capacity Id Bos Birakilamaz.")
+    @NotNull(message = "capasityBusiness cannot be null.")
     private int capasityBusiness;
 
-    @NotNull(message = "Economic Capacity Id Bos Birakilamaz.")
+    @NotNull(message = "capasityEconomic cannot be null.")
     private int capasityEconomic;
 }

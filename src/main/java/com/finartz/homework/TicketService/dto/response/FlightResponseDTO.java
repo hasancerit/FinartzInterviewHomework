@@ -8,6 +8,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDateTime;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @Data
 public class FlightResponseDTO {
@@ -47,9 +48,8 @@ public class FlightResponseDTO {
     * Bunun için kullanıcıya bunları değil, alttaki seatStatusEconomi,seatStatusBusiness wrapperlarını,
     * ayarlayarak(seatsEconomic ve seatsBusiness set edildiğinde, wrapper objeleri de set et) gönderilecek.
     * */
-    @JsonIgnore
+
     private Map<String, SeatStatus> seatsEconomic;
-    @JsonIgnore
     private Map<String, SeatStatus> seatsBusiness;
 
     public void setSeatsEconomic(Map<String, SeatStatus> seatsEconomic){
@@ -67,7 +67,6 @@ public class FlightResponseDTO {
     }
     public void setSeatsBusiness(Map<String, SeatStatus> seatsBusiness){
         this.seatsBusiness = seatsBusiness;
-        System.out.println("TEEEEST:"+seatsBusiness.size());
         /*Business için dolu ve boş koltukları, kullanıcıya gidecek wrapper nesneye ayrı ayrı ekle*/
         SeatsStatus seatStatusBusiness = new SeatsStatus();
         seatsBusiness.forEach((k,v)->{
@@ -76,6 +75,9 @@ public class FlightResponseDTO {
             else
                 seatStatusBusiness.getTakenSeats().add(k);
         });
+        seatStatusBusiness.setEmptySeats(seatStatusBusiness.getEmptySeats().stream().sorted().collect(Collectors.toList()));
+        seatStatusBusiness.setTakenSeats(seatStatusBusiness.getTakenSeats().stream().sorted().collect(Collectors.toList()));
+
         setSeatStatusBusiness(seatStatusBusiness);
     }
 

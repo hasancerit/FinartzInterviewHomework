@@ -44,16 +44,16 @@ public class TicketServiceImpl implements TicketService {
         if (ticket.getFlightClass() == FlightClass.BUSINESS) {
             SeatStatus status = flight.getSeatsBusiness().get(seatNo);
             if(Integer.parseInt(seatNo) > flight.getSeatsBusiness().size()) //Sinir asildi ise
-                throw new ApiException("Ucak Business Kapasitesini Astiniz", ticketDto.getClass(), "no", ticketDto.getNo());
+                throw new ApiException("Business capacity exceeded", ticketDto.getClass(), "no", ticketDto.getNo());
             if (status != SeatStatus.empty)  //Alınan Koltuk boş değil ise
-                throw new ApiException("Alinan Koltuk Dolu", ticketDto.getClass(), "no", ticketDto.getNo());
+                throw new ApiException("Seat is already taken.", ticketDto.getClass(), "no", ticketDto.getNo());
             flight.getSeatsBusiness().replace(seatNo, SeatStatus.taken);
         } else if (ticket.getFlightClass() == FlightClass.ECONOMİ) {
             SeatStatus status = flight.getSeatsEconomic().get(seatNo);
             if(Integer.parseInt(seatNo) > flight.getSeatsEconomic().size()) //Ko
-                throw new ApiException("Ucak Business Kapasitesini Astiniz", ticketDto.getClass(), "no", ticketDto.getNo());
+                throw new ApiException("Business capacity exceeded", ticketDto.getClass(), "no", ticketDto.getNo());
             if (status != SeatStatus.empty) //Alınan Koltuk boş değil ise
-                throw new ApiException("Alinan Koltuk Dolu", ticketDto.getClass(), "no", ticketDto.getNo());
+                throw new ApiException("Seat is already taken.", ticketDto.getClass(), "no", ticketDto.getNo());
             flight.getSeatsEconomic().replace(seatNo, SeatStatus.taken);
         }
 

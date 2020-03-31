@@ -10,11 +10,11 @@ import javax.validation.constraints.Size;
 @Data
 public class AirlineRequestDTO {
 
-    @Size(max = 30,message = "Name 30 karakterden büyük olamaz")
-    @NotBlank(message = "Name Bos Birakilamaz")
+    @Size(max = 30,message = "name cannot be longer than 30 characters.")
+    @NotBlank(message = "name cannot be null.")
     private String name;
 
-    @Size(max = 30,message = "Description 30 karakterden büyük olamaz")
+    @Size(max = 30,message = "desc cannot be longer than 30 characters.")
     private String desc;
 
 }

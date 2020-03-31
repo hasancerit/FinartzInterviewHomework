@@ -9,10 +9,7 @@ import lombok.Setter;
 import javax.persistence.*;
 import java.io.Serializable;
 import java.time.LocalDateTime;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Getter
 @Setter
@@ -45,14 +42,14 @@ public class Flight implements Serializable {
     @MapKeyColumn(name = "seat_no")
     @Column(name = "status")
     @Enumerated(EnumType.STRING)
-    private Map<String, SeatStatus> seatsBusiness = new HashMap<>();
+    private Map<String, SeatStatus> seatsBusiness = new LinkedHashMap<>();
 
     @ElementCollection
     @CollectionTable(name = "flight_seats_economic", joinColumns = {@JoinColumn(name = "flight_id", referencedColumnName = "id")})
     @MapKeyColumn(name = "seat_no")
     @Column(name = "status")
     @Enumerated(EnumType.STRING)
-    private Map<String, SeatStatus> seatsEconomic = new HashMap<>();
+    private Map<String, SeatStatus> seatsEconomic = new LinkedHashMap<>();
 
     public void setSeatsEmpty(){
         for(int i = 1 ; i <= capasityEconomic ; i++){

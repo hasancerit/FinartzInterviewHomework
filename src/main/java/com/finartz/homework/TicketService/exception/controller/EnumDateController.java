@@ -14,7 +14,7 @@ public class EnumDateController {
     @ExceptionHandler(ConversionFailedException.class)
     public ResponseEntity<ApiError> handleConflict(ConversionFailedException ex) {
         ApiError apiError = new ApiError();
-        apiError.setMessage("Gecersiz Arama Parametresi:"+ex.getValue());
+        apiError.setMessage("Invalid Search Parameter:"+ex.getValue());
         apiError.setHttpStatus(HttpStatus.BAD_REQUEST);
         return new ResponseEntity<>(apiError,apiError.getHttpStatus());
     }

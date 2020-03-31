@@ -32,7 +32,7 @@ public class AirlineServiceImpl implements AirlineService {
         try {
             airline = airlineRepository.save(modelMapper.map(airlineDto,Airline.class));
         } catch (DataIntegrityViolationException e) {
-            throw new ApiException("Airline Name Ayni Olamaz",airlineDto.getClass(),
+            throw new ApiException("name is already taken.",airlineDto.getClass(),
                     "name",airlineDto.getName());
         }
         return modelMapper.map(airline,AirlineResponseDTO.class);
