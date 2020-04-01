@@ -27,12 +27,18 @@ public class FlightController {
         return new ResponseEntity<>(flightService.saveFlight(flightRequestDTO), HttpStatus.OK);
     }
 
-
+    /**Hepsini cek**/
     @GetMapping("/all")
     public ResponseEntity<List<FlightResponseDTO>> getAll(){
         return new ResponseEntity<>(flightService.getAll(), HttpStatus.OK);
     }
 
+
+    @DeleteMapping("/{id}")
+    @ResponseStatus(code = HttpStatus.OK)
+    public void deleteFlight(@PathVariable String id) throws ApiException {
+        flightService.deleteFlight(id);
+    }
 
     /**Id ile Arama**/
     @GetMapping("/{id}")

@@ -36,6 +36,13 @@ public class AirlineController {
         return new ResponseEntity<>(airlineService.getAll(), HttpStatus.OK);
     }
 
+
+    @DeleteMapping("/{id}")
+    @ResponseStatus(code = HttpStatus.OK)
+    public void deleteAirline(@PathVariable String id) throws ApiException {
+        airlineService.deleteAirline(id);
+    }
+
     /*İd İle Arama*/
     @GetMapping("/{id}")
     public ResponseEntity<AirlineResponseDTO> getAirline(@PathVariable String id){
@@ -53,6 +60,4 @@ public class AirlineController {
         flightRequestDTO.setAirlineId(id);
         return new ResponseEntity<>(flightService.saveFlight(flightRequestDTO), HttpStatus.OK);
     }
-
-    /**Sil Ve Güncelle**/
 }

@@ -12,4 +12,8 @@ public interface TicketService {
     TicketResponseDTO getTicket(String id);
 
     List<TicketResponseDTO> getAll();
+
+    TicketResponseDTO getTickeyByTicketNo(String ticketNo);
+
+    void deleteTicket(String id) throws ApiException;
 }

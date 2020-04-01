@@ -20,6 +20,6 @@ public class Airline{
     private String name;
     private String desc;
 
-    @OneToMany(mappedBy="airline")
+    @OneToMany(mappedBy="airline",cascade = {CascadeType.REMOVE})
     private List<Flight> activeFlights = new ArrayList<>();
 }

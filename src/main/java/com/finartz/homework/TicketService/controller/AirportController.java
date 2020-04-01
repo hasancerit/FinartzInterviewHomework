@@ -30,6 +30,13 @@ public class AirportController {
         return new ResponseEntity<>(airportService.getAll(), HttpStatus.OK);
     }
 
+    @DeleteMapping("/{id}")
+    @ResponseStatus(code = HttpStatus.OK)
+    public void deleteAirport(@PathVariable String id) throws ApiException {
+        airportService.deleteAirport(id);
+    }
+
+
 
     /*İd İle Arama*/
     @GetMapping("/{id}")

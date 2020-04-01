@@ -1,5 +1,6 @@
 package com.finartz.homework.TicketService.service.imp;
 
+import com.finartz.homework.TicketService.domain.Airline;
 import com.finartz.homework.TicketService.domain.Airport;
 import com.finartz.homework.TicketService.dto.request.AirportRequestDTO;
 import com.finartz.homework.TicketService.dto.response.AirportResponseDTO;
@@ -40,6 +41,17 @@ public class AirportServiceImpl implements AirportService {
     @Override
     public List<AirportResponseDTO> getAll() {
         return airportListToAirpostDtoList(airportRepository.findAll());
+    }
+
+    @Override
+    public void deleteAirport(String id) throws ApiException {
+        Airport airport;
+        try{
+            airport = airportRepository.findById(id).get();
+        }catch (NoSuchElementException ex){
+            throw new ApiException("airportId Not Found",id.getClass(),"airportId",id);
+        }
+        airportRepository.delete(airport);
     }
 
 

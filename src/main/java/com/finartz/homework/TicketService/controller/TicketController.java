@@ -22,10 +22,21 @@ public class TicketController {
         return new ResponseEntity<>(ticketService.saveTicket(airportDto), HttpStatus.OK);
     }
 
+    @DeleteMapping("/{id}")
+    @ResponseStatus(code = HttpStatus.OK)
+    public void deleteTicket(@PathVariable String id) throws ApiException {
+        ticketService.deleteTicket(id);
+    }
+
 
     @GetMapping("/{id}")
     public ResponseEntity<TicketResponseDTO> getTicket(@PathVariable String id){
         return new ResponseEntity<>(ticketService.getTicket(id), HttpStatus.OK);
+    }
+
+    @GetMapping("/pnr")
+    public ResponseEntity<TicketResponseDTO> getTicketByTicketNo(@RequestParam(required = true,name = "pnr") String ticketNo){
+        return new ResponseEntity<>(ticketService.getTickeyByTicketNo(ticketNo), HttpStatus.OK);
     }
 
     @GetMapping("/all")

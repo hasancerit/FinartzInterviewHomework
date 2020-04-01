@@ -14,6 +14,8 @@ public interface FlightService {
 
     List<FlightResponseDTO> getAll();
 
+    void  deleteFlight(String id) throws ApiException;
+
     FlightResponseDTO getFlight(String id);
 
     List<FlightResponseDTO> getFlightsByAirlineName(String airlineName);

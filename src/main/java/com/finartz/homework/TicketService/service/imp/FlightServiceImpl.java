@@ -78,6 +78,17 @@ public class FlightServiceImpl implements FlightService {
         return flightListToFlightResponseDtoList(flightRepository.findAll());
     }
 
+    @Override
+    public void deleteFlight(String id) throws ApiException {
+        Flight flight;
+        try{
+            flight = flightRepository.findById(id).get();
+        }catch (NoSuchElementException ex){
+            throw new ApiException("FlightId Not Found",id.getClass(),"flightId",id);
+        }
+        flightRepository.delete(flight);
+    }
+
 
     /**Id ile Arama**/
     @Override

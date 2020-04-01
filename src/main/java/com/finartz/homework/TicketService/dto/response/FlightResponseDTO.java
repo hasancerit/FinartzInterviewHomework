@@ -48,8 +48,9 @@ public class FlightResponseDTO {
     * Bunun için kullanıcıya bunları değil, alttaki seatStatusEconomi,seatStatusBusiness wrapperlarını,
     * ayarlayarak(seatsEconomic ve seatsBusiness set edildiğinde, wrapper objeleri de set et) gönderilecek.
     * */
-
+    @JsonIgnore
     private Map<String, SeatStatus> seatsEconomic;
+    @JsonIgnore
     private Map<String, SeatStatus> seatsBusiness;
 
     public void setSeatsEconomic(Map<String, SeatStatus> seatsEconomic){

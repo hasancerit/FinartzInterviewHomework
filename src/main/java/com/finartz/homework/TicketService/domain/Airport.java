@@ -22,9 +22,9 @@ public class Airport{
     private String city; //Maple
     private String desc;
 
-    @OneToMany(mappedBy = "departure")
+    @OneToMany(mappedBy = "departure",cascade = {CascadeType.REMOVE})
     private List<Flight> departureFlights = new ArrayList<>();
 
-    @OneToMany(mappedBy = "arrival")
+    @OneToMany(mappedBy = "arrival",cascade = {CascadeType.REMOVE})
     private List<Flight> arrivalFlights = new ArrayList<>();
 }

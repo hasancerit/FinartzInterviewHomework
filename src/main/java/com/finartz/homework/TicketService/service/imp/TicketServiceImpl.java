@@ -1,5 +1,6 @@
 package com.finartz.homework.TicketService.service.imp;
 
+import com.finartz.homework.TicketService.domain.Airport;
 import com.finartz.homework.TicketService.domain.Flight;
 import com.finartz.homework.TicketService.domain.Ticket;
 import com.finartz.homework.TicketService.dto.request.TicketRequestDTO;
@@ -48,7 +49,7 @@ public class TicketServiceImpl implements TicketService {
             if (status != SeatStatus.empty)  //Alınan Koltuk boş değil ise
                 throw new ApiException("Seat is already taken.", ticketDto.getClass(), "no", ticketDto.getNo());
             flight.getSeatsBusiness().replace(seatNo, SeatStatus.taken);
-        } else if (ticket.getFlightClass() == FlightClass.ECONOMİ) {
+        } else if (ticket.getFlightClass() == FlightClass.ECONOMI) {
             SeatStatus status = flight.getSeatsEconomic().get(seatNo);
             if(Integer.parseInt(seatNo) > flight.getSeatsEconomic().size()) //Ko
                 throw new ApiException("Business capacity exceeded", ticketDto.getClass(), "no", ticketDto.getNo());
@@ -79,5 +80,21 @@ public class TicketServiceImpl implements TicketService {
             ticketResponseDTOList.add(modelMapper.map(ticket, TicketResponseDTO.class));
         });
         return null;
+    }
+
+    @Override
+    public TicketResponseDTO getTickeyByTicketNo(String ticketNo) {
+        return modelMapper.map(ticketRepository.findByTicketNo(ticketNo),TicketResponseDTO.class);
+    }
+
+    @Override
+    public void deleteTicket(String id) throws ApiException {
+        Ticket ticket;
+        try{
+            ticket = ticketRepository.findById(id).get();
+        }catch (NoSuchElementException ex){
+            throw new ApiException("ticketId Not Found",id.getClass(),"ticketId",id);
+        }
+        ticketRepository.delete(ticket);
     }
 }

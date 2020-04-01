@@ -14,4 +14,6 @@ public interface AirlineService {
     List<AirlineResponseDTO> getAirlinesByName(String name);
 
     List<AirlineResponseDTO> getAll();
+
+    void deleteAirline(String id) throws ApiException;
 }

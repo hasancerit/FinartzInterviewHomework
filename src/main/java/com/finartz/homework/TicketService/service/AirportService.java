@@ -16,4 +16,5 @@ public interface AirportService {
 
     List<AirportResponseDTO> getAll();
 
+    void deleteAirport(String id) throws ApiException;
 }

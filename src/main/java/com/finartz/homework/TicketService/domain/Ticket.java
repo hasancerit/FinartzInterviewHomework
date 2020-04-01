@@ -14,6 +14,7 @@ public class Ticket{
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private String id;
 
+    @Column(unique = true)
     private String ticketNo;
     @Embedded
     private Passanger passanger;
