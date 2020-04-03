@@ -21,7 +21,6 @@ import java.util.List;
 public class AirlineController {
     @Autowired
     private AirlineService airlineService;
-
     @Autowired
     private FlightService flightService;
 
@@ -31,17 +30,24 @@ public class AirlineController {
         return new ResponseEntity<>(airlineService.saveAirline(airlineRequestDTO), HttpStatus.OK);
     }
 
-    @GetMapping("/all")
-    public ResponseEntity<List<AirlineResponseDTO>> getAll(){
-        return new ResponseEntity<>(airlineService.getAll(), HttpStatus.OK);
+    /*Update*/
+    @PostMapping("/update/{id}")
+    public ResponseEntity<AirlineResponseDTO> updateAirline(@PathVariable String id,@RequestBody AirlineRequestDTO airlinetDto) throws ApiException {
+        return new ResponseEntity<>(airlineService.updateAirline(id,airlinetDto),HttpStatus.OK);
     }
-
 
     @DeleteMapping("/{id}")
     @ResponseStatus(code = HttpStatus.OK)
     public void deleteAirline(@PathVariable String id) throws ApiException {
         airlineService.deleteAirline(id);
     }
+
+
+    @GetMapping("/all")
+    public ResponseEntity<List<AirlineResponseDTO>> getAll(){
+        return new ResponseEntity<>(airlineService.getAll(), HttpStatus.OK);
+    }
+
 
     /*İd İle Arama*/
     @GetMapping("/{id}")
@@ -55,6 +61,7 @@ public class AirlineController {
         return new ResponseEntity<>(airlineService.getAirlinesByName(name), HttpStatus.OK);
     }
 
+    /*Havayoluna ucus ekle*/
     @PostMapping("/{id}/addflight")
     public ResponseEntity<FlightResponseDTO> addFlightToAirline(@Valid @RequestBody FlightRequestDTO flightRequestDTO,@PathVariable String id) throws ArrivalBeforeDepartureException, ApiException {
         flightRequestDTO.setAirlineId(id);

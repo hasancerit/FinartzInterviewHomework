@@ -10,11 +10,16 @@ import java.util.List;
 public interface AirportService {
     AirportResponseDTO saveAirport(AirportRequestDTO airportDto) throws ApiException;
 
+    AirportResponseDTO updateAirport(String id, AirportRequestDTO airportDto) throws ApiException;
+
+    void deleteAirport(String id) throws ApiException;
+
+    List<AirportResponseDTO> getAll();
+
     AirportResponseDTO getAirport(String id);
 
     List<AirportResponseDTO> getAirports(SearchType searchType, String nameOrCity);
 
-    List<AirportResponseDTO> getAll();
 
-    void deleteAirport(String id) throws ApiException;
+
 }

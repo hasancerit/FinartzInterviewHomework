@@ -17,11 +17,19 @@ public class TicketController {
     @Autowired
     private TicketService ticketService;
 
+    /*Ekleme*/
     @PostMapping("/add")
     public ResponseEntity<TicketResponseDTO> saveTicket(@Valid @RequestBody TicketRequestDTO airportDto) throws ApiException {
         return new ResponseEntity<>(ticketService.saveTicket(airportDto), HttpStatus.OK);
     }
 
+    /*Güncelleme*/
+    @PostMapping("/update/{id}")
+    public ResponseEntity<TicketResponseDTO> updateTicket(@PathVariable String id,@RequestBody TicketRequestDTO ticketDto) throws ApiException {
+        return new ResponseEntity<>(ticketService.updateTicket(id,ticketDto),HttpStatus.OK);
+    }
+
+    /*Silme*/
     @DeleteMapping("/{id}")
     @ResponseStatus(code = HttpStatus.OK)
     public void deleteTicket(@PathVariable String id) throws ApiException {
@@ -29,20 +37,21 @@ public class TicketController {
     }
 
 
-    @GetMapping("/{id}")
-    public ResponseEntity<TicketResponseDTO> getTicket(@PathVariable String id){
-        return new ResponseEntity<>(ticketService.getTicket(id), HttpStatus.OK);
-    }
-
-    @GetMapping("/pnr")
-    public ResponseEntity<TicketResponseDTO> getTicketByTicketNo(@RequestParam(required = true,name = "pnr") String ticketNo){
-        return new ResponseEntity<>(ticketService.getTickeyByTicketNo(ticketNo), HttpStatus.OK);
-    }
-
+    /*Hepsini bul*/
     @GetMapping("/all")
     public ResponseEntity getAll(){
         return new ResponseEntity<>(ticketService.getAll(), HttpStatus.OK);
     }
 
-    /**Sil Ve Güncelle**/
+    /*İd'e göre bul*/
+    @GetMapping("/{id}")
+    public ResponseEntity<TicketResponseDTO> getTicket(@PathVariable String id){
+        return new ResponseEntity<>(ticketService.getTicket(id), HttpStatus.OK);
+    }
+
+    /*TicketNo'ya göre bul*/
+    @GetMapping("/pnr")
+    public ResponseEntity<TicketResponseDTO> getTicketByTicketNo(@RequestParam(required = true,name = "pnr") String ticketNo){
+        return new ResponseEntity<>(ticketService.getTickeyByTicketNo(ticketNo), HttpStatus.OK);
+    }
 }

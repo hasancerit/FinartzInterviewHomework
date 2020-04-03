@@ -2,7 +2,6 @@ package com.finartz.homework.TicketService.domain;
 
 
 import com.finartz.homework.TicketService.util.SeatStatus;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -38,25 +37,26 @@ public class Flight implements Serializable {
     private int capasityEconomic;
 
     @ElementCollection
-    @CollectionTable(name = "flight_seats_buniness", joinColumns = {@JoinColumn(name = "flight_id", referencedColumnName = "id")})
+    @CollectionTable(name = "flight_seats_business", joinColumns = {@JoinColumn(name = "flight_id", referencedColumnName = "id")})
     @MapKeyColumn(name = "seat_no")
     @Column(name = "status")
     @Enumerated(EnumType.STRING)
-    private Map<String, SeatStatus> seatsBusiness = new LinkedHashMap<>();
+    private Map<String, Seat> seatsBusiness = new LinkedHashMap<>();
+
 
     @ElementCollection
     @CollectionTable(name = "flight_seats_economic", joinColumns = {@JoinColumn(name = "flight_id", referencedColumnName = "id")})
     @MapKeyColumn(name = "seat_no")
     @Column(name = "status")
     @Enumerated(EnumType.STRING)
-    private Map<String, SeatStatus> seatsEconomic = new LinkedHashMap<>();
+    private Map<String, Seat> seatsEconomic = new LinkedHashMap<>();
 
     public void setSeatsEmpty(){
         for(int i = 1 ; i <= capasityEconomic ; i++){
-            seatsEconomic.put(Integer.toString(i),SeatStatus.empty);
+            seatsEconomic.put(""+i,new Seat(SeatStatus.empty,null));
         }
         for(int i = 1 ; i <= capasityBusiness ; i++){
-            seatsBusiness.put(Integer.toString(i),SeatStatus.empty);
+            seatsBusiness.put(""+i,new Seat(SeatStatus.empty,null));
         }
     }
 }

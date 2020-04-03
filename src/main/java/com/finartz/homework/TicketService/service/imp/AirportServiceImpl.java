@@ -21,28 +21,43 @@ import java.util.NoSuchElementException;
 public class AirportServiceImpl implements AirportService {
     @Autowired
     private AirportRepository airportRepository;
-
     @Autowired
     private ModelMapper modelMapper;
 
     /*Ekleme*/
     @Override
     public AirportResponseDTO saveAirport(AirportRequestDTO airportDto) throws ApiException {
+        Airport airport = handleSaveAirport(modelMapper.map(airportDto,Airport.class),airportDto);
+        return modelMapper.map(airport,AirportResponseDTO.class);
+    }
+
+    /*Update*/
+    @Override
+    public AirportResponseDTO updateAirport(String id, AirportRequestDTO airportDto) throws ApiException {
         Airport airport = null;
         try {
-            airport = airportRepository.save(modelMapper.map(airportDto,Airport.class));
+            airport = airportRepository.findById(id).get();
+        } catch(NoSuchElementException ex) {
+            throw new ApiException("airportId Not Found",id.getClass(),"airportId",id);
+        }
+
+        airport.setCity(airportDto.getCity());
+        airport.setName(airportDto.getName());
+        airport.setDesc(airportDto.getDesc());
+        return modelMapper.map(handleSaveAirport(airport,airportDto),AirportResponseDTO.class);
+    }
+
+    private Airport handleSaveAirport(Airport airport,AirportRequestDTO airportDto) throws ApiException {
+        try {
+            airport = airportRepository.save(airport);
         } catch (DataIntegrityViolationException e) {
             throw new ApiException("name is already taken.",airportDto.getClass(),
                     "name",airportDto.getName());
         }
-        return modelMapper.map(airport,AirportResponseDTO.class);
+        return airport;
     }
 
-    @Override
-    public List<AirportResponseDTO> getAll() {
-        return airportListToAirpostDtoList(airportRepository.findAll());
-    }
-
+    /*Silme*/
     @Override
     public void deleteAirport(String id) throws ApiException {
         Airport airport;
@@ -55,6 +70,11 @@ public class AirportServiceImpl implements AirportService {
     }
 
 
+    @Override
+    public List<AirportResponseDTO> getAll() {
+        return airportListToAirpostDtoList(airportRepository.findAll());
+    }
+
     /*İd İle Arama*/
     @Override
     public AirportResponseDTO getAirport(String id) {
@@ -65,6 +85,7 @@ public class AirportServiceImpl implements AirportService {
         }
     }
 
+    /*Name-City ile arama*/
     @Override
     public List<AirportResponseDTO> getAirports(SearchType searchType, String nameOrCity) {
         if(searchType == SearchType.byname){        /*İsmi ile Arama*/
@@ -79,6 +100,7 @@ public class AirportServiceImpl implements AirportService {
         }
     }
 
+    /*AirportList icindeki tüm Airport nesnelerini, AirpostDto nesnesine cevir.*/
     private List<AirportResponseDTO> airportListToAirpostDtoList(List<Airport> airports){
         List<AirportResponseDTO> airportResponseDTOList =new ArrayList<>();
         airports.stream().forEach(airport -> {

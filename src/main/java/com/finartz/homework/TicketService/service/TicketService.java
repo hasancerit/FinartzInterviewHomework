@@ -9,11 +9,13 @@ import java.util.List;
 public interface TicketService {
     TicketResponseDTO saveTicket(TicketRequestDTO ticketDto) throws ApiException;
 
-    TicketResponseDTO getTicket(String id);
+    TicketResponseDTO updateTicket(String id, TicketRequestDTO ticketDto) throws ApiException;
+
+    void deleteTicket(String id) throws ApiException;
 
     List<TicketResponseDTO> getAll();
 
-    TicketResponseDTO getTickeyByTicketNo(String ticketNo);
+    TicketResponseDTO getTicket(String id);
 
-    void deleteTicket(String id) throws ApiException;
+    TicketResponseDTO getTickeyByTicketNo(String ticketNo);
 }

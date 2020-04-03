@@ -12,9 +12,11 @@ import java.util.List;
 public interface FlightService {
     FlightResponseDTO saveFlight(FlightRequestDTO flightDto) throws ArrivalBeforeDepartureException, ApiException;
 
-    List<FlightResponseDTO> getAll();
+    FlightResponseDTO updateFlight(String id, FlightRequestDTO flightDto) throws ApiException, ArrivalBeforeDepartureException;
 
     void  deleteFlight(String id) throws ApiException;
+
+    List<FlightResponseDTO> getAll();
 
     FlightResponseDTO getFlight(String id);
 
@@ -25,4 +27,5 @@ public interface FlightService {
     List<FlightResponseDTO> getFlightsByArrival(SearchType searchType,String nameOrCity);
 
     FlightsResponseDTO  getFlightsByDepartureAndArrival(SearchType searchType, String departure, String arrival);
+
 }

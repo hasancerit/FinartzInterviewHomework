@@ -1,6 +1,8 @@
 package com.finartz.homework.TicketService.controller;
 
 import com.finartz.homework.TicketService.dto.request.FlightRequestDTO;
+import com.finartz.homework.TicketService.dto.request.TicketRequestDTO;
+import com.finartz.homework.TicketService.dto.response.AirportResponseDTO;
 import com.finartz.homework.TicketService.dto.response.FlightResponseDTO;
 import com.finartz.homework.TicketService.dto.response.wrapper.FlightsResponseDTO;
 import com.finartz.homework.TicketService.exception.exception.ApiException;
@@ -27,17 +29,24 @@ public class FlightController {
         return new ResponseEntity<>(flightService.saveFlight(flightRequestDTO), HttpStatus.OK);
     }
 
-    /**Hepsini cek**/
-    @GetMapping("/all")
-    public ResponseEntity<List<FlightResponseDTO>> getAll(){
-        return new ResponseEntity<>(flightService.getAll(), HttpStatus.OK);
+    /**Güncelle**/
+    @PostMapping("/update/{id}")
+    public ResponseEntity<FlightResponseDTO> updateFlight(@PathVariable String id, @RequestBody FlightRequestDTO flightDto) throws ApiException, ArrivalBeforeDepartureException {
+        return new ResponseEntity<>(flightService.updateFlight(id,flightDto),HttpStatus.OK);
     }
 
-
+    /**Sil**/
     @DeleteMapping("/{id}")
     @ResponseStatus(code = HttpStatus.OK)
     public void deleteFlight(@PathVariable String id) throws ApiException {
         flightService.deleteFlight(id);
+    }
+
+
+    /**Hepsini cek**/
+    @GetMapping("/all")
+    public ResponseEntity<List<FlightResponseDTO>> getAll(){
+        return new ResponseEntity<>(flightService.getAll(), HttpStatus.OK);
     }
 
     /**Id ile Arama**/
@@ -74,6 +83,4 @@ public class FlightController {
         return new ResponseEntity<>(flightService.getFlightsByDepartureAndArrival(searchType,departure,arrival),HttpStatus.OK);
     }
 
-
-    /**Sil Ve Güncelle**/
 }

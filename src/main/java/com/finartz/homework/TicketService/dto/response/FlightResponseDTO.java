@@ -2,6 +2,7 @@ package com.finartz.homework.TicketService.dto.response;
 
 import com.fasterxml.jackson.annotation.*;
 import com.finartz.homework.TicketService.dto.response.wrapper.SeatsStatus;
+import com.finartz.homework.TicketService.domain.Seat;
 import com.finartz.homework.TicketService.util.SeatStatus;
 import lombok.Data;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -49,36 +50,33 @@ public class FlightResponseDTO {
     * ayarlayarak(seatsEconomic ve seatsBusiness set edildiğinde, wrapper objeleri de set et) gönderilecek.
     * */
     @JsonIgnore
-    private Map<String, SeatStatus> seatsEconomic;
+    private Map<String, Seat> seatsEconomic;
     @JsonIgnore
-    private Map<String, SeatStatus> seatsBusiness;
+    private Map<String, Seat> seatsBusiness;
 
-    public void setSeatsEconomic(Map<String, SeatStatus> seatsEconomic){
+    public void setSeatsEconomic(Map<String, Seat> seatsEconomic){
         this.seatsEconomic = seatsEconomic;
 
         /*Economi için dolu ve boş koltukları, kullanıcıya gidecek wrapper nesneye ayrı ayrı ekle*/
         SeatsStatus seatStatusEconomic = new SeatsStatus();
         seatsEconomic.forEach((k,v)->{
-            if(v == SeatStatus.empty)
+            if(v.getSeatStatus() == SeatStatus.empty)
                 seatStatusEconomic.getEmptySeats().add(k);
             else
                 seatStatusEconomic.getTakenSeats().add(k);
         });
         setSeatStatusEconomi(seatStatusEconomic);
     }
-    public void setSeatsBusiness(Map<String, SeatStatus> seatsBusiness){
+    public void setSeatsBusiness(Map<String, Seat> seatsBusiness){
         this.seatsBusiness = seatsBusiness;
         /*Business için dolu ve boş koltukları, kullanıcıya gidecek wrapper nesneye ayrı ayrı ekle*/
         SeatsStatus seatStatusBusiness = new SeatsStatus();
         seatsBusiness.forEach((k,v)->{
-            if(v == SeatStatus.empty)
+            if(v.getSeatStatus() == SeatStatus.empty)
                 seatStatusBusiness.getEmptySeats().add(k);
             else
                 seatStatusBusiness.getTakenSeats().add(k);
         });
-        seatStatusBusiness.setEmptySeats(seatStatusBusiness.getEmptySeats().stream().sorted().collect(Collectors.toList()));
-        seatStatusBusiness.setTakenSeats(seatStatusBusiness.getTakenSeats().stream().sorted().collect(Collectors.toList()));
-
         setSeatStatusBusiness(seatStatusBusiness);
     }
 

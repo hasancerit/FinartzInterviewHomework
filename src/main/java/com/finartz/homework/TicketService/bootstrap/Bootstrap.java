@@ -3,19 +3,13 @@ package com.finartz.homework.TicketService.bootstrap;
 import com.finartz.homework.TicketService.domain.Airline;
 import com.finartz.homework.TicketService.domain.Airport;
 import com.finartz.homework.TicketService.domain.Flight;
-import com.finartz.homework.TicketService.dto.request.FlightRequestDTO;
-import com.finartz.homework.TicketService.dto.response.AirportResponseDTO;
 import com.finartz.homework.TicketService.repositories.*;
-import com.finartz.homework.TicketService.service.AirportService;
-import com.finartz.homework.TicketService.service.FlightService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.Random;
+import java.util.*;
 
 @Component
 public class Bootstrap implements CommandLineRunner {
@@ -31,7 +25,6 @@ public class Bootstrap implements CommandLineRunner {
     private void airlines(){
 
     }
-
 
     @Override
     public void run(String... args) throws Exception {
@@ -137,7 +130,7 @@ public class Bootstrap implements CommandLineRunner {
         airportRepository.save(airport15);
 
 
-        for(int i = 0 ; i < 50; i++){
+        for(int i = 0 ; i < 10; i++){
             Flight flight = new Flight();
             Random random = new Random();
 

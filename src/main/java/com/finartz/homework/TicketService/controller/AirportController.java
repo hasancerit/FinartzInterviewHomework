@@ -1,5 +1,6 @@
 package com.finartz.homework.TicketService.controller;
 
+import com.finartz.homework.TicketService.dto.request.AirlineRequestDTO;
 import com.finartz.homework.TicketService.dto.request.AirportRequestDTO;
 import com.finartz.homework.TicketService.dto.response.AirportResponseDTO;
 import com.finartz.homework.TicketService.exception.exception.ApiException;
@@ -25,11 +26,13 @@ public class AirportController {
         return new ResponseEntity<>(airportService.saveAirport(airportDto), HttpStatus.OK);
     }
 
-    @GetMapping("/all")
-    public ResponseEntity<List<AirportResponseDTO>> getAll(){
-        return new ResponseEntity<>(airportService.getAll(), HttpStatus.OK);
+    /*Update*/
+    @PostMapping("/update/{id}")
+    public ResponseEntity<AirportResponseDTO> updateAirport(@PathVariable String id,@RequestBody AirportRequestDTO airportDto) throws ApiException {
+        return new ResponseEntity<>( airportService.updateAirport(id,airportDto),HttpStatus.OK);
     }
 
+    /*Silme*/
     @DeleteMapping("/{id}")
     @ResponseStatus(code = HttpStatus.OK)
     public void deleteAirport(@PathVariable String id) throws ApiException {
@@ -37,6 +40,10 @@ public class AirportController {
     }
 
 
+    @GetMapping("/all")
+    public ResponseEntity<List<AirportResponseDTO>> getAll(){
+        return new ResponseEntity<>(airportService.getAll(), HttpStatus.OK);
+    }
 
     /*İd İle Arama*/
     @GetMapping("/{id}")
@@ -44,11 +51,10 @@ public class AirportController {
         return new ResponseEntity<>(airportService.getAirport(id), HttpStatus.OK);
     }
 
+    /*Name-City ile arama*/
     @GetMapping("/search")
     public ResponseEntity<List<AirportResponseDTO>> getAirports(@RequestParam(required = true,name = "type") SearchType searchType
             ,@RequestParam(required = true,name = "value") String nameOrCity){
         return new ResponseEntity<>(airportService.getAirports(searchType,nameOrCity), HttpStatus.OK);
     }
-
-    /**Sil Ve Güncelle**/
 }
