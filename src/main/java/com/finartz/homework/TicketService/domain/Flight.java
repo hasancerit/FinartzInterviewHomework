@@ -59,4 +59,9 @@ public class Flight implements Serializable {
             seatsBusiness.put(""+i,new Seat(SeatStatus.empty,null));
         }
     }
+
+    private boolean isFullBusiness = false;
+    private boolean isFullEconomy = false;
+
+
 }
