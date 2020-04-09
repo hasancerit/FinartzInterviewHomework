@@ -12,6 +12,7 @@ import com.finartz.homework.TicketService.service.TicketService;
 import com.finartz.homework.TicketService.domain.Seat;
 import com.finartz.homework.TicketService.util.FlightClass;
 import com.finartz.homework.TicketService.util.SeatStatus;
+import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -22,14 +23,12 @@ import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.concurrent.atomic.AtomicInteger;
 
+@RequiredArgsConstructor
 @Service
 public class TicketServiceImpl implements TicketService {
-    @Autowired
-    private TicketRepository ticketRepository;
-    @Autowired
-    private FlightRepository flightRepository;
-    @Autowired
-    private ModelMapper modelMapper;
+    private final TicketRepository ticketRepository;
+    private final FlightRepository flightRepository;
+    private final ModelMapper modelMapper;
 
     /*Ekleme*/
     @Override
@@ -63,8 +62,10 @@ public class TicketServiceImpl implements TicketService {
         Flight oldFlight = flightRepository.getOne(oldFlightId);
         if (oldClass == FlightClass.BUSINESS) {
             oldFlight.getSeatsBusiness().replace(oldNo, new Seat(SeatStatus.empty, null));
+            setPriceByFullness(oldFlight,FlightClass.BUSINESS);
         } else {
             oldFlight.getSeatsEconomic().replace(oldNo, new Seat(SeatStatus.empty, null));
+            setPriceByFullness(oldFlight,FlightClass.ECONOMI);
         }
 
         TicketResponseDTO responseDTO = modelMapper.map(handleSaveTicket(ticket, ticketDto), TicketResponseDTO.class);

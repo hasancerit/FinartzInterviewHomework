@@ -20,6 +20,7 @@ import com.finartz.homework.TicketService.domain.Seat;
 import com.finartz.homework.TicketService.util.FlightClass;
 import com.finartz.homework.TicketService.util.SearchType;
 import com.finartz.homework.TicketService.util.SeatStatus;
+import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -27,18 +28,14 @@ import org.springframework.stereotype.Service;
 import java.time.Duration;
 import java.util.*;
 
+@RequiredArgsConstructor
 @Service
 public class FlightServiceImpl implements FlightService {
-    @Autowired
-    private FlightRepository flightRepository;
-    @Autowired
-    private AirportRepository airportRepository;
-    @Autowired
-    private AirlineRepository airlineRepository;
-    @Autowired
-    private TicketRepository ticketRepository;
-    @Autowired
-    private ModelMapper modelMapper;
+    private final FlightRepository flightRepository;
+    private final AirportRepository airportRepository;
+    private final AirlineRepository airlineRepository;
+    private final TicketRepository ticketRepository;
+    private final ModelMapper modelMapper;
 
     /**
      * Ekleme

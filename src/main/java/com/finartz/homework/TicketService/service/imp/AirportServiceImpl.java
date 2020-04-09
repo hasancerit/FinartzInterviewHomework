@@ -8,6 +8,7 @@ import com.finartz.homework.TicketService.exception.exception.ApiException;
 import com.finartz.homework.TicketService.repositories.AirportRepository;
 import com.finartz.homework.TicketService.service.AirportService;
 import com.finartz.homework.TicketService.util.SearchType;
+import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -17,12 +18,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
 
+@RequiredArgsConstructor
 @Service
 public class AirportServiceImpl implements AirportService {
-    @Autowired
-    private AirportRepository airportRepository;
-    @Autowired
-    private ModelMapper modelMapper;
+    private final AirportRepository airportRepository;
+    private final ModelMapper modelMapper;
 
     /*Ekleme*/
     @Override

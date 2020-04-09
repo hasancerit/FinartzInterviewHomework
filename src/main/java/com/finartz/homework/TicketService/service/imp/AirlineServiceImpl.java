@@ -11,6 +11,8 @@ import com.finartz.homework.TicketService.exception.exception.ApiException;
 import com.finartz.homework.TicketService.repositories.AirlineRepository;
 import com.finartz.homework.TicketService.repositories.AirportRepository;
 import com.finartz.homework.TicketService.service.AirlineService;
+import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -20,14 +22,13 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
 
+@RequiredArgsConstructor
 @Service
 public class AirlineServiceImpl implements AirlineService {
-    @Autowired
-    private AirlineRepository airlineRepository;
-    @Autowired
-    private AirportRepository airportRepository;
-    @Autowired
-    private ModelMapper modelMapper;
+    private final AirlineRepository airlineRepository;
+    private final AirportRepository airportRepository;
+    private final ModelMapper modelMapper;
+
 
     /*Ekleme*/
     @Override
