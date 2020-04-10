@@ -1,5 +1,6 @@
 package com.finartz.homework.TicketService.domain;
 
+import com.finartz.homework.TicketService.domain.embeddable.Passanger;
 import com.finartz.homework.TicketService.util.FlightClass;
 import lombok.Getter;
 import lombok.Setter;

@@ -25,7 +25,14 @@ import java.util.List;
 public class FlightController {
     private final FlightService flightService;
 
-    /**Ekleme**/
+    /**Ekleme
+     *
+     * @param flightRequestDTO  Eklenecek flight
+     * @return                  Eklenen flight
+     * @throws ArrivalBeforeDepartureException  Eklenmek istenen flight kalkis ve inis saati kontrolu
+     * @throws ApiException     AirlineId, DepartureId,ArrivalId bulunamaz ise,
+     *                          Ucus kalkis ve varis havaalani ayni sehirde ise
+     */
     @PostMapping("/add")
     @ApiOperation(value = "saveFlight",notes = "This endpoint saves the successfully sent flight.")
     public ResponseEntity<FlightResponseDTO> saveFlight(
@@ -33,16 +40,30 @@ public class FlightController {
         return new ResponseEntity<>(flightService.saveFlight(flightRequestDTO), HttpStatus.OK);
     }
 
-    /**Güncelle**/
+    /**
+     * Guncelleme
+     *
+     * @param id            Guncellenecek flight id'si
+     * @param flightDto     Guncellenecek flight'ın yeni alanları
+     * @return              Guncellenen Flight'ın modeli
+     * @throws ArrivalBeforeDepartureException Eklenmek istenen flight kalkis ve inis saati kontrolu
+     * @throws ApiException AirlineId, DepartureId,ArrivalId bulunamaz ise,
+     *                      Flight kalkis ve varis havaalani ayni sehirde ise
+     */
     @ApiOperation(value = "updateFlight",notes = "This endpoint updates the successfully sent flight.")
     @PostMapping("/update/{id}")
     public ResponseEntity<FlightResponseDTO> updateFlight(
             @ApiParam(value = "Id of the flight to be updated.",required = true) @PathVariable String id,
-            @ApiParam(value = "Flight Model to will be updated.",required = true) @RequestBody FlightRequestDTO flightDto) throws ApiException, ArrivalBeforeDepartureException {
+            @ApiParam(value = "Flight Model to will be updated.",required = true) @RequestBody FlightRequestDTO flightDto) throws ArrivalBeforeDepartureException,ApiException{
         return new ResponseEntity<>(flightService.updateFlight(id,flightDto),HttpStatus.OK);
     }
 
-    /**Sil**/
+    /**
+     * Sil
+     *
+     * @param id            Silinecek flight id'si
+     * @throws ApiException Flight id bulunamazsa
+     */
     @DeleteMapping("/{id}")
     @ApiOperation(value = "deleteFlight",notes = "This endpoint deletes flight of the successfully sent Id.")
     @ResponseStatus(code = HttpStatus.OK)
@@ -52,14 +73,23 @@ public class FlightController {
     }
 
 
-    /**Hepsini cek**/
+    /**
+     * Hepsini cek
+     *
+     * @return Veritabanındaki tüm flightlar.
+     */
     @GetMapping("/all")
     @ApiOperation(value = "getAll",notes = "This endpoint serves all flights.")
     public ResponseEntity<List<FlightResponseDTO>> getAll(){
         return new ResponseEntity<>(flightService.getAll(), HttpStatus.OK);
     }
 
-    /**Id ile Arama**/
+    /**
+     * Id ile Arama
+     *
+     * @param id     Alinmak istenen Airline id'si
+     * @return       Istenen flight modeli - Id bulunmaz ise null döner.
+     */
     @GetMapping("/{id}")
     @ApiOperation(value = "getFlight",notes = "This endpoint serves flight of the successfully sent Id.")
     public ResponseEntity<FlightResponseDTO> getFlight(
@@ -67,7 +97,12 @@ public class FlightController {
         return new ResponseEntity<>(flightService.getFlight(id), HttpStatus.OK);
     }
 
-    /**Havayolu İsmi ile Arama**/
+    /**
+     * Arline Name ile Arama - Havayoluna ait aktif ucuslar.
+     *
+     * @param airlineName   Ucuslari cekilmek istenen Airline ismi.
+     * @return              Istenen Flight modellari.
+     */
     @GetMapping("/airline")
     @ApiOperation(value = "getAirport",notes = "This endpoint serves airport of the successfully airline name.")
     public ResponseEntity<List<FlightResponseDTO>> getFlightsByAirline(
@@ -75,7 +110,17 @@ public class FlightController {
         return new ResponseEntity<>(flightService.getFlightsByAirlineName(airlineName), HttpStatus.OK);
     }
 
-    /**Kalkış Havaalanına göre Arama(value'den kalkan ucuslar)**/
+    /**
+     * Kalkış Havaalanına(Departure) göre Arama - Havaalanından KALKAN Flightlar.
+     *
+     * @param searchType    Kalkis Havaalanı neye görene aranacak?
+     *                      Isime göre(byname) - sadece isime göre arar,
+     *                      sehire göre(bycity) - sadece sehire göre arar,
+     *                      isim veya sehire göre(bynameorcity) - hem isim hem sehir icinde arar,
+
+     * @param nameOrCity    Aranacak kelime
+     * @return              Havaalanı/Havaalanlarından kalkan ucus modelleri
+     */
     @GetMapping("/departure")
     @ApiOperation(value = "getFlightsByDeparture",notes = "This endpoint serves the flights by departure airports according to the search parameter sent.")
     public ResponseEntity<List<FlightResponseDTO>> getFlightsByDeparture(
@@ -84,7 +129,15 @@ public class FlightController {
        return new ResponseEntity<>(flightService.getFlightsByDeparture(searchType,nameOrCity),HttpStatus.OK);
     }
 
-    /**Varış Havaalanına göre Arama(value'ye kalkan ucuslar)**/
+    /**Varis Havaalanına(Arrival) göre Arama - Havaalanına INEN Flightlar.
+     *
+     * @param searchType    Varis Havaalanı neye görene aranacak?
+     *                      Isime göre(byname) - sadece isime göre arar,
+     *                      sehire göre(bycity) - sadece sehire göre arar,
+     *                      isim veya sehire göre(bynameorcity) - hem isim hem sehir icinde arar,
+     * @param nameOrCity    Aranacak kelime
+     * @return              Havaalanı/Havaalanlarından kalkan ucus modelleri
+     */
     @GetMapping("/arrival")
     @ApiOperation(value = "getFlightsByArrival",notes = "This endpoint serves the flights by arrival airports according to the search parameter sent.")
     public ResponseEntity<List<FlightResponseDTO>> getFlightsByArrival(
@@ -93,7 +146,17 @@ public class FlightController {
         return new ResponseEntity<>(flightService.getFlightsByArrival(searchType,nameOrCity),HttpStatus.OK);
     }
 
-    /**Kalkış Havaalanı ve İniş Havaalanına göre arama**/
+    /**
+     *Kalkış Havaalanına(Departure)  VE  Varis Havaalanına(Arrival) göre Arama - Departure'dan kalkip, Arrivalda inen flightlar.
+     *
+     * @param searchType   Varis ve kalkis Havaalanı neye görene aranacak?
+     *                     Isime göre(byname) - sadece isime göre arar,
+     *                     sehire göre(bycity) - sadece sehire göre arar,
+     *                     isim veya sehire göre(bynameorcity) - hem isim hem sehir icinde arar,
+     * @param departure    Kalkis havaalanı
+     * @param arrival      Varis havaalani
+     * @return             Havaalanı/Havaalanlarından kalkan ucus modelleri
+     */
     @GetMapping("/temp")
     @ApiOperation(value = "getFlightsByDepartureAndArrival",notes = "This endpoint serves the flights by arrival and departure airports according to the search parameter sent.")
     public ResponseEntity<FlightsResponseDTO> getFlightsByDepartureAndArrival(

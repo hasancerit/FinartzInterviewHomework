@@ -23,7 +23,13 @@ import javax.validation.Valid;
 public class TicketController {
     private final TicketService ticketService;
 
-    /*Ekleme*/
+    /**
+     * Ekleme
+     *
+     * @param ticketRequestDto  Kaydedilecek Ticket'ın modeli
+     * @return                  Kaydedilen Ticket'ın modeli
+     * @throws ApiException     Ticket Name zaten varsa
+     */
     @PostMapping("/add")
     @ApiOperation(value = "saveTicket",notes = "This endpoint saves the successfully sent ticket.")
     public ResponseEntity<TicketResponseDTO> saveTicket(
@@ -31,7 +37,14 @@ public class TicketController {
         return new ResponseEntity<>(ticketService.saveTicket(ticketRequestDto), HttpStatus.OK);
     }
 
-    /*Güncelleme*/
+    /**
+     * Güncelleme
+     *
+     * @param id            Guncellenecek Ticket id'si
+     * @param ticketDto     Guncellenecek Ticket'ın yeni alanları
+     * @return              Guncellenen Ticket'ın modeli
+     * @throws ApiException Ticket id bulunamazsa
+     */
     @PostMapping("/update/{id}")
     @ApiOperation(value = "updateTicket",notes = "This endpoint updates the successfully sent .")
     public ResponseEntity<TicketResponseDTO> updateTicket(
@@ -40,7 +53,12 @@ public class TicketController {
         return new ResponseEntity<>(ticketService.updateTicket(id,ticketDto),HttpStatus.OK);
     }
 
-    /*Silme*/
+    /**
+     * Silme
+     *
+     * @param id            Silinecek Ticket id'si
+     * @throws ApiException Airline Ticket bulunamazsa
+     */
     @DeleteMapping("/{id}")
     @ApiOperation(value = "deleteTicket",notes = "This endpoint deletes ticket of the successfully sent Id.")
     @ResponseStatus(code = HttpStatus.OK)
@@ -49,15 +67,23 @@ public class TicketController {
         ticketService.deleteTicket(id);
     }
 
-
-    /*Hepsini bul*/
+    /**
+     * Hepsini cek
+     *
+     * @return Veritabanındaki tüm Ticket'lar.
+     */
     @GetMapping("/all")
     @ApiOperation(value = "getAll",notes = "This endpoint serves all tickets.")
     public ResponseEntity getAll(){
         return new ResponseEntity<>(ticketService.getAll(), HttpStatus.OK);
     }
 
-    /*İd'e göre bul*/
+    /**
+     * Id İle Arama
+     *
+     * @param id    Alinmak istenen Ticket id'si
+     * @return      Istenen Tikcet modeli - Id bulunmaz ise null döner.
+     */
     @GetMapping("/{id}")
     @ApiOperation(value = "getTicket",notes = "This endpoint serves ticket of the successfully sent Id.")
     public ResponseEntity<TicketResponseDTO> getTicket(
@@ -65,7 +91,12 @@ public class TicketController {
         return new ResponseEntity<>(ticketService.getTicket(id), HttpStatus.OK);
     }
 
-    /*TicketNo'ya göre bul*/
+    /**
+     * TicketNo'ya göre bul
+     *
+     * @param ticketNo   Alinmak istenen Ticket id'si
+     * @return           Istenen Tikcet modeli - Id bulunmaz ise null döner.
+     */
     @GetMapping("/pnr")
     @ApiOperation(value = "getTicket",notes = "This endpoint serves ticket of the successfully sent ticket id.")
     public ResponseEntity<TicketResponseDTO> getTicketByTicketNo(

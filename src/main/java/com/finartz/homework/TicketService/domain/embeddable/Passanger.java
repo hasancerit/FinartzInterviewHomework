@@ -1,4 +1,4 @@
-package com.finartz.homework.TicketService.domain;
+package com.finartz.homework.TicketService.domain.embeddable;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.finartz.homework.TicketService.util.Gender;

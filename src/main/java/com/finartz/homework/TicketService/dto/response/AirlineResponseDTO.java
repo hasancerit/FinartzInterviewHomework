@@ -16,10 +16,13 @@ import java.util.List;
 public class AirlineResponseDTO {
     @ApiModelProperty(position = 1)
     private String id;
+
     @ApiModelProperty(position = 2)
     private String name;
+
     @ApiModelProperty(position = 3)
     private String desc;
+
     @ApiModelProperty(position = 4,notes = "Active Flights of the airline.")
     @JsonIgnoreProperties("airline")
     private List<FlightResponseDTO> activeFlights = new ArrayList<>();

@@ -1,6 +1,7 @@
 package com.finartz.homework.TicketService.domain;
 
 
+import com.finartz.homework.TicketService.domain.embeddable.Seat;
 import com.finartz.homework.TicketService.util.SeatStatus;
 import lombok.Getter;
 import lombok.Setter;

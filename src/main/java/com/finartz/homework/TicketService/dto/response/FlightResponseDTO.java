@@ -3,7 +3,7 @@ package com.finartz.homework.TicketService.dto.response;
 import com.fasterxml.jackson.annotation.*;
 import com.finartz.homework.TicketService.dto.response.wrapper.SeatDetail;
 import com.finartz.homework.TicketService.dto.response.wrapper.SeatsStatus;
-import com.finartz.homework.TicketService.domain.Seat;
+import com.finartz.homework.TicketService.domain.embeddable.Seat;
 import com.finartz.homework.TicketService.util.SeatStatus;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -53,7 +53,7 @@ public class FlightResponseDTO {
     @ApiModelProperty(position = 11)
     private int capasityEconomic;
 
-    /*Bunlar veritabanından direkt gelen koltuklar, ekonomik ve business ayrı ayrı fakat dolu-boş koltuklar karışık
+    /*Bunlar veritabanından direkt gelen koltuklar, ekonomik ve business ayrı ayrı fakat dolu-boş koltuklar karışık.
     * Yani, seatsEconomic icinde, Ekonomi sınıfının boş ve dolu koltukları ortak, farklı farklı değil. Business için de öyle.
     *
     * Bu yüzden kullanıcıya koltuklar, hem ekonomi hem de business için dolu ve boş koltukların ayrı ayrı gösterilecek bir

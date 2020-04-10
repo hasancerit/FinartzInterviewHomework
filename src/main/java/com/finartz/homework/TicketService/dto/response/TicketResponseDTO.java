@@ -1,7 +1,7 @@
 package com.finartz.homework.TicketService.dto.response;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.finartz.homework.TicketService.domain.Passanger;
+import com.finartz.homework.TicketService.domain.embeddable.Passanger;
 import com.finartz.homework.TicketService.util.FlightClass;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
