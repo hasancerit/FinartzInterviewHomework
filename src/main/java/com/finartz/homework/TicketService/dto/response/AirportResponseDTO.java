@@ -34,4 +34,10 @@ public class AirportResponseDTO {
     @ApiModelProperty(position = 6,notes = "Flights to arrival to this airport.")
     @JsonIgnoreProperties({"departure","arrival"})
     private List<FlightResponseDTO> arrivalFlights = new ArrayList<>();
+
+    public AirportResponseDTO(String id, String name, String city) {
+        this.id = id;
+        this.name = name;
+        this.city = city;
+    }
 }

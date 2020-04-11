@@ -153,6 +153,7 @@ public class AirportServiceImpl implements AirportService {
         airports.stream().forEach(airport -> {  //Her bir airport nesnesi
             airportResponseDTOList.add(modelMapper.map(airport,AirportResponseDTO.class)); //AirpostResponseDto'ya dönüstür ve ekle
         });
+        if(airportResponseDTOList.size() == 0) return null; //Size 0 ise null döndür.
         return airportResponseDTOList;
     }
 }

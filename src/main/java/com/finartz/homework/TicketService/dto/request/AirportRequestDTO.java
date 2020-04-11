@@ -26,4 +26,11 @@ public class AirportRequestDTO {
     @ApiModelProperty(notes = "Optional Description for Airport",required = false, position = 3)
     @Size(max = 30,message = "desc cannot be longer than 30 characters.")
     private String desc;
+
+    public AirportRequestDTO(
+            @Size(max = 30, message = "name cannot be longer than 30 characters.") @NotBlank(message = "name cannot be null.") String name,
+            @Size(max = 20, message = "city cannot be longer than 20 characters.") @NotBlank(message = "name cannot be null.") String city) {
+        this.name = name;
+        this.city = city;
+    }
 }

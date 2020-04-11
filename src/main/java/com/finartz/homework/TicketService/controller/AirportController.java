@@ -17,6 +17,8 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import java.util.List;
 
+import static com.finartz.homework.TicketService.util.ResponseHandler.createResponse;
+
 @RequiredArgsConstructor
 @RestController
 @Api(tags = {SwaggerConfig.TAG_2})
@@ -50,7 +52,7 @@ public class AirportController {
     @PostMapping("/update/{id}")
     public ResponseEntity<AirportResponseDTO> updateAirport(
             @ApiParam(value = "Id of the airport to be updated.",required = true) @PathVariable String id,
-            @ApiParam(value = "Airport Model to will be updated.",required = true) @RequestBody AirportRequestDTO airportDto) throws ApiException {
+            @ApiParam(value = "Airport Model to will be updated.",required = true)@Valid @RequestBody AirportRequestDTO airportDto) throws ApiException {
         return new ResponseEntity<>( airportService.updateAirport(id,airportDto),HttpStatus.OK);
     }
 
@@ -87,9 +89,9 @@ public class AirportController {
      */
     @GetMapping("/{id}")
     @ApiOperation(value = "getAirport",notes = "This endpoint serves airport of the successfully sent Id.")
-    public ResponseEntity<AirportResponseDTO> getAirport(
+    public ResponseEntity<?> getAirport(
             @ApiParam(value = "Id of the airport to be served.",required = true) @PathVariable String id){
-        return new ResponseEntity<>(airportService.getAirport(id), HttpStatus.OK);
+       return createResponse(airportService.getAirport(id));
     }
 
     /**
@@ -103,9 +105,9 @@ public class AirportController {
      */
     @GetMapping("/search")
     @ApiOperation(value = "getAirports",notes = "This endpoint serves the airports according to the search parameter sent.")
-    public ResponseEntity<List<AirportResponseDTO>> getAirports(
+    public ResponseEntity<?> getAirports(
             @ApiParam(value = "Search Parameter.",required = true) @RequestParam(required = true,name = "type") SearchType searchType,
             @ApiParam(value = "Search Value.",required = true) @RequestParam(required = true,name = "value") String nameOrCity){
-        return new ResponseEntity<>(airportService.getAirports(searchType,nameOrCity), HttpStatus.OK);
+        return createResponse(airportService.getAirports(searchType,nameOrCity));
     }
 }
