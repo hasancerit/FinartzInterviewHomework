@@ -28,6 +28,7 @@ public class Bootstrap implements CommandLineRunner {
 
     @Override
     public void run(String... args) throws Exception {
+        System.out.println("Boostrtap Calisti");
         Airline thy = new Airline();
         thy.setName("THY");
         thy.setDesc("THY Aciklama");

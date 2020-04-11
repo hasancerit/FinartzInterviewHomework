@@ -161,14 +161,12 @@ public class FlightServiceImpl implements FlightService {
         }
         oldCapasity = oldSeats.size();
 
-        //Kapasite artirildi ise
-        if(oldCapasity < updatedCapasity){
+        if(oldCapasity < updatedCapasity){  //Kapasite artirildi ise
             for(int i = oldSeats.size() + 1 ; i <= updatedCapasity;i++){    //Yeni koltuklar
                 oldSeats.put(""+i,new Seat( SeatStatus.empty,null));  //Default hale getir.
             }
         }
-        //Kapasite azaltildi ise
-        else if(oldCapasity > updatedCapasity){
+        else if(oldCapasity > updatedCapasity){ //Kapasite azaltildi ise
             Iterator<String> it2 = oldSeats.keySet().iterator();
             while (it2.hasNext()) {     //Her bir koltuk
                 String key = it2.next();

@@ -149,6 +149,7 @@ public class AirlineServiceImpl implements AirlineService {
         airlines.stream().forEach(airline -> {  //Airline icindeki her bir airline
             airlineResponseDTOList.add(modelMapper.map(airline, AirlineResponseDTO.class)); //AirlineResponseDto'ya dönüstür ve ekle
         });
+        if(airlineResponseDTOList.size() == 0) return null; //Size 0 ise null dondur
         return airlineResponseDTOList;
     }
 }

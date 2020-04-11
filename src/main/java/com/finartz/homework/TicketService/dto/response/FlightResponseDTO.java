@@ -7,12 +7,15 @@ import com.finartz.homework.TicketService.domain.embeddable.Seat;
 import com.finartz.homework.TicketService.util.SeatStatus;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDateTime;
 import java.util.Map;
 
+@NoArgsConstructor
 @Data
 @ApiModel(description="Sample Flight Model for Responses")
 public class FlightResponseDTO {

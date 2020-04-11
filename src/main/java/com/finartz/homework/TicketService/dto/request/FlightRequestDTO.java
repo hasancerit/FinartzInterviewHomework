@@ -3,7 +3,9 @@ package com.finartz.homework.TicketService.dto.request;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.springframework.format.annotation.NumberFormat;
 
 import javax.validation.constraints.NotBlank;
@@ -11,6 +13,7 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import java.time.LocalDateTime;
 
+@NoArgsConstructor
 @Data
 @ApiModel(description="Sample Flight Model for the Post/Update Requests.")
 public class FlightRequestDTO {
@@ -52,4 +55,6 @@ public class FlightRequestDTO {
     @ApiModelProperty(example = "150", required = true, position = 6)
     @NotNull(message = "capasityEconomic cannot be null.")
     private int capasityEconomic;
+
+
 }

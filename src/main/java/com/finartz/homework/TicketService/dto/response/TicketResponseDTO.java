@@ -10,7 +10,6 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @NoArgsConstructor
-@AllArgsConstructor
 @Data
 @ApiModel(description="Sample Ticket Model for Responses")
 public class TicketResponseDTO {

@@ -41,6 +41,25 @@ public class FlightController {
     }
 
     /**
+     * Havayoluna ucus ekle (FlightController'a taşınacak)
+     *
+     * @param id                Ucus eklenecek airline id'si
+     * @param flightRequestDTO  Eklenecek ucus
+     * @return                  Eklenen ucus
+     * @throws ArrivalBeforeDepartureException  Eklenmek istenen ucus kalkis ve inis saati kontrolu
+     * @throws ApiException     AirlineId, DepartureId,ArrivalId bulunamaz ise,
+     *                          Ucus kalkis ve varis havaalani ayni sehirde ise
+     */
+    @PostMapping("/add/toairline/{id}")
+    @ApiOperation(value = "addFlightToAirline",notes = "This endpoint saves flight to airline of the successfully sent name")
+    public ResponseEntity<FlightResponseDTO> addFlightToAirline(
+            @ApiParam(value = "Id of the alirline to be saved new flight.",required = true) @PathVariable String id,
+            @ApiParam(value = "Airline Model to will be saved",required = true) @Valid @RequestBody FlightRequestDTO flightRequestDTO) throws ArrivalBeforeDepartureException, ApiException {
+        flightRequestDTO.setAirlineId(id);
+        return new ResponseEntity<>(flightService.saveFlight(flightRequestDTO), HttpStatus.OK);
+    }
+
+    /**
      * Guncelleme
      *
      * @param id            Guncellenecek flight id'si
@@ -165,5 +184,4 @@ public class FlightController {
             @ApiParam(value = "Search Value.",required = true) @RequestParam(required = true,name = "arrival") String arrival){
         return new ResponseEntity<>(flightService.getFlightsByDepartureAndArrival(searchType,departure,arrival),HttpStatus.OK);
     }
-
 }

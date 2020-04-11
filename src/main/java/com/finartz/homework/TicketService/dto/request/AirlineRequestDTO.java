@@ -9,6 +9,7 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
+@NoArgsConstructor
 @Data
 @ApiModel(description="Sample Airline Model for the Post/Update Requests.")
 public class AirlineRequestDTO {
@@ -21,4 +22,11 @@ public class AirlineRequestDTO {
     @ApiModelProperty(notes = "Optional Description for Airline",required = false, position = 2)
     @Size(max = 30,message = "desc cannot be longer than 30 characters.")
     private String desc;
+
+    public AirlineRequestDTO(
+            @Size(max = 30, message = "name cannot be longer than 30 characters.") @NotBlank(message = "name cannot be null.") String name) {
+        this.name = name;
+    }
+
+
 }
