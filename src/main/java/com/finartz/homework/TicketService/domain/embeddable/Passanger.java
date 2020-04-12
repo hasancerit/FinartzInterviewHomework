@@ -14,6 +14,7 @@ import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 import java.time.LocalDate;
 import java.util.Date;
+import java.util.Objects;
 
 /*Passanger veritabanında tutulmayacak, Bilet içinde yolcu bilgilerinin görünmesi icin olusturuldu*/
 @Getter
@@ -44,4 +45,21 @@ public class Passanger {
     @NotNull(message = "dateOfBirth cannot be null.")
     @JsonFormat(pattern="dd-MM-yyyy")
     private LocalDate dateOfBirth;
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Passanger passanger = (Passanger) o;
+        return Objects.equals(fullName, passanger.fullName) &&
+                Objects.equals(idenityNo, passanger.idenityNo) &&
+                gender == passanger.gender &&
+                Objects.equals(phoneNumber, passanger.phoneNumber) &&
+                Objects.equals(dateOfBirth, passanger.dateOfBirth);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(fullName, idenityNo, gender, phoneNumber, dateOfBirth);
+    }
 }

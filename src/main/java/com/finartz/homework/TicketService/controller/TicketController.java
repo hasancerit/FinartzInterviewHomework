@@ -16,6 +16,8 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 
+import static com.finartz.homework.TicketService.util.ResponseHandler.createResponse;
+
 @RequiredArgsConstructor
 @RestController
 @Api(tags = {SwaggerConfig.TAG_4})
@@ -49,7 +51,7 @@ public class TicketController {
     @ApiOperation(value = "updateTicket",notes = "This endpoint updates the successfully sent .")
     public ResponseEntity<TicketResponseDTO> updateTicket(
             @ApiParam(value = "Id of the ticket to be updated.",required = true) @PathVariable String id,
-            @ApiParam(value = "Ticket Model to will be updated.",required = true) @RequestBody TicketRequestDTO ticketDto) throws ApiException {
+            @ApiParam(value = "Ticket Model to will be updated.",required = true)@Valid @RequestBody TicketRequestDTO ticketDto) throws ApiException {
         return new ResponseEntity<>(ticketService.updateTicket(id,ticketDto),HttpStatus.OK);
     }
 
@@ -86,9 +88,9 @@ public class TicketController {
      */
     @GetMapping("/{id}")
     @ApiOperation(value = "getTicket",notes = "This endpoint serves ticket of the successfully sent Id.")
-    public ResponseEntity<TicketResponseDTO> getTicket(
+    public ResponseEntity<?> getTicket(
             @ApiParam(value = "Id of the ticket to be served.",required = true) @PathVariable String id){
-        return new ResponseEntity<>(ticketService.getTicket(id), HttpStatus.OK);
+        return createResponse(ticketService.getTicket(id));
     }
 
     /**
@@ -99,8 +101,8 @@ public class TicketController {
      */
     @GetMapping("/pnr")
     @ApiOperation(value = "getTicket",notes = "This endpoint serves ticket of the successfully sent ticket id.")
-    public ResponseEntity<TicketResponseDTO> getTicketByTicketNo(
+    public ResponseEntity<?> getTicketByTicketNo(
             @ApiParam(value = "Ticket No of the ticket to be served.",required = true) @RequestParam(required = true,name = "pnr") String ticketNo){
-        return new ResponseEntity<>(ticketService.getTickeyByTicketNo(ticketNo), HttpStatus.OK);
+        return createResponse(ticketService.getTickeyByTicketNo(ticketNo));
     }
 }
