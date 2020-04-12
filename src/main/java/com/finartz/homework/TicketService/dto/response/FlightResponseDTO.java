@@ -102,5 +102,4 @@ public class FlightResponseDTO {
     private SeatsStatus seatStatusEconomi;
     @ApiModelProperty(position = 13,notes = "Keeps Empty and Taken Seats in the Business Class Separately.")
     private SeatsStatus seatStatusBusiness;
-
 }

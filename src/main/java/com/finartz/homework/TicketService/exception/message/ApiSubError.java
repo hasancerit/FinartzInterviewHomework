@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
-public class ApiValidationError extends SubError{
+public class ApiSubError extends SubError{
     private String message;
 
     private String object;

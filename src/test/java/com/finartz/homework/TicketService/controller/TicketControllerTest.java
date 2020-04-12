@@ -3,13 +3,10 @@ package com.finartz.homework.TicketService.controller;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import com.finartz.homework.TicketService.domain.Flight;
-import com.finartz.homework.TicketService.domain.Ticket;
 import com.finartz.homework.TicketService.domain.embeddable.Passanger;
 import com.finartz.homework.TicketService.dto.request.TicketRequestDTO;
 import com.finartz.homework.TicketService.dto.response.FlightResponseDTO;
 import com.finartz.homework.TicketService.dto.response.TicketResponseDTO;
-import com.finartz.homework.TicketService.exception.exception.ApiException;
 import com.finartz.homework.TicketService.service.TicketService;
 import com.finartz.homework.TicketService.util.FlightClass;
 import com.finartz.homework.TicketService.util.Gender;
@@ -23,15 +20,11 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 import static org.hamcrest.collection.IsCollectionWithSize.hasSize;
 import static org.hamcrest.core.Is.is;
-import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -87,14 +80,13 @@ class TicketControllerTest {
     @Test
     void saveTicketWithoutPassanger() throws Exception {
         TicketRequestDTO ticketRequestDTO = new TicketRequestDTO(flight.getId(), FlightClass.BUSINESS,null,"29");
-        when(ticketService.saveTicket(ticketRequestDTO)).thenReturn(null);
-
         mockMvc.perform(
                 post("/ticket/add")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(asJsonString(ticketRequestDTO)))
                 .andExpect(status().isBadRequest());
         verify(ticketService, times(0)).saveTicket(ticketRequestDTO);
+
     }
 
     @Test
@@ -118,14 +110,13 @@ class TicketControllerTest {
         String ticketId = "1";
         TicketRequestDTO ticketRequestDTO = new TicketRequestDTO(flight.getId(), FlightClass.BUSINESS,passanger,"iki");
 
-        when(ticketService.updateTicket(ticketId,ticketRequestDTO)).thenReturn(null);
-
         mockMvc.perform(
                 post("/ticket/update/{id}",ticketId)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(asJsonString(ticketRequestDTO)))
                 .andExpect(status().isBadRequest());
         verify(ticketService, times(0)).updateTicket(ticketId,ticketRequestDTO);
+
     }
 
     @Test
@@ -167,19 +158,6 @@ class TicketControllerTest {
     }
 
     @Test
-    void getTicket404() throws Exception {
-        String id = "34";
-
-        when(ticketService.getTicket(id)).thenReturn(null);
-
-        mockMvc.perform(
-                get("/ticket/{id}",id))
-                .andExpect(status().isNotFound());
-
-        verify(ticketService, times(1)).getTicket(id);
-    }
-
-    @Test
     void getTicketByTicketNo() throws Exception{
         String ticketNo = "9T12B5";
         TicketResponseDTO ticketResponseDTO = new TicketResponseDTO("1",ticketNo,passanger,flight,FlightClass.BUSINESS,"29");
@@ -197,17 +175,14 @@ class TicketControllerTest {
     }
 
     @Test
-    void getTicketByTicketNo404() throws Exception{
-        String ticketNo = "9T12B5";
-
-        when(ticketService.getTickeyByTicketNo(ticketNo)).thenReturn(null);
-
+    void getTicketByTicketNoWithoutParam() throws Exception{
         mockMvc.perform(
-                get("/ticket/pnr").param("pnr",ticketNo))
-                .andExpect(status().isNotFound());
+                get("/ticket/pnr"))
+                .andExpect(status().isBadRequest());
+        verify(ticketService, times(0)).getTickeyByTicketNo(any());
 
-        verify(ticketService, times(1)).getTickeyByTicketNo(ticketNo);
     }
+
 
     private String asJsonString(final Object obj) {
         try {

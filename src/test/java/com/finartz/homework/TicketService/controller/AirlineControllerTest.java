@@ -2,13 +2,8 @@ package com.finartz.homework.TicketService.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.finartz.homework.TicketService.dto.request.AirlineRequestDTO;
-import com.finartz.homework.TicketService.dto.request.FlightRequestDTO;
 import com.finartz.homework.TicketService.dto.response.AirlineResponseDTO;
-import com.finartz.homework.TicketService.exception.exception.ApiException;
-import com.finartz.homework.TicketService.exception.exception.ArrivalBeforeDepartureException;
 import com.finartz.homework.TicketService.service.AirlineService;
-import com.finartz.homework.TicketService.service.FlightService;
-import com.sun.org.apache.bcel.internal.generic.F2L;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -18,7 +13,6 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
-import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
 
@@ -64,6 +58,18 @@ class AirlineControllerTest {
     }
 
     @Test
+    void saveAirlineWithoutName() throws Exception {
+        AirlineRequestDTO airlineRequestDTO = new AirlineRequestDTO("");
+
+        mockMvc.perform(
+                post("/airline/add")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(asJsonString(airlineRequestDTO)))
+                .andExpect(status().isBadRequest());
+        verify(airlineService, times(0)).saveAirline(airlineRequestDTO);
+    }
+
+    @Test
     void updateAirline() throws Exception {
         String id = "1";
         AirlineRequestDTO airlineRequestDTO = new AirlineRequestDTO("updated name");
@@ -79,18 +85,10 @@ class AirlineControllerTest {
                 .andExpect(status().isOk());
         verify(airlineService, times(1)).updateAirline(id,airlineRequestDTO);
     }
-
     @Test
     void updateAirlineWithoutName() throws Exception {
         String id = "1";
-        AirlineRequestDTO airlineRequestDTO = new AirlineRequestDTO();
-        airlineRequestDTO.setDesc("updated desc");
-
-        AirlineResponseDTO airlineResponseDTO= new AirlineResponseDTO();
-        airlineResponseDTO.setId(id);
-        airlineResponseDTO.setDesc("updated desc");
-
-        when(airlineService.updateAirline(id,airlineRequestDTO)).thenReturn(airlineResponseDTO);
+        AirlineRequestDTO airlineRequestDTO = new AirlineRequestDTO("");
 
         mockMvc.perform(
                 post("/airline/update/"+id)
@@ -140,19 +138,6 @@ class AirlineControllerTest {
     }
 
     @Test
-    void getAirline404() throws Exception {
-        String id = "1";
-
-        when(airlineService.getAirline(id)).thenReturn(null);
-
-        mockMvc.perform(
-                get("/airline/{id}",id))
-                .andExpect(status().isNotFound());
-
-        verify(airlineService, times(1)).getAirline(id);
-    }
-
-    @Test
     void getAirlinesByName() throws Exception {
         String searchValue = "th";
         List<AirlineResponseDTO> airlines = Arrays.asList(
@@ -163,18 +148,18 @@ class AirlineControllerTest {
         mockMvc.perform(
                 get("/airline/name").param("name",searchValue))
                 .andExpect(status().isOk());
-    }
+        verify(airlineService, times(1)).getAirlinesByName(searchValue);
 
+    }
     @Test
-    void getAirlinesByName404() throws Exception {
-        String searchValue = "ayt";
-
-        when(airlineService.getAirlinesByName(searchValue)).thenReturn(null);
-
+    void getAirlinesWithoutParam() throws Exception {
         mockMvc.perform(
-                get("/airline/name").param("name",searchValue))
-                .andExpect(status().isNotFound());
+                get("/airline/name"))
+                .andExpect(status().isBadRequest());
+        verify(airlineService, times(0)).getAirlinesByName(any());
+
     }
+
 
     private String asJsonString(final Object obj) {
         try {

@@ -1,10 +1,8 @@
 package com.finartz.homework.TicketService.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.finartz.homework.TicketService.domain.Airport;
 import com.finartz.homework.TicketService.dto.request.AirportRequestDTO;
 import com.finartz.homework.TicketService.dto.response.AirportResponseDTO;
-import com.finartz.homework.TicketService.exception.exception.ApiException;
 import com.finartz.homework.TicketService.service.AirportService;
 import com.finartz.homework.TicketService.util.SearchType;
 import org.junit.jupiter.api.BeforeEach;
@@ -16,14 +14,11 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
-import java.lang.reflect.Array;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 import static org.hamcrest.collection.IsCollectionWithSize.hasSize;
 import static org.hamcrest.core.Is.is;
-import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -64,6 +59,19 @@ class AirportControllerTest {
     }
 
     @Test
+    void saveAirportWithoutName() throws Exception {
+        AirportRequestDTO airportRequestDTO = new AirportRequestDTO("","İstanbul");
+
+        mockMvc.perform(
+                post("/airport/add")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(asJsonString(airportRequestDTO)))
+                .andExpect(status().isBadRequest());
+
+        verify(airportService, times(0)).saveAirport(airportRequestDTO);
+    }
+
+    @Test
     void updateAirport() throws Exception {
         String id = "1";
         AirportRequestDTO airportRequestDTO = new AirportRequestDTO("Sabiha Gökçen","İstanbul");
@@ -83,21 +91,14 @@ class AirportControllerTest {
     @Test
     void updateAirportWithoutCity() throws Exception {
         String id = "1";
-        AirportRequestDTO airportRequestDTO = new AirportRequestDTO();
-        airportRequestDTO.setName("Sabiha Gökçen");
-
-        AirportResponseDTO airportResponseDto = new AirportResponseDTO();
-        airportResponseDto.setId("1");
-        airportResponseDto.setName("Sabiha Gökçen");
-
-
-        when(airportService.updateAirport(id,airportRequestDTO)).thenReturn(airportResponseDto);
+        AirportRequestDTO airportRequestDTO = new AirportRequestDTO("Sabiha Gökçen","");
 
         mockMvc.perform(
                 post("/airport/update/{id}",id)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(asJsonString(airportRequestDTO)))
                 .andExpect(status().isBadRequest());
+        verify(airportService, times(0)).updateAirport(id,airportRequestDTO);
 
     }
 
@@ -142,20 +143,6 @@ class AirportControllerTest {
                 .andExpect(jsonPath("$.city", is("İstanbul")));
 
         verify(airportService, times(1)).getAirport(id);
-
-    }
-
-    @Test
-    void getAirport404() throws Exception {
-        String id = "1";
-        when(airportService.getAirport(id)).thenReturn(null);
-
-        mockMvc.perform(
-                get("/airport/{id}",id))
-                .andExpect(status().isNotFound());
-
-        verify(airportService, times(1)).getAirport(id);
-
     }
 
     @Test
@@ -172,18 +159,18 @@ class AirportControllerTest {
         mockMvc.perform(
                 get("/airport/search").param("type",searchType.toString()).param("value",nameOrCityValue))
                 .andExpect(status().isOk());
+        verify(airportService, times(1)).getAirports(searchType,nameOrCityValue);
+
     }
 
     @Test
-    void getAirports404() throws Exception {
+    void getAirportsWithoutValueParam() throws Exception {
         SearchType searchType = SearchType.bynameorcity;
-        String nameOrCityValue = "gecersiz";
-
-        when(airportService.getAirports(searchType,nameOrCityValue)).thenReturn(null);
-
         mockMvc.perform(
-                get("/airport/search").param("type",searchType.toString()).param("value",nameOrCityValue))
-                .andExpect(status().isNotFound());
+                get("/airport/search").param("type",searchType.toString()))
+                .andExpect(status().isBadRequest());
+        verify(airportService, times(0)).getAirports(any(),any());
+
     }
 
     private String asJsonString(final Object obj) {

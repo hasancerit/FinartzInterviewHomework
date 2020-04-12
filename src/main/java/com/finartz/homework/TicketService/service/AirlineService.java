@@ -2,22 +2,23 @@ package com.finartz.homework.TicketService.service;
 
 import com.finartz.homework.TicketService.dto.request.AirlineRequestDTO;
 import com.finartz.homework.TicketService.dto.response.AirlineResponseDTO;
-import com.finartz.homework.TicketService.exception.exception.ApiException;
+import com.finartz.homework.TicketService.exception.exception.CustomAlreadyTaken;
+import com.finartz.homework.TicketService.exception.exception.CustomNotFound;
 
 import java.util.List;
 
 public interface AirlineService {
-    AirlineResponseDTO saveAirline(AirlineRequestDTO airlineDto) throws ApiException;
+    AirlineResponseDTO saveAirline(AirlineRequestDTO airlineDto) throws CustomAlreadyTaken;
 
-    AirlineResponseDTO updateAirline(String id, AirlineRequestDTO airlinetDto) throws ApiException;
+    AirlineResponseDTO updateAirline(String id, AirlineRequestDTO airlinetDto) throws CustomAlreadyTaken, CustomNotFound;
 
-    void deleteAirline(String id) throws ApiException;
+    void deleteAirline(String id) throws CustomAlreadyTaken, CustomNotFound;
 
     List<AirlineResponseDTO> getAll();
 
-    AirlineResponseDTO getAirline(String id);
+    AirlineResponseDTO getAirline(String id) throws CustomNotFound;
 
-    List<AirlineResponseDTO> getAirlinesByName(String name);
+    List<AirlineResponseDTO> getAirlinesByName(String name) throws CustomNotFound;
 
 
 }

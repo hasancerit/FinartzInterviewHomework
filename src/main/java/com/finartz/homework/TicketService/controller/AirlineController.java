@@ -3,7 +3,8 @@ package com.finartz.homework.TicketService.controller;
 import com.finartz.homework.TicketService.config.SwaggerConfig;
 import com.finartz.homework.TicketService.dto.request.AirlineRequestDTO;
 import com.finartz.homework.TicketService.dto.response.AirlineResponseDTO;
-import com.finartz.homework.TicketService.exception.exception.ApiException;
+import com.finartz.homework.TicketService.exception.exception.CustomAlreadyTaken;
+import com.finartz.homework.TicketService.exception.exception.CustomNotFound;
 import com.finartz.homework.TicketService.service.AirlineService;
 import com.finartz.homework.TicketService.service.FlightService;
 import io.swagger.annotations.Api;
@@ -17,7 +18,6 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import java.util.List;
 
-import static com.finartz.homework.TicketService.util.ResponseHandler.createResponse;
 
 @RequiredArgsConstructor
 @RestController
@@ -33,12 +33,12 @@ public class AirlineController {
      *
      * @param airlineRequestDTO Kaydedilecek Airline'ın modeli
      * @return                  Kaydedilen Airline'ın modeli
-     * @throws ApiException     Airline Name zaten varsa
+     * @throws CustomAlreadyTaken     Airline Name zaten varsa
      */
     @ApiOperation(value = "saveAirline",notes = "This endpoint saves the successfully sent airline.")
     @PostMapping("/add")
     public ResponseEntity<AirlineResponseDTO> saveAirline(
-            @ApiParam(value = "Airline Model to will be saved",required = true) @Valid @RequestBody AirlineRequestDTO airlineRequestDTO) throws ApiException {
+            @ApiParam(value = "Airline Model to will be saved",required = true) @Valid @RequestBody AirlineRequestDTO airlineRequestDTO) throws CustomAlreadyTaken {
         return new ResponseEntity<>(airlineService.saveAirline(airlineRequestDTO), HttpStatus.OK);
     }
 
@@ -48,13 +48,13 @@ public class AirlineController {
      * @param id            Guncellenecek Airline id'si
      * @param airlinetDto   Guncellenecek Airline'ın yeni alanları
      * @return              Guncellenen Airline'ın modeli
-     * @throws ApiException Airline id bulunamazsa
+     * @throws CustomAlreadyTaken Airline id bulunamazsa
      */
     @ApiOperation(value = "updateAirline",notes = "This endpoint updates the successfully sent airline.")
     @PostMapping("/update/{id}")
     public ResponseEntity<AirlineResponseDTO> updateAirline(
             @ApiParam(value = "Id of the airport to be updated.",required = true) @PathVariable String id,
-            @ApiParam(value = "Airline Model to will be updated.",required = true)@Valid @RequestBody AirlineRequestDTO airlinetDto) throws ApiException {
+            @ApiParam(value = "Airline Model to will be updated.",required = true)@Valid @RequestBody AirlineRequestDTO airlinetDto) throws CustomAlreadyTaken, CustomNotFound {
         return new ResponseEntity<>(airlineService.updateAirline(id,airlinetDto),HttpStatus.OK);
     }
 
@@ -62,13 +62,13 @@ public class AirlineController {
      * Silme
      *
      * @param id            Silinecek Airline id'si
-     * @throws ApiException Airline id bulunamazsa
+     * @throws CustomAlreadyTaken Airline id bulunamazsa
      */
     @DeleteMapping("/{id}")
     @ApiOperation(value = "deleteAirline",notes = "This endpoint deletes airline of the successfully sent Id.")
     @ResponseStatus(code = HttpStatus.OK)
     public void deleteAirline(
-            @ApiParam(value = "Id of the airline to be deleted.",required = true) @PathVariable String id) throws ApiException {
+            @ApiParam(value = "Id of the airline to be deleted.",required = true) @PathVariable String id) throws CustomAlreadyTaken, CustomNotFound {
         airlineService.deleteAirline(id);
     }
 
@@ -92,9 +92,9 @@ public class AirlineController {
      */
     @GetMapping("/{id}")
     @ApiOperation(value = "getAirline",notes = "This endpoint serves airline of the successfully sent Id.")
-    public ResponseEntity<?> getAirline(
-            @ApiParam(value = "Id of the airline to be served.",required = true) @PathVariable String id){
-        return createResponse(airlineService.getAirline(id));
+    public ResponseEntity<AirlineResponseDTO> getAirline(
+            @ApiParam(value = "Id of the airline to be served.",required = true) @PathVariable String id) throws CustomNotFound {
+        return new ResponseEntity<>(airlineService.getAirline(id),HttpStatus.OK);
     }
 
     /**
@@ -105,8 +105,8 @@ public class AirlineController {
      */
     @GetMapping("/name")
     @ApiOperation(value = "getAirlinesByName",notes = "This endpoint serves airlines of the successfully sent name")
-    public ResponseEntity<?> getAirlinesByName(
-            @ApiParam(value = "Name of the airlines to be served.",required = true) @RequestParam(required = true,name = "name") String name){
-        return createResponse(airlineService.getAirlinesByName(name));
+    public ResponseEntity<List<AirlineResponseDTO>> getAirlinesByName(
+            @ApiParam(value = "Name of the airlines to be served.",required = true) @RequestParam(required = true,name = "name") String name) throws CustomNotFound {
+        return new ResponseEntity<>(airlineService.getAirlinesByName(name),HttpStatus.OK);
     }
 }
