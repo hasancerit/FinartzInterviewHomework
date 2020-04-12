@@ -29,12 +29,15 @@ public class TicketController {
      *
      * @param ticketRequestDto  Kaydedilecek Ticket'ın modeli
      * @return                  Kaydedilen Ticket'ın modeli
-     * @throws CustomAlreadyTaken     Ticket Name zaten varsa
+     * @throws CustomAlreadyTaken   Business,Economi dolu ise,(Validation ile)
+     *                              Kapasite asildi ise,      (Validation ile)
+     *                              Koltuk daha once alindi ise
+     * @throws CustomNotFound       flightId bulunamazsa
      */
     @PostMapping("/add")
     @ApiOperation(value = "saveTicket",notes = "This endpoint saves the successfully sent ticket.")
     public ResponseEntity<TicketResponseDTO> saveTicket(
-            @ApiParam(value = "Ticket Model to will be saved",required = true) @Valid @RequestBody TicketRequestDTO ticketRequestDto) throws CustomAlreadyTaken, CustomNotFound {
+            @ApiParam(value = "Ticket Model to will be saved",required = true) @Valid @RequestBody TicketRequestDTO ticketRequestDto) throws CustomNotFound,CustomAlreadyTaken {
         return new ResponseEntity<>(ticketService.saveTicket(ticketRequestDto), HttpStatus.OK);
     }
 
@@ -44,7 +47,11 @@ public class TicketController {
      * @param id            Guncellenecek Ticket id'si
      * @param ticketDto     Guncellenecek Ticket'ın yeni alanları
      * @return              Guncellenen Ticket'ın modeli
-     * @throws CustomAlreadyTaken Ticket id bulunamazsa
+     * @throws CustomAlreadyTaken   Business,Economi dolu ise,(Validation ile)
+     *                              Kapasite asildi ise,      (Validation ile)
+     *                              Koltuk daha once alindi ise
+     * @throws CustomNotFound       ticketId bulunamazsa
+     *                              flightId bulunamazsa
      */
     @PostMapping("/update/{id}")
     @ApiOperation(value = "updateTicket",notes = "This endpoint updates the successfully sent .")
@@ -57,14 +64,14 @@ public class TicketController {
     /**
      * Silme
      *
-     * @param id            Silinecek Ticket id'si
-     * @throws CustomAlreadyTaken Airline Ticket bulunamazsa
+     * @param id                Silinecek Ticket id'si
+     * @throws CustomNotFound   ticketId bulunamazsa
      */
     @DeleteMapping("/{id}")
     @ApiOperation(value = "deleteTicket",notes = "This endpoint deletes ticket of the successfully sent Id.")
     @ResponseStatus(code = HttpStatus.OK)
     public void deleteTicket(
-            @ApiParam(value = "Id of the ticket to be deleted.",required = true) @PathVariable String id) throws CustomAlreadyTaken, CustomNotFound {
+            @ApiParam(value = "Id of the ticket to be deleted.",required = true) @PathVariable String id) throws CustomNotFound {
         ticketService.deleteTicket(id);
     }
 
@@ -82,8 +89,9 @@ public class TicketController {
     /**
      * Id İle Arama
      *
-     * @param id    Alinmak istenen Ticket id'si
-     * @return      Istenen Tikcet modeli - Id bulunmaz ise null döner.
+     * @param id                Alinmak istenen Ticket id'si
+     * @return                  Istenen Tikcet modeli
+     * @throws CustomNotFound   ticketId bulunamazsa
      */
     @GetMapping("/{id}")
     @ApiOperation(value = "getTicket",notes = "This endpoint serves ticket of the successfully sent Id.")
@@ -95,8 +103,9 @@ public class TicketController {
     /**
      * TicketNo'ya göre bul
      *
-     * @param ticketNo   Alinmak istenen Ticket id'si
-     * @return           Istenen Tikcet modeli - Id bulunmaz ise null döner.
+     * @param ticketNo          Alinmak istenen Ticket id'si
+     * @return                  Istenen Tikcet modeli
+     * @throws CustomNotFound   ticketId bulunamazsa
      */
     @GetMapping("/pnr")
     @ApiOperation(value = "getTicket",notes = "This endpoint serves ticket of the successfully sent ticket id.")

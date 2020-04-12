@@ -48,6 +48,7 @@ public class AirlineController {
      * @param id            Guncellenecek Airline id'si
      * @param airlinetDto   Guncellenecek Airline'ın yeni alanları
      * @return              Guncellenen Airline'ın modeli
+     * @throws CustomNotFound     Airline id bulunamazsa
      * @throws CustomAlreadyTaken Airline id bulunamazsa
      */
     @ApiOperation(value = "updateAirline",notes = "This endpoint updates the successfully sent airline.")
@@ -61,14 +62,14 @@ public class AirlineController {
     /**
      * Silme
      *
-     * @param id            Silinecek Airline id'si
-     * @throws CustomAlreadyTaken Airline id bulunamazsa
+     * @param id              Silinecek Airline id'si
+     * @throws CustomNotFound Airline id bulunamazsa
      */
     @DeleteMapping("/{id}")
     @ApiOperation(value = "deleteAirline",notes = "This endpoint deletes airline of the successfully sent Id.")
     @ResponseStatus(code = HttpStatus.OK)
     public void deleteAirline(
-            @ApiParam(value = "Id of the airline to be deleted.",required = true) @PathVariable String id) throws CustomAlreadyTaken, CustomNotFound {
+            @ApiParam(value = "Id of the airline to be deleted.",required = true) @PathVariable String id) throws CustomNotFound {
         airlineService.deleteAirline(id);
     }
 
@@ -89,6 +90,7 @@ public class AirlineController {
      *
      * @param id    Alinmak istenen Airline id'si
      * @return      Istenen airline modeli - Id bulunmaz ise null döner.
+     * @throws CustomNotFound   Airline id bulunamazsa
      */
     @GetMapping("/{id}")
     @ApiOperation(value = "getAirline",notes = "This endpoint serves airline of the successfully sent Id.")
@@ -102,6 +104,7 @@ public class AirlineController {
      *
      * @param name  Alinmak istenen Airline isimi.
      * @return      Istenen airline modeli - Bu isimde airline yoksa bos liste döner.
+     * @throws CustomNotFound   Aranan name bulunamazsa
      */
     @GetMapping("/name")
     @ApiOperation(value = "getAirlinesByName",notes = "This endpoint serves airlines of the successfully sent name")

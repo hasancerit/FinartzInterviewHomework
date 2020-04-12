@@ -34,9 +34,9 @@ public class TicketServiceImpl implements TicketService {
      * @param ticketDto       Kaydedilecek Ticket'ın modeli
      * @return                Kaydedilen Ticket'ın modeli
      * @throws CustomAlreadyTaken   Business,Economi dolu ise,(Validation ile)
-     *                        Kapasite asildi ise,      (Validation ile)
-     *                        Koltuk daha once alindi ise
-     * @throws CustomNotFound flightId bulunamazsa
+     *                              Kapasite asildi ise,      (Validation ile)
+     *                              Koltuk daha once alindi ise
+     * @throws CustomNotFound       flightId bulunamazsa
      */
     @Override
     public TicketResponseDTO saveTicket(TicketRequestDTO ticketDto) throws CustomAlreadyTaken, CustomNotFound {
@@ -51,10 +51,10 @@ public class TicketServiceImpl implements TicketService {
      * @param ticketDto       Guncellenecek Ticket'ın yeni alanları
      * @return                Guncellenen Ticket'ın modeli
      * @throws CustomAlreadyTaken   Business,Economi dolu ise,(Validation ile)
-     *                        Kapasite asildi ise,      (Validation ile)
-     *                        Koltuk daha once alindi ise
-     * @throws CustomNotFound ticketId bulunamazsa
-     *                        flightId bulunamazsa
+     *                              Kapasite asildi ise,      (Validation ile)
+     *                              Koltuk daha once alindi ise
+     * @throws CustomNotFound       ticketId bulunamazsa
+     *                              flightId bulunamazsa
      */
     @Override
     public TicketResponseDTO updateTicket(String id, TicketRequestDTO ticketDto) throws CustomAlreadyTaken, CustomNotFound {
@@ -244,7 +244,7 @@ public class TicketServiceImpl implements TicketService {
      * Id İle Arama
      *
      * @param id                Alinmak istenen Ticket id'si
-     * @return                  Istenen Tikcet modeli - Id bulunmaz ise null döner.
+     * @return                  Istenen Tikcet modeli
      * @throws CustomNotFound   ticketId bulunamazsa
      */
     @Override
@@ -260,7 +260,7 @@ public class TicketServiceImpl implements TicketService {
      * TicketNo'ya göre bul
      *
      * @param ticketNo          Alinmak istenen Ticket id'si
-     * @return                  Istenen Tikcet modeli - Id bulunmaz ise null döner.
+     * @return                  Istenen Tikcet modeli
      * @throws CustomNotFound   ticketId bulunamazsa
      */
     @Override

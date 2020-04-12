@@ -42,7 +42,7 @@ public class AirportServiceImpl implements AirportService {
      * @param id                Guncellenecek Airport id'si
      * @param airportDto        Guncellenecek Airport'un yeni alanları
      * @return                  Guncellenen Airport'un modeli
-     * @throws CustomNotFound   Airport id bulunamazsa
+     * @throws CustomNotFound         Airport id bulunamazsa
      * @throws CustomAlreadyTaken     Airport name zaten alinmissa
      */
     @Override

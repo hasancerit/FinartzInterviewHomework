@@ -12,7 +12,7 @@ public interface TicketService {
 
     TicketResponseDTO updateTicket(String id, TicketRequestDTO ticketDto) throws CustomAlreadyTaken, CustomNotFound;
 
-    void deleteTicket(String id) throws CustomAlreadyTaken, CustomNotFound;
+    void deleteTicket(String id) throws CustomNotFound;
 
     List<TicketResponseDTO> getAll();
 

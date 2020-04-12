@@ -46,7 +46,8 @@ public class AirportController {
      * @param id            Guncellenecek Airport id'si
      * @param airportDto    Guncellenecek Airport'un yeni alanları
      * @return              Guncellenen Airport'un modeli
-     * @throws CustomAlreadyTaken Airport id bulunamazsa
+     * @throws CustomNotFound     Airport id bulunamazsa
+     * @throws CustomAlreadyTaken Airport name zaten alinmissa
      */
     @ApiOperation(value = "updateAirport",notes = "This endpoint updates the successfully sent airport.")
     @PostMapping("/update/{id}")
@@ -60,13 +61,13 @@ public class AirportController {
      * Silme
      *
      * @param id            Silinecek Airport id'si
-     * @throws CustomAlreadyTaken Airport id bulunamazsa
+     * @throws CustomNotFound   Airport id bulunamazsa
      */
     @DeleteMapping("/{id}")
     @ApiOperation(value = "deleteAirport",notes = "This endpoint deletes airport of the successfully sent Id.")
     @ResponseStatus(code = HttpStatus.OK)
     public void deleteAirport(
-            @ApiParam(value = "Id of the airport to be deleted.",required = true) @PathVariable String id) throws CustomAlreadyTaken, CustomNotFound {
+            @ApiParam(value = "Id of the airport to be deleted.",required = true) @PathVariable String id) throws CustomNotFound {
         airportService.deleteAirport(id);
     }
 
@@ -84,8 +85,9 @@ public class AirportController {
     /**
      * Id İle Arama
      *
-     * @param id
-     * @return
+     * @param id                Alinmak istenen Airport id'si
+     * @return                  Istenen Airport modeli
+     * @throws CustomNotFound   Airport id bulunamazsa
      */
     @GetMapping("/{id}")
     @ApiOperation(value = "getAirport",notes = "This endpoint serves airport of the successfully sent Id.")
@@ -102,6 +104,7 @@ public class AirportController {
      *                      isim veya sehire göre(bynameorcity) - hem isim hem sehir icinde arar,
      * @param nameOrCity    Aranacak kelime
      * @return              Bulunan Airport modelleri.
+     * @throws CustomNotFound   Aranan degerde airport bulunamazsa
      */
     @GetMapping("/search")
     @ApiOperation(value = "getAirports",notes = "This endpoint serves the airports according to the search parameter sent.")

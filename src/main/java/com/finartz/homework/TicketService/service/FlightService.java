@@ -15,7 +15,7 @@ public interface FlightService {
 
     FlightResponseDTO updateFlight(String id, FlightRequestDTO flightDto) throws CustomAlreadyTaken, ArrivalBeforeDepartureException, CustomNotFound;
 
-    void  deleteFlight(String id) throws CustomAlreadyTaken, CustomNotFound;
+    void  deleteFlight(String id) throws CustomNotFound;
 
     List<FlightResponseDTO> getAll();
 

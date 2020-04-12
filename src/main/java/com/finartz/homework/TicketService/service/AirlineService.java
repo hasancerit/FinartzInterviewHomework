@@ -12,7 +12,7 @@ public interface AirlineService {
 
     AirlineResponseDTO updateAirline(String id, AirlineRequestDTO airlinetDto) throws CustomAlreadyTaken, CustomNotFound;
 
-    void deleteAirline(String id) throws CustomAlreadyTaken, CustomNotFound;
+    void deleteAirline(String id) throws CustomNotFound;
 
     List<AirlineResponseDTO> getAll();
 

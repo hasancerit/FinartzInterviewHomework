@@ -41,7 +41,7 @@ public class FlightServiceImpl implements FlightService {
      *
      * @param flightDto         Eklenecek flight
      * @return                  Eklenen flight
-     * @throws CustomAlreadyTaken                     Flight kalkis ve varis havaalani ayni sehirde ise
+     * @throws CustomAlreadyTaken               Flight kalkis ve varis havaalani ayni sehirde ise
      * @throws ArrivalBeforeDepartureException  Eklenmek istenen flight kalkis ve inis saati kontrolu
      * @throws CustomNotFound                   AirlineId, DepartureId,ArrivalId bulunamaz ise
      */
@@ -60,7 +60,7 @@ public class FlightServiceImpl implements FlightService {
      * @param id            Guncellenecek flight id'si
      * @param flightDto     Guncellenecek flight'in yeni alanları
      * @return              Guncellenen Flight'in modeli
-     * @throws CustomAlreadyTaken                     Flight kalkis ve varis havaalani ayni sehirde ise
+     * @throws CustomAlreadyTaken               Flight kalkis ve varis havaalani ayni sehirde ise
      * @throws ArrivalBeforeDepartureException  Eklenmek istenen flight kalkis ve inis saati kontrolu
      * @throws CustomNotFound                   FlightId, AirlineId, DepartureId,ArrivalId bulunamaz ise
      */

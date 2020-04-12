@@ -44,7 +44,7 @@ public class AirlineServiceImpl implements AirlineService {
      * @param id                Guncellenecek Airline id'si
      * @param airlineDto        Guncellenecek Airline'in yeni alanları
      * @return                  Guncellenen Airline'in modeli
-     * @throws CustomNotFound   Airline id bulunamazsa
+     * @throws CustomNotFound         Airline id bulunamazsa
      * @throws CustomAlreadyTaken     Airline name zaten alinmissa
      */
     @Override
@@ -87,7 +87,7 @@ public class AirlineServiceImpl implements AirlineService {
      * @throws CustomNotFound Airline id bulunamazsa
      */
     @Override
-    public void deleteAirline(String id) throws CustomNotFound {
+    public void deleteAirline(String id) throws CustomNotFound{
         Airline airline;
         try {
             airline = airlineRepository.findById(id).get();

@@ -13,7 +13,7 @@ public interface AirportService {
 
     AirportResponseDTO updateAirport(String id, AirportRequestDTO airportDto) throws CustomAlreadyTaken, CustomNotFound;
 
-    void deleteAirport(String id) throws CustomAlreadyTaken, CustomNotFound;
+    void deleteAirport(String id) throws CustomNotFound;
 
     List<AirportResponseDTO> getAll();
 

@@ -30,14 +30,15 @@ public class FlightController {
      *
      * @param flightRequestDTO  Eklenecek flight
      * @return                  Eklenen flight
+     * @throws CustomAlreadyTaken               Flight kalkis ve varis havaalani ayni sehirde ise
      * @throws ArrivalBeforeDepartureException  Eklenmek istenen flight kalkis ve inis saati kontrolu
-     * @throws CustomAlreadyTaken     AirlineId, DepartureId,ArrivalId bulunamaz ise,
-     *                          Ucus kalkis ve varis havaalani ayni sehirde ise
+     * @throws CustomNotFound                   AirlineId, DepartureId,ArrivalId bulunamaz ise
      */
     @PostMapping("/add")
     @ApiOperation(value = "saveFlight",notes = "This endpoint saves the successfully sent flight.")
     public ResponseEntity<FlightResponseDTO> saveFlight(
-            @ApiParam(value = "Flight Model to will be saved",required = true) @Valid @RequestBody FlightRequestDTO flightRequestDTO) throws ArrivalBeforeDepartureException, CustomAlreadyTaken, CustomNotFound {
+            @ApiParam(value = "Flight Model to will be saved",required = true) @Valid @RequestBody FlightRequestDTO flightRequestDTO)
+            throws ArrivalBeforeDepartureException, CustomAlreadyTaken, CustomNotFound {
         return new ResponseEntity<>(flightService.saveFlight(flightRequestDTO), HttpStatus.OK);
     }
 
@@ -47,15 +48,16 @@ public class FlightController {
      * @param id                Ucus eklenecek airline id'si
      * @param flightRequestDTO  Eklenecek ucus
      * @return                  Eklenen ucus
-     * @throws ArrivalBeforeDepartureException  Eklenmek istenen ucus kalkis ve inis saati kontrolu
-     * @throws CustomAlreadyTaken     AirlineId, DepartureId,ArrivalId bulunamaz ise,
-     *                          Ucus kalkis ve varis havaalani ayni sehirde ise
+     * @throws CustomAlreadyTaken               Flight kalkis ve varis havaalani ayni sehirde ise
+     * @throws ArrivalBeforeDepartureException  Eklenmek istenen flight kalkis ve inis saati kontrolu
+     * @throws CustomNotFound                   AirlineId, DepartureId,ArrivalId bulunamaz ise
      */
     @PostMapping("/add/toairline/{airlineId}")
     @ApiOperation(value = "addFlightToAirline",notes = "This endpoint saves flight to airline of the successfully sent name")
     public ResponseEntity<FlightResponseDTO> addFlightToAirline(
             @ApiParam(value = "Id of the alirline to be saved new flight.",required = true) @PathVariable String airlineId,
-            @ApiParam(value = "Airline Model to will be saved",required = true) @Valid @RequestBody FlightRequestDTO flightRequestDTO) throws ArrivalBeforeDepartureException, CustomAlreadyTaken, CustomNotFound {
+            @ApiParam(value = "Airline Model to will be saved",required = true) @Valid @RequestBody FlightRequestDTO flightRequestDTO)
+            throws ArrivalBeforeDepartureException, CustomAlreadyTaken, CustomNotFound {
         flightRequestDTO.setAirlineId(airlineId);
         return new ResponseEntity<>(flightService.saveFlight(flightRequestDTO), HttpStatus.OK);
     }
@@ -66,29 +68,30 @@ public class FlightController {
      * @param id            Guncellenecek flight id'si
      * @param flightDto     Guncellenecek flight'ın yeni alanları
      * @return              Guncellenen Flight'ın modeli
-     * @throws ArrivalBeforeDepartureException Eklenmek istenen flight kalkis ve inis saati kontrolu
-     * @throws CustomAlreadyTaken AirlineId, DepartureId,ArrivalId bulunamaz ise,
-     *                      Flight kalkis ve varis havaalani ayni sehirde ise
+     * @throws CustomAlreadyTaken               Flight kalk havaalani ayni sehirde ise
+     * @throws ArrivalBeforeDepartureException  Eklenmek istenen flight kalkis ve inis saati kontrolu
+     * @throws CustomNotFound                   FlightId, AirlineId, DepartureId,ArrivalId bulunamaz ise
      */
     @ApiOperation(value = "updateFlight",notes = "This endpoint updates the successfully sent flight.")
     @PostMapping("/update/{id}")
     public ResponseEntity<FlightResponseDTO> updateFlight(
             @ApiParam(value = "Id of the flight to be updated.",required = true) @PathVariable String id,
-            @ApiParam(value = "Flight Model to will be updated.",required = true)@Valid @RequestBody FlightRequestDTO flightDto) throws ArrivalBeforeDepartureException, CustomAlreadyTaken, CustomNotFound {
+            @ApiParam(value = "Flight Model to will be updated.",required = true)@Valid @RequestBody FlightRequestDTO flightDto)
+            throws ArrivalBeforeDepartureException, CustomAlreadyTaken, CustomNotFound {
         return new ResponseEntity<>(flightService.updateFlight(id,flightDto),HttpStatus.OK);
     }
 
     /**
      * Sil
      *
-     * @param id            Silinecek flight id'si
-     * @throws CustomAlreadyTaken Flight id bulunamazsa
+     * @param id                Silinecek flight id'si
+     * @throws CustomNotFound   Flight id bulunamazsa
      */
     @DeleteMapping("/{id}")
     @ApiOperation(value = "deleteFlight",notes = "This endpoint deletes flight of the successfully sent Id.")
     @ResponseStatus(code = HttpStatus.OK)
     public void deleteFlight(
-            @ApiParam(value = "Id of the flight to be deleted.",required = true) @PathVariable String id) throws CustomAlreadyTaken, CustomNotFound {
+            @ApiParam(value = "Id of the flight to be deleted.",required = true) @PathVariable String id) throws CustomNotFound {
         flightService.deleteFlight(id);
     }
 
@@ -109,6 +112,7 @@ public class FlightController {
      *
      * @param id     Alinmak istenen Airline id'si
      * @return       Istenen flight modeli - Id bulunmaz ise null döner.
+     * @throws CustomNotFound   Flight id bulunamazsa
      */
     @GetMapping("/{id}")
     @ApiOperation(value = "getFlight",notes = "This endpoint serves flight of the successfully sent Id.")
@@ -122,6 +126,7 @@ public class FlightController {
      *
      * @param airlineName   Ucuslari cekilmek istenen Airline ismi.
      * @return              Istenen Flight modellari.
+     * @throws CustomNotFound   Aranan airlineName bulunamazsa
      */
     @GetMapping("/airline")
     @ApiOperation(value = "getAirport",notes = "This endpoint serves airport of the successfully airline name.")
@@ -140,6 +145,7 @@ public class FlightController {
 
      * @param nameOrCity    Aranacak kelime
      * @return              Havaalanı/Havaalanlarından kalkan ucus modelleri
+     * @throws CustomNotFound aranan degerde havaalanı veya kalkan ucus bulunamazsa
      */
     @GetMapping("/departure")
     @ApiOperation(value = "getFlightsByDeparture",notes = "This endpoint serves the flights by departure airports according to the search parameter sent.")
@@ -157,6 +163,7 @@ public class FlightController {
      *                      isim veya sehire göre(bynameorcity) - hem isim hem sehir icinde arar,
      * @param nameOrCity    Aranacak kelime
      * @return              Havaalanı/Havaalanlarından kalkan ucus modelleri
+     * @throws CustomNotFound aranan degerde havaalanı veya inen ucus bulunamazsa
      */
     @GetMapping("/arrival")
     @ApiOperation(value = "getFlightsByArrival",notes = "This endpoint serves the flights by arrival airports according to the search parameter sent.")
@@ -176,6 +183,7 @@ public class FlightController {
      * @param departure    Kalkis havaalanı
      * @param arrival      Varis havaalani
      * @return             Havaalanı/Havaalanlarından kalkan ucus modelleri
+     * @throws CustomNotFound Kalkıs ya da inis havaalanı veya aranan degerlerde ucus bulunamazsa
      */
     @GetMapping("/temp")
     @ApiOperation(value = "getFlightsByDepartureAndArrival",notes = "This endpoint serves the flights by arrival and departure airports according to the search parameter sent.")
