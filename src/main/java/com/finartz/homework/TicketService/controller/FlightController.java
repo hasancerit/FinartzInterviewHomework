@@ -5,7 +5,6 @@ import com.finartz.homework.TicketService.dto.request.FlightRequestDTO;
 import com.finartz.homework.TicketService.dto.response.FlightResponseDTO;
 import com.finartz.homework.TicketService.dto.response.wrapper.FlightsResponseDTO;
 import com.finartz.homework.TicketService.exception.exception.CustomAlreadyTaken;
-import com.finartz.homework.TicketService.exception.exception.ArrivalBeforeDepartureException;
 import com.finartz.homework.TicketService.exception.exception.CustomNotFound;
 import com.finartz.homework.TicketService.service.FlightService;
 import com.finartz.homework.TicketService.util.SearchType;
@@ -31,14 +30,13 @@ public class FlightController {
      * @param flightRequestDTO  Eklenecek flight
      * @return                  Eklenen flight
      * @throws CustomAlreadyTaken               Flight kalkis ve varis havaalani ayni sehirde ise
-     * @throws ArrivalBeforeDepartureException  Eklenmek istenen flight kalkis ve inis saati kontrolu
      * @throws CustomNotFound                   AirlineId, DepartureId,ArrivalId bulunamaz ise
      */
     @PostMapping("/add")
     @ApiOperation(value = "saveFlight",notes = "This endpoint saves the successfully sent flight.")
     public ResponseEntity<FlightResponseDTO> saveFlight(
             @ApiParam(value = "Flight Model to will be saved",required = true) @Valid @RequestBody FlightRequestDTO flightRequestDTO)
-            throws ArrivalBeforeDepartureException, CustomAlreadyTaken, CustomNotFound {
+            throws CustomAlreadyTaken, CustomNotFound {
         return new ResponseEntity<>(flightService.saveFlight(flightRequestDTO), HttpStatus.OK);
     }
 
@@ -49,7 +47,6 @@ public class FlightController {
      * @param flightRequestDTO  Eklenecek ucus
      * @return                  Eklenen ucus
      * @throws CustomAlreadyTaken               Flight kalkis ve varis havaalani ayni sehirde ise
-     * @throws ArrivalBeforeDepartureException  Eklenmek istenen flight kalkis ve inis saati kontrolu
      * @throws CustomNotFound                   AirlineId, DepartureId,ArrivalId bulunamaz ise
      */
     @PostMapping("/add/toairline/{airlineId}")
@@ -57,7 +54,7 @@ public class FlightController {
     public ResponseEntity<FlightResponseDTO> addFlightToAirline(
             @ApiParam(value = "Id of the alirline to be saved new flight.",required = true) @PathVariable String airlineId,
             @ApiParam(value = "Airline Model to will be saved",required = true) @Valid @RequestBody FlightRequestDTO flightRequestDTO)
-            throws ArrivalBeforeDepartureException, CustomAlreadyTaken, CustomNotFound {
+            throws CustomAlreadyTaken, CustomNotFound {
         flightRequestDTO.setAirlineId(airlineId);
         return new ResponseEntity<>(flightService.saveFlight(flightRequestDTO), HttpStatus.OK);
     }
@@ -69,7 +66,6 @@ public class FlightController {
      * @param flightDto     Guncellenecek flight'ın yeni alanları
      * @return              Guncellenen Flight'ın modeli
      * @throws CustomAlreadyTaken               Flight kalk havaalani ayni sehirde ise
-     * @throws ArrivalBeforeDepartureException  Eklenmek istenen flight kalkis ve inis saati kontrolu
      * @throws CustomNotFound                   FlightId, AirlineId, DepartureId,ArrivalId bulunamaz ise
      */
     @ApiOperation(value = "updateFlight",notes = "This endpoint updates the successfully sent flight.")
@@ -77,7 +73,7 @@ public class FlightController {
     public ResponseEntity<FlightResponseDTO> updateFlight(
             @ApiParam(value = "Id of the flight to be updated.",required = true) @PathVariable String id,
             @ApiParam(value = "Flight Model to will be updated.",required = true)@Valid @RequestBody FlightRequestDTO flightDto)
-            throws ArrivalBeforeDepartureException, CustomAlreadyTaken, CustomNotFound {
+            throws CustomAlreadyTaken, CustomNotFound {
         return new ResponseEntity<>(flightService.updateFlight(id,flightDto),HttpStatus.OK);
     }
 

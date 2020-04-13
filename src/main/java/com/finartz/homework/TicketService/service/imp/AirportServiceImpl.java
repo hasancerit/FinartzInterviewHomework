@@ -72,8 +72,7 @@ public class AirportServiceImpl implements AirportService {
         try {
             airport = airportRepository.save(airport);
         } catch (DataIntegrityViolationException e) {   //Airport Name zaten varsa
-            throw new CustomAlreadyTaken("name is already taken.",airportDto.getClass(),
-                    "name",airportDto.getName());
+            throw new CustomAlreadyTaken("name is already taken.",airportDto.getClass(), "name",airportDto.getName());
         }
         return airport;
     }

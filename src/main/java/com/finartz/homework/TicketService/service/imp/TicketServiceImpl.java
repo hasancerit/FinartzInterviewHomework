@@ -33,8 +33,8 @@ public class TicketServiceImpl implements TicketService {
      *
      * @param ticketDto       Kaydedilecek Ticket'ın modeli
      * @return                Kaydedilen Ticket'ın modeli
-     * @throws CustomAlreadyTaken   Business,Economi dolu ise,(Validation ile)
-     *                              Kapasite asildi ise,      (Validation ile)
+     * @throws CustomAlreadyTaken   Business,Economi dolu ise
+     *                              Kapasite asildi ise,
      *                              Koltuk daha once alindi ise
      * @throws CustomNotFound       flightId bulunamazsa
      */
@@ -268,7 +268,7 @@ public class TicketServiceImpl implements TicketService {
         try {
             return modelMapper.map(ticketRepository.findByTicketNo(ticketNo), TicketResponseDTO.class);
         } catch (NoSuchElementException ex) {   //ticketId yoksa
-            throw new CustomNotFound(ticketNo.getClass(), "ticketId", ticketNo);
+            throw new CustomNotFound(ticketNo.getClass(), "ticketNo", ticketNo);
         }
     }
 }

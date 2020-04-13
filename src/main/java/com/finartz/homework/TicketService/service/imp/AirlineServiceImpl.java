@@ -74,8 +74,7 @@ public class AirlineServiceImpl implements AirlineService {
         try {
             airline = airlineRepository.save(airline);
         } catch (DataIntegrityViolationException e) {   //Airline Name zaten varsa
-            throw new CustomAlreadyTaken("name is already taken.", airlineDto.getClass(),
-                    "name", airlineDto.getName());
+            throw new CustomAlreadyTaken("name is already taken.", airlineDto.getClass(), "name", airlineDto.getName());
         }
         return airline;
     }

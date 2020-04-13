@@ -1,25 +1,24 @@
 package com.finartz.homework.TicketService.dto.request;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.finartz.homework.TicketService.dto.validation.NotBefore;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
-import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.springframework.format.annotation.NumberFormat;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Pattern;
 import java.time.LocalDateTime;
 
 @NoArgsConstructor
 @Data
 @ApiModel(description="Sample Flight Model for the Post/Update Requests.")
+@NotBefore(departureField = "departureDate",arrivalField = "arrivalDate")
 public class FlightRequestDTO {
 
     @ApiModelProperty(example = "23", required = true, position = 1)
-    @NotBlank(message = "airlineId cannot be null.")
+    @NotBlank(message = "airlineId cannot be null." )
     private String airlineId;
 
     @ApiModelProperty(example = "12", required = true, position = 2)

@@ -1,7 +1,6 @@
 package com.finartz.homework.TicketService.exception.controller;
 
 import com.finartz.homework.TicketService.exception.exception.CustomAlreadyTaken;
-import com.finartz.homework.TicketService.exception.exception.ArrivalBeforeDepartureException;
 import com.finartz.homework.TicketService.exception.exception.CustomNotFound;
 import com.finartz.homework.TicketService.exception.message.ApiError;
 import com.finartz.homework.TicketService.exception.message.ApiSubError;
@@ -45,14 +44,6 @@ public class ErrorController {
 
         apiError.getSubErrors().add(apiSubError);
 
-        return new ResponseEntity<>(apiError,apiError.getHttpStatus());
-    }
-
-    @ExceptionHandler(ArrivalBeforeDepartureException.class)
-    public ResponseEntity<ApiError> handleConflict(ArrivalBeforeDepartureException ex) {
-        ApiError apiError = new ApiError();
-        apiError.setMessage("Arrival Date("+ex.getArrivalDate()+"), cannot be before from Departure Date("+ex.getDepartureDate()+")");
-        apiError.setHttpStatus(HttpStatus.BAD_REQUEST);
         return new ResponseEntity<>(apiError,apiError.getHttpStatus());
     }
 

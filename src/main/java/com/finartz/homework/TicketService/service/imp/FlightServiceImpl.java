@@ -9,7 +9,6 @@ import com.finartz.homework.TicketService.dto.response.AirportResponseDTO;
 import com.finartz.homework.TicketService.dto.response.wrapper.IndirectFlightDTO;
 import com.finartz.homework.TicketService.dto.response.FlightResponseDTO;
 import com.finartz.homework.TicketService.dto.response.wrapper.FlightsResponseDTO;
-import com.finartz.homework.TicketService.exception.exception.ArrivalBeforeDepartureException;
 import com.finartz.homework.TicketService.exception.exception.CustomAlreadyTaken;
 import com.finartz.homework.TicketService.exception.exception.CustomNotFound;
 import com.finartz.homework.TicketService.repositories.AirlineRepository;
@@ -42,11 +41,10 @@ public class FlightServiceImpl implements FlightService {
      * @param flightDto         Eklenecek flight
      * @return                  Eklenen flight
      * @throws CustomAlreadyTaken               Flight kalkis ve varis havaalani ayni sehirde ise
-     * @throws ArrivalBeforeDepartureException  Eklenmek istenen flight kalkis ve inis saati kontrolu
      * @throws CustomNotFound                   AirlineId, DepartureId,ArrivalId bulunamaz ise
      */
     @Override
-    public FlightResponseDTO saveFlight(FlightRequestDTO flightDto) throws ArrivalBeforeDepartureException, CustomAlreadyTaken, CustomNotFound {
+    public FlightResponseDTO saveFlight(FlightRequestDTO flightDto) throws CustomAlreadyTaken, CustomNotFound {
         Flight flight = handleSaveFlight(modelMapper.map(flightDto, Flight.class), flightDto);
         flight.setSeatsEmpty();     //Flight yeni eklendigi icin, tum ucusları default hale getir
         flightRepository.save(flight);
@@ -60,12 +58,11 @@ public class FlightServiceImpl implements FlightService {
      * @param id            Guncellenecek flight id'si
      * @param flightDto     Guncellenecek flight'in yeni alanları
      * @return              Guncellenen Flight'in modeli
-     * @throws CustomAlreadyTaken               Flight kalkis ve varis havaalani ayni sehirde ise
-     * @throws ArrivalBeforeDepartureException  Eklenmek istenen flight kalkis ve inis saati kontrolu
+     * @throws CustomAlreadyTaken               Flight kalkis ve varis havaalani ayni sehirde ise       (Validation)
      * @throws CustomNotFound                   FlightId, AirlineId, DepartureId,ArrivalId bulunamaz ise
      */
     @Override
-    public FlightResponseDTO updateFlight(String id, FlightRequestDTO flightDto) throws CustomAlreadyTaken, ArrivalBeforeDepartureException, CustomNotFound {
+    public FlightResponseDTO updateFlight(String id, FlightRequestDTO flightDto) throws CustomAlreadyTaken, CustomNotFound {
         Flight flight = null;
         try {
             flight = flightRepository.findById(id).get();
@@ -94,12 +91,11 @@ public class FlightServiceImpl implements FlightService {
      * @param flight        Kaydedilecek Airport'un modeli
      * @param flightDto     Hata durumunda anlamli mesaj döndurmek icin kullanilacak.
      * @return              Kaydedilen Airport'un modeli
-     * @throws CustomAlreadyTaken                     Flight kalkis ve varis havaalani ayni sehirde ise
-     * @throws ArrivalBeforeDepartureException  Eklenmek istenen flight kalkis ve inis saati kontrolu
+     * @throws CustomAlreadyTaken               Flight kalkis ve varis havaalani ayni sehirde ise       (Validation)
      * @throws CustomNotFound                   AirlineId, DepartureId,ArrivalId bulunamaz ise
      */
     private Flight handleSaveFlight(Flight flight, FlightRequestDTO flightDto)
-            throws CustomAlreadyTaken, ArrivalBeforeDepartureException, CustomNotFound {
+            throws CustomAlreadyTaken,CustomNotFound {
         try {
             String airlineId = flightDto.getAirlineId();
             Airline airline = airlineRepository.findById(airlineId).get();
@@ -129,11 +125,6 @@ public class FlightServiceImpl implements FlightService {
         if (flight.getArrival().getCity().equalsIgnoreCase(flight.getDeparture().getCity())) {
             throw new CustomAlreadyTaken("Cannot fly between the same cities",
                     flightDto.getClass(), "departureAirportId,arrivalAirportId", flightDto.getAirlineId());
-        }
-
-        //ArrivalDate, DepartureDate'den once ise
-        if (flight.getArrivalDate().isBefore(flight.getDepartureDate())) {
-            throw new ArrivalBeforeDepartureException(flight.getArrivalDate(), flight.getDepartureDate());
         }
 
         //ArrivalDate ve DepartureDate'e gore duration belirle
@@ -217,7 +208,7 @@ public class FlightServiceImpl implements FlightService {
      * Id ile Arama
      *
      * @param id                Alinmak istenen Airline id'si
-     * @return                  Istenen flight modeli - Id bulunmaz ise null döner.
+     * @return                  Istenen flight modeli
      * @throws CustomNotFound   Flight id bulunamazsa
      */
     @Override
@@ -266,7 +257,6 @@ public class FlightServiceImpl implements FlightService {
     public List<FlightResponseDTO> getFlightsByDeparture(SearchType searchType, String nameOrCity) throws CustomNotFound {
         List<Airport> airports;
         if (searchType == SearchType.byname) {        /*Kalkış Havaalanı İsmi ile Arama*/
-            System.out.println("sadfsa");
             airports = airportRepository.findByNameIsContainingIgnoreCase(nameOrCity);
         } else if (searchType == SearchType.bycity) {  /*Kalkış Havaalanı Şehiri ile Arama*/
             airports = airportRepository.findByCityIsContainingIgnoreCase(nameOrCity);
@@ -295,7 +285,6 @@ public class FlightServiceImpl implements FlightService {
     public List<FlightResponseDTO> getFlightsByArrival(SearchType searchType, String nameOrCity) throws CustomNotFound {
         List<Airport> airports;
         if (searchType == SearchType.byname) {        /*Kalkış Havaalanı İsmi ile Arama*/
-            System.out.println("sadfsa");
             airports = airportRepository.findByNameIsContainingIgnoreCase(nameOrCity);
         } else if (searchType == SearchType.bycity) {  /*Kalkış Havaalanı Şehiri ile Arama*/
             airports = airportRepository.findByCityIsContainingIgnoreCase(nameOrCity);
@@ -306,19 +295,8 @@ public class FlightServiceImpl implements FlightService {
         if(airports.size() == 0) throw new CustomNotFound(nameOrCity.getClass(), "value", nameOrCity);
 
         List<FlightResponseDTO> flightResponseDTOS = getArrivalFlightResponseDtoListFromAirportList(airports);
+        if(flightResponseDTOS.size() == 0) throw new CustomNotFound(nameOrCity.getClass(), "value", nameOrCity);
         return flightResponseDTOS;
-//
-//
-//        if (searchType == SearchType.byname) {        /*Kalkış Havaalanı İsmi ile Arama*/
-//            return getArrivalFlightResponseDtoListFromAirportList(
-//                    airportRepository.findByNameIsContainingIgnoreCase(nameOrCity));
-//        } else if (searchType == SearchType.bycity) {  /*Kalkış Havaalanı Şehiri ile Arama*/
-//            return getArrivalFlightResponseDtoListFromAirportList(
-//                    airportRepository.findByCityIsContainingIgnoreCase(nameOrCity));
-//        } else {                                      /*Kalkış Havaalanı Şehiri VEYA ismi ile Arama*/
-//            return getArrivalFlightResponseDtoListFromAirportList(
-//                    airportRepository.findByNameOrCity(nameOrCity, nameOrCity));
-//        }
     }
 
     /**
@@ -352,8 +330,9 @@ public class FlightServiceImpl implements FlightService {
         result.setDirectFlights(directFlightDtoList);
         //Set indirect flights
         result.setIndirectFlights(getIndirectFlights(searchType, departure, arrival));
+
         if(result.getDirectFlights().size() == 0 && result.getIndirectFlights().size() == 0)
-            throw new CustomNotFound(departure.getClass(), "departure&arrival", departure+"-"+arrival);
+            throw new CustomNotFound(departure.getClass(), "departure & arrival", departure+" - "+arrival);
 
         return result;
     }
@@ -368,6 +347,7 @@ public class FlightServiceImpl implements FlightService {
      */
     private List<IndirectFlightDTO> getIndirectFlights(SearchType searchType, String departure, String arrival) throws CustomNotFound {
         ArrayList<IndirectFlightDTO> indirectFlights = new ArrayList<>();
+
         List<FlightResponseDTO> possibleFirstFlights = this.getFlightsByDeparture(searchType, departure); //Olası ilk Ucuslar
         possibleFirstFlights.stream().forEach(possibleFirstFlight -> {
             AirportResponseDTO possibleArrival = possibleFirstFlight.getArrival(); //Olası ilk varis noktası
