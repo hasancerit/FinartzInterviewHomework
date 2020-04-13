@@ -2,6 +2,7 @@ package com.finartz.homework.TicketService.domain;
 
 
 import com.finartz.homework.TicketService.domain.embeddable.Seat;
+import com.finartz.homework.TicketService.util.FlightClass;
 import com.finartz.homework.TicketService.util.SeatStatus;
 import lombok.Getter;
 import lombok.Setter;
@@ -64,5 +65,31 @@ public class Flight implements Serializable {
     private boolean isFullBusiness = false;
     private boolean isFullEconomy = false;
 
+    public boolean isFullByFlightClass(FlightClass flightClass){
+        if(flightClass == FlightClass.BUSINESS)
+            return isFullBusiness;
+        else
+            return isFullEconomy;
+    }
 
+    public int getCapasityByFlightClass(FlightClass flightClass){
+        if(flightClass == FlightClass.BUSINESS)
+            return capasityBusiness;
+        else
+            return capasityEconomic;
+    }
+
+    public Map<String, Seat> getSeatsByFlightClass(FlightClass flightClass){
+        if(flightClass == FlightClass.BUSINESS)
+            return seatsBusiness;
+        else
+            return seatsEconomic;
+    }
+
+    public Double getPriceByFlightClass(FlightClass flightClass){
+        if(flightClass == FlightClass.BUSINESS)
+            return priceBusiness;
+        else
+            return priceEconomic;
+    }
 }

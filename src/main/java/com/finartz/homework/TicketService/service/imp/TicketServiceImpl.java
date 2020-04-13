@@ -78,17 +78,14 @@ public class TicketServiceImpl implements TicketService {
 
         //Eski koltugu kaldir.
         Flight oldFlight = flightRepository.getOne(oldFlightId);
-        if (oldClass == FlightClass.BUSINESS) {     /*Business ise*/
-            oldFlight.getSeatsBusiness().replace(oldNo, new Seat(SeatStatus.empty, null));
-            setPriceByFullness(oldFlight,FlightClass.BUSINESS);
-        } else {                                    /*Economy ise*/
-            oldFlight.getSeatsEconomic().replace(oldNo, new Seat(SeatStatus.empty, null));
-            setPriceByFullness(oldFlight,FlightClass.ECONOMI);
-        }
+        oldFlight.getSeatsByFlightClass(oldClass).replace(oldNo, new Seat(SeatStatus.empty, null));
+        setPriceByFullness(oldFlight,oldClass);
 
+        //Bileti Almayi Dene
         Ticket savedTicket = handleSaveTicket(ticket, ticketDto);
         TicketResponseDTO responseDTO = modelMapper.map(savedTicket, TicketResponseDTO.class);
 
+        //Bileti Al
         flightRepository.save(oldFlight);
         return responseDTO;
     }
@@ -115,37 +112,33 @@ public class TicketServiceImpl implements TicketService {
         String seatNo = ticket.getNo();                     //Ticketın koltuk nosu
         FlightClass flightClass = ticket.getFlightClass();  //Ticketın classı
 
-        if (flightClass == FlightClass.BUSINESS) {  //Business ise
-            if(flight.isFullBusiness()){    //Flight dolu mu?
-                throw new CustomAlreadyTaken("Business İs Full", ticketDto.getClass(), "capasity", "Capasity:"+flight.getCapasityBusiness());
-            }
-
-            int capasityBusiness = flight.getSeatsBusiness().size();
-            if (Integer.parseInt(seatNo) > capasityBusiness) {  //Sinir asildi ise
-                throw new CustomAlreadyTaken("Business capacity exceeded", ticketDto.getClass(), "no", ticketDto.getNo());
-            }
-
-            SeatStatus status = flight.getSeatsBusiness().get(seatNo).getSeatStatus();  //Alinan koltugun statusu
-            if (status != SeatStatus.empty) {                                           //Alınan Koltuk bos degil ise hata firlat
-                throw new CustomAlreadyTaken("Seat is already taken.", ticketDto.getClass(), "no", ticketDto.getNo());
-            }
-            flight.getSeatsBusiness().replace(seatNo, new Seat(SeatStatus.taken, ticket));//Bileti Al
+        if(flight.isFullByFlightClass(flightClass)){
+            throw new CustomAlreadyTaken(
+                    flightClass.toString()+" İs Full",
+                    ticketDto.getClass(), "capasity",
+                    "Capasity:"+flight.getCapasityBusiness());
         }
 
-        else if (flightClass == FlightClass.ECONOMI) {  //Ekonomi ise
-            if(flight.isFullEconomy()){     //Flight dolu mu?
-                throw new CustomAlreadyTaken("Economy İs Full", ticketDto.getClass(), "capasity", "Capasity:"+flight.getCapasityEconomic());
-            }
-            int capasityEconomy = flight.getSeatsEconomic().size();
-            if (Integer.parseInt(seatNo) > capasityEconomy) {  //Sinir asildi ise
-                throw new CustomAlreadyTaken("Business capacity exceeded", ticketDto.getClass(), "no", ticketDto.getNo());
-            }
-            SeatStatus status = flight.getSeatsEconomic().get(seatNo).getSeatStatus();  //Alinan koltugun statusu
-            if (status != SeatStatus.empty) {                                           //Alınan Koltuk boş değil ise hata firlat
-                throw new CustomAlreadyTaken("Seat is already taken.", ticketDto.getClass(), "no", ticketDto.getNo());
-            }
-            flight.getSeatsEconomic().replace(seatNo, new Seat(SeatStatus.taken, ticket));//Bileti Al
+
+        int capasity = flight.getCapasityByFlightClass(flightClass);
+        if (Integer.parseInt(seatNo) > capasity) {  //Sinir asildi ise
+            throw new CustomAlreadyTaken(
+                    "Business capacity exceeded",
+                    ticketDto.getClass(),
+                    "no",
+                    ticketDto.getNo());
         }
+
+        SeatStatus status = flight.getSeatsByFlightClass(flightClass).get(seatNo).getSeatStatus();
+        if (status != SeatStatus.empty) {                                           //Alınan Koltuk bos degil ise hata firlat
+            throw new CustomAlreadyTaken(
+                    "Seat is already taken.",
+                    ticketDto.getClass(),
+                    "no",
+                    ticketDto.getNo());
+        }
+
+        flight.getSeatsByFlightClass(flightClass).replace(seatNo, new Seat(SeatStatus.taken, ticket));//Bileti Al
         setPriceByFullness(flight,flightClass); //ucusun doluluk oranina göre fiyatını belirle. isFull'u set et.
 
         ticketRepository.save(ticket);
@@ -163,19 +156,17 @@ public class TicketServiceImpl implements TicketService {
     private void setPriceByFullness(Flight flight,FlightClass flightClass) {
         int fullnes;            //kac kisi koltuk almis
         int capacity;           //Toplam kapasite
+
         Double lastPrice;       //Son ucret
+        capacity = flight.getCapasityByFlightClass(flightClass);
+        lastPrice = flight.getPriceByFlightClass(flightClass);
+
         if(flightClass == FlightClass.ECONOMI){
             fullnes = modelMapper.map(flight, FlightResponseDTO.class).getSeatStatusEconomi().getTakenSeats().size();
-            capacity = flight.getCapasityEconomic();
-            lastPrice = flight.getPriceEconomic();
-
             if(capacity == fullnes) flight.setFullEconomy(true);
         }
         else{
             fullnes = modelMapper.map(flight, FlightResponseDTO.class).getSeatStatusBusiness().getTakenSeats().size();
-            capacity = flight.getCapasityBusiness();
-            lastPrice = flight.getPriceBusiness();
-
             if(capacity == fullnes) flight.setFullBusiness(true);
         }
 
