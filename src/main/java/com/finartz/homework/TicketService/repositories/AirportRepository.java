@@ -13,6 +13,6 @@ public interface AirportRepository extends JpaRepository<Airport,String> {
     List<Airport> findByCityIsContainingIgnoreCase(String city);
 
     @Query(value = "SELECT a FROM Airport a WHERE UPPER(a.name) like  UPPER(concat('%', ?1, '%')) " +
-            "OR UPPER(a.city) like  UPPER(concat('%', ?2, '%'))")
-    List<Airport> findByNameOrCity(String name,String city);
+            "OR UPPER(a.city) like  UPPER(concat('%', ?1, '%'))")
+    List<Airport> findByNameOrCity(String nameOrCity);
 }

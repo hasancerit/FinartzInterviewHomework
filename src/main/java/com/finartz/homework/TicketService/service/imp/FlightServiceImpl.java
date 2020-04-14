@@ -257,7 +257,7 @@ public class FlightServiceImpl implements FlightService {
         } else if (searchType == SearchType.bycity) {  /*Kalkış Havaalanı Şehiri ile Arama*/
             airports = airportRepository.findByCityIsContainingIgnoreCase(nameOrCity);
         } else {                                      /*Kalkış Havaalanı Şehiri VEYA ismi ile Arama*/
-            airports = airportRepository.findByNameOrCity(nameOrCity, nameOrCity);
+            airports = airportRepository.findByNameOrCity(nameOrCity);
         }
 
         if(airports.size() == 0) throw new CustomNotFound(nameOrCity.getClass(), "value", nameOrCity);
@@ -285,7 +285,7 @@ public class FlightServiceImpl implements FlightService {
         } else if (searchType == SearchType.bycity) {  /*Kalkış Havaalanı Şehiri ile Arama*/
             airports = airportRepository.findByCityIsContainingIgnoreCase(nameOrCity);
         } else {                                      /*Kalkış Havaalanı Şehiri VEYA ismi ile Arama*/
-            airports = airportRepository.findByNameOrCity(nameOrCity, nameOrCity);
+            airports = airportRepository.findByNameOrCity(nameOrCity);
         }
 
         if(airports.size() == 0) throw new CustomNotFound(nameOrCity.getClass(), "value", nameOrCity);

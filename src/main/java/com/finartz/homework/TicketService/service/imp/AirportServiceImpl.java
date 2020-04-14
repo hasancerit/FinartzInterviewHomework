@@ -23,6 +23,7 @@ public class AirportServiceImpl implements AirportService {
     private final AirportRepository airportRepository;
     private final ModelMapper modelMapper;
 
+
     /**
      * Ekleme
      *
@@ -32,9 +33,12 @@ public class AirportServiceImpl implements AirportService {
      */
     @Override
     public AirportResponseDTO saveAirport(AirportRequestDTO airportDto) throws CustomAlreadyTaken {
-        Airport airport = handleSaveAirport(modelMapper.map(airportDto,Airport.class),airportDto);
+        Airport unsavedAirport = modelMapper.map(airportDto,Airport.class);
+        Airport airport = handleSaveAirport(unsavedAirport,airportDto);
+
         return modelMapper.map(airport,AirportResponseDTO.class);
     }
+
 
     /**
      * Guncelleme
@@ -60,6 +64,7 @@ public class AirportServiceImpl implements AirportService {
         return modelMapper.map(handleSaveAirport(airport,airportDto),AirportResponseDTO.class);
     }
 
+
     /**
      * Ekleme/ Guncelleme islemini hata kontrolu ile yapar.
      *
@@ -70,12 +75,12 @@ public class AirportServiceImpl implements AirportService {
      */
     private Airport handleSaveAirport(Airport airport,AirportRequestDTO airportDto) throws CustomAlreadyTaken {
         try {
-            airport = airportRepository.save(airport);
+            return  airportRepository.save(airport);
         } catch (DataIntegrityViolationException e) {   //Airport Name zaten varsa
             throw new CustomAlreadyTaken("name is already taken.",airportDto.getClass(), "name",airportDto.getName());
         }
-        return airport;
     }
+
 
     /**
      * Silme
@@ -94,6 +99,7 @@ public class AirportServiceImpl implements AirportService {
         airportRepository.delete(airport);
     }
 
+
     /**
      * Hepsini cek
      *
@@ -103,6 +109,7 @@ public class AirportServiceImpl implements AirportService {
     public List<AirportResponseDTO> getAll() {
         return airportListToAirpostDtoList(airportRepository.findAll());
     }
+
 
     /**
      * Id İle Arama
@@ -119,6 +126,7 @@ public class AirportServiceImpl implements AirportService {
             throw new CustomNotFound(id.getClass(),"airportId",id);
         }
     }
+
 
     /**
      * Name-City ile arama - Airportun isimi veya Airportun bulundugu sehire göre arama
@@ -138,12 +146,13 @@ public class AirportServiceImpl implements AirportService {
         }else if(searchType == SearchType.bycity){  //Airport sehiri ile arama
             airports = airportRepository.findByCityIsContainingIgnoreCase(nameOrCity);
         }else{                                      //Airport sehiri VEYA ismi ile Arama
-            airports = airportRepository.findByNameOrCity(nameOrCity,nameOrCity);
+            airports = airportRepository.findByNameOrCity(nameOrCity);
         }
 
-        if(airports.size() == 0) throw new CustomNotFound(nameOrCity.getClass(),"value",nameOrCity);
+        if(airports == null || airports.size() == 0) throw new CustomNotFound(nameOrCity.getClass(),"value",nameOrCity);
         return airportListToAirpostDtoList(airports);
     }
+
 
     /**
      * AirportList icindeki tüm Airport nesnelerini, AirpostResponseDto nesnesine cevir.
@@ -156,7 +165,7 @@ public class AirportServiceImpl implements AirportService {
         airports.stream().forEach(airport -> {  //Her bir airport nesnesi
             airportResponseDTOList.add(modelMapper.map(airport,AirportResponseDTO.class)); //AirpostResponseDto'ya dönüstür ve ekle
         });
-        if(airportResponseDTOList.size() == 0) return null; //Size 0 ise null döndür.
         return airportResponseDTOList;
     }
+
 }
