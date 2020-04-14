@@ -88,6 +88,25 @@ class AirportServiceTest {
 
     }
 
+
+    @Test
+    void updateAirportNotFound()  {
+        String id = "1";                                                               //Guncellenecek olan airlineId
+        Airport airportDomain = new Airport();                                         //Guncellenecek olan Domain
+        airportDomain.setName("Sabiha Gökçen");
+        airportDomain.setCity("İstanbul");
+        airportDomain.setId("1");
+
+        AirportRequestDTO updatedDto =  new AirportRequestDTO("Pegasus","Updated Desk");
+
+        CustomNotFound e = assertThrows(CustomNotFound.class,() -> {
+            airportService.updateAirport(id,updatedDto);
+        });
+
+        assertEquals(e.getField(),"airportId");
+        assertEquals(e.getValue(),id);
+    }
+
     @Test
     void deleteAirport() {
     }
@@ -128,6 +147,19 @@ class AirportServiceTest {
         assertEquals(response.getId(),"1");
         assertEquals(response.getName(),"Sabiha Gökçen");
         assertEquals(response.getCity(),"İstanbul");
+    }
+
+
+    @Test
+    void getAirportNotFound(){
+        String id = "1";
+
+        CustomNotFound e = assertThrows(CustomNotFound.class,() -> {
+            airportService.getAirport(id);
+        });
+
+        assertEquals(e.getField(),"airportId");
+        assertEquals(e.getValue(),id);
     }
 
     @Test

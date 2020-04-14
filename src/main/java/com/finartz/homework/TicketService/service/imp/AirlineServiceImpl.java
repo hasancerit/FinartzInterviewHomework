@@ -21,7 +21,6 @@ import java.util.NoSuchElementException;
 @Service
 public class AirlineServiceImpl implements AirlineService {
     private final AirlineRepository airlineRepository;
-    private final AirportRepository airportRepository;
     private final ModelMapper modelMapper;
 
 
@@ -56,7 +55,7 @@ public class AirlineServiceImpl implements AirlineService {
         try {
             airline = airlineRepository.findById(id).get();
         } catch (NoSuchElementException ex) {   //Airline id bulunamazsa
-            throw new CustomNotFound(id.getClass(), "airportId", id);
+            throw new CustomNotFound(id.getClass(), "airlineId", id);
         }
 
         airline.setName(airlineDto.getName());

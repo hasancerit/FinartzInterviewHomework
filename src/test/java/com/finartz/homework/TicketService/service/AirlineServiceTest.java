@@ -25,8 +25,6 @@ class AirlineServiceTest {
     @Mock
     private AirlineRepository airlineRepository;
     @Mock
-    private AirportRepository airportRepository;
-    @Mock
     private ModelMapper modelMapper;
 
     private AirlineServiceImpl airlineService;
@@ -36,7 +34,7 @@ class AirlineServiceTest {
         modelMapper = new ModelMapper();
         modelMapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT);
 
-        airlineService = new AirlineServiceImpl(airlineRepository,airportRepository,modelMapper);
+        airlineService = new AirlineServiceImpl(airlineRepository,modelMapper);
     }
 
     @Test
@@ -82,9 +80,24 @@ class AirlineServiceTest {
         assertEquals(airlineResponseDto.getId(),"1");
         assertEquals(airlineResponseDto.getName(),"Pegasus");
         assertEquals(airlineResponseDto.getDesc(),"Updated Desk");
-
     }
 
+    @Test
+    void updateAirlineNotFound() {
+        String id = "1";                                                               //Guncellenecek olan airlineId
+        Airline airlineDomain = new Airline();                                         //Guncellenecek olan Domain
+        airlineDomain.setName("Thy");
+        airlineDomain.setId("1");
+
+        AirlineRequestDTO updatedDto =  new AirlineRequestDTO("Pegasus","Updated Desk");
+
+        CustomNotFound e = assertThrows(CustomNotFound.class,() -> {
+            airlineService.updateAirline(id,updatedDto);
+        });
+
+        assertEquals(e.getField(),"airlineId");
+        assertEquals(e.getValue(),id);
+    }
 
     @Test
     void deleteAirline() {
@@ -125,6 +138,18 @@ class AirlineServiceTest {
     }
 
     @Test
+    void getAirlineNotFound(){
+        String id = "1";
+
+        CustomNotFound e = assertThrows(CustomNotFound.class,() -> {
+            airlineService.getAirline(id);
+        });
+
+        assertEquals(e.getField(),"airlineId");
+        assertEquals(e.getValue(),id);
+    }
+
+    @Test
     void getAirlinesByName() throws CustomNotFound {
         String name = "th";
         List<AirlineResponseDTO> airlineDtos = Arrays.asList(new AirlineResponseDTO("1","Thy"));
@@ -139,7 +164,7 @@ class AirlineServiceTest {
     }
 
     @Test
-    void getAirlinesByName404() throws CustomNotFound {
+    void getAirlinesByName404() {
         String name = "fad";
         given(airlineRepository.findByNameIsContainingIgnoreCase(name)).willReturn(null);
 
