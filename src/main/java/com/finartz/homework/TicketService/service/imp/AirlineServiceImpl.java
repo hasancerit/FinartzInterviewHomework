@@ -35,9 +35,9 @@ public class AirlineServiceImpl implements AirlineService {
     @Override
     public AirlineResponseDTO saveAirline(AirlineRequestDTO airlineDto) throws CustomAlreadyTaken {
         Airline airline = modelMapper.map(airlineDto, Airline.class);
-        Airline savedAirline = handleSaveAirline(airline, airlineDto);
+        airline = handleSaveAirline(airline, airlineDto);
 
-        return modelMapper.map(savedAirline, AirlineResponseDTO.class);
+        return modelMapper.map(airline, AirlineResponseDTO.class);
     }
 
 

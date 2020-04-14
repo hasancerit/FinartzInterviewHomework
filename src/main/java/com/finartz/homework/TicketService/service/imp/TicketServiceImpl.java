@@ -28,6 +28,7 @@ public class TicketServiceImpl implements TicketService {
     private final FlightRepository flightRepository;
     private final ModelMapper modelMapper;
 
+
     /**
      * Ekleme
      *
@@ -41,8 +42,11 @@ public class TicketServiceImpl implements TicketService {
     @Override
     public TicketResponseDTO saveTicket(TicketRequestDTO ticketDto) throws CustomAlreadyTaken, CustomNotFound {
         Ticket ticket = modelMapper.map(ticketDto, Ticket.class);
-        return modelMapper.map(handleSaveTicket(ticket, ticketDto), TicketResponseDTO.class);
+        ticket = handleSaveTicket(ticket, ticketDto);
+
+        return modelMapper.map(ticket, TicketResponseDTO.class);
     }
+
 
     /**
      * Güncelleme
@@ -65,30 +69,31 @@ public class TicketServiceImpl implements TicketService {
             throw new CustomNotFound(id.getClass(), "ticketId", id);
         }
 
-        //Eski koltugu kaldirmak icin.
-        String oldFlightId = ticket.getFlight().getId();
+
+        //Eski koltugu kaldir
+        Flight oldFlight = ticket.getFlight();
         FlightClass oldClass = ticket.getFlightClass();
         String oldNo = ticket.getNo();
+
+        oldFlight.getSeatsByFlightClass(oldClass).replace(oldNo, new Seat(SeatStatus.empty, null));
+        setPriceByFullness(oldFlight, oldClass);
 
         //Yeni ticketı güncelle
         ticket.setPassanger(ticketDto.getPassanger());
         ticket.setFlightClass(ticketDto.getFlightClass());
         ticket.setNo(ticketDto.getNo());
-        ticket.setFlight(flightRepository.getOne(ticketDto.getFlightId()));
-
-        //Eski koltugu kaldir.
-        Flight oldFlight = flightRepository.getOne(oldFlightId);
-        oldFlight.getSeatsByFlightClass(oldClass).replace(oldNo, new Seat(SeatStatus.empty, null));
-        setPriceByFullness(oldFlight,oldClass);
 
         //Bileti Almayi Dene
         Ticket savedTicket = handleSaveTicket(ticket, ticketDto);
         TicketResponseDTO responseDTO = modelMapper.map(savedTicket, TicketResponseDTO.class);
 
-        //Bileti Al
-        flightRepository.save(oldFlight);
+        //Ucak degismesi durumunda, eski ucagi guncelle
+        //Ucak degismezse, handleSaveTicket metodunda zaten guncelleniyor
+        if(!oldFlight.getId().equals(responseDTO.getFlight().getId()))
+            flightRepository.save(oldFlight);
         return responseDTO;
     }
+
 
     /**
      * Ekleme/ Guncelleme islemini hata kontrolu ile yapar.
@@ -103,9 +108,13 @@ public class TicketServiceImpl implements TicketService {
      */
     private Ticket handleSaveTicket(Ticket ticket, TicketRequestDTO ticketDto) throws CustomAlreadyTaken, CustomNotFound {
         try {
-            ticket.setFlight(flightRepository.findById(ticketDto.getFlightId()).get());
+            Flight flight = flightRepository.findById(ticketDto.getFlightId()).get();
+            ticket.setFlight(flight);
         } catch (NoSuchElementException ex) {   //FlightId yoksa hata firlat
-            throw new CustomNotFound(ticketDto.getClass(), "flightId", ticketDto.getFlightId());
+            throw new CustomNotFound(
+                    ticketDto.getClass(),
+                    "flightId",
+                    ticketDto.getFlightId());
         }
 
         Flight flight = ticket.getFlight();                 //Ticketın flight'i
@@ -114,7 +123,7 @@ public class TicketServiceImpl implements TicketService {
 
         if(flight.isFullByFlightClass(flightClass)){
             throw new CustomAlreadyTaken(
-                    flightClass.toString()+" İs Full",
+                    flightClass.toString() + " İs Full",
                     ticketDto.getClass(), "capasity",
                     "Capasity:"+flight.getCapasityBusiness());
         }
@@ -123,7 +132,7 @@ public class TicketServiceImpl implements TicketService {
         int capasity = flight.getCapasityByFlightClass(flightClass);
         if (Integer.parseInt(seatNo) > capasity) {  //Sinir asildi ise
             throw new CustomAlreadyTaken(
-                    "Business capacity exceeded",
+                    flightClass.toString() + " capacity exceeded",
                     ticketDto.getClass(),
                     "no",
                     ticketDto.getNo());
@@ -138,13 +147,15 @@ public class TicketServiceImpl implements TicketService {
                     ticketDto.getNo());
         }
 
-        flight.getSeatsByFlightClass(flightClass).replace(seatNo, new Seat(SeatStatus.taken, ticket));//Bileti Al
-        setPriceByFullness(flight,flightClass); //ucusun doluluk oranina göre fiyatını belirle. isFull'u set et.
+        ticket = ticketRepository.save(ticket);//Bileti Al
 
-        ticketRepository.save(ticket);
+        flight.getSeatsByFlightClass(flightClass).replace(seatNo, new Seat(SeatStatus.taken, ticket));//Ucusun koltuklarini guncelle
+        setPriceByFullness(flight,flightClass); //ucusun doluluk oranina göre fiyatını belirle. isFull'u set et.
         flightRepository.save(flight);
+
         return ticket;
     }
+
 
     /**
      * Ucusun kapasitesine gore, price belirler. (Kapasite her %10 arttiginda, Price %10 artar.)
@@ -199,6 +210,7 @@ public class TicketServiceImpl implements TicketService {
             flight.setPriceBusiness((Math.round(increasedPrice * 100.0)/ 100.0));
     }
 
+
     /**
      * Silme
      *
@@ -228,8 +240,9 @@ public class TicketServiceImpl implements TicketService {
         ticketRepository.findAll().stream().forEach(ticket -> {     //Her bir ticket
             ticketResponseDTOList.add(modelMapper.map(ticket, TicketResponseDTO.class));    //listeye ekle(dönüstürerek)
         });
-        return null;
+        return ticketResponseDTOList;
     }
+
 
     /**
      * Id İle Arama
@@ -241,11 +254,13 @@ public class TicketServiceImpl implements TicketService {
     @Override
     public TicketResponseDTO getTicket(String id) throws CustomNotFound {
         try {
-            return modelMapper.map(ticketRepository.findById(id).get(), TicketResponseDTO.class);
+            Ticket ticket = ticketRepository.findById(id).get();
+            return modelMapper.map(ticket, TicketResponseDTO.class);
         } catch (NoSuchElementException ex) {   //ticketId yoksa
             throw new CustomNotFound(id.getClass(), "ticketId", id);
         }
     }
+
 
     /**
      * TicketNo'ya göre bul

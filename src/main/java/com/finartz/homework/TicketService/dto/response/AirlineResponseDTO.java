@@ -34,7 +34,4 @@ public class AirlineResponseDTO {
         this.id = id;
         this.name = name;
     }
-
-
-
 }

@@ -1,6 +1,5 @@
 package com.finartz.homework.TicketService.service;
 
-import com.finartz.homework.TicketService.domain.Airline;
 import com.finartz.homework.TicketService.domain.Airport;
 import com.finartz.homework.TicketService.dto.request.AirportRequestDTO;
 import com.finartz.homework.TicketService.dto.response.AirportResponseDTO;
@@ -23,7 +22,6 @@ import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.refEq;
 import static org.mockito.BDDMockito.given;
 
 @ExtendWith(MockitoExtension.class)

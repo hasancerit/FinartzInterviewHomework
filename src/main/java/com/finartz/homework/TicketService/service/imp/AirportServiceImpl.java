@@ -33,8 +33,8 @@ public class AirportServiceImpl implements AirportService {
      */
     @Override
     public AirportResponseDTO saveAirport(AirportRequestDTO airportDto) throws CustomAlreadyTaken {
-        Airport unsavedAirport = modelMapper.map(airportDto,Airport.class);
-        Airport airport = handleSaveAirport(unsavedAirport,airportDto);
+        Airport airport = modelMapper.map(airportDto,Airport.class);
+        airport = handleSaveAirport(airport,airportDto);
 
         return modelMapper.map(airport,AirportResponseDTO.class);
     }
