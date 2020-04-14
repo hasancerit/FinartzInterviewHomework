@@ -6,6 +6,7 @@ import lombok.*;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
+import java.util.Objects;
 
 @NoArgsConstructor
 @Data
@@ -26,5 +27,10 @@ public class AirlineRequestDTO {
         this.name = name;
     }
 
-
+    public AirlineRequestDTO(
+            @Size(max = 30, message = "name cannot be longer than 30 characters.") @NotBlank(message = "name cannot be null.") String name,
+            @Size(max = 30, message = "desc cannot be longer than 30 characters.") String desc) {
+        this.name = name;
+        this.desc = desc;
+    }
 }

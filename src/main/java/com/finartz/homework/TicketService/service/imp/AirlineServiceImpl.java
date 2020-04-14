@@ -34,9 +34,12 @@ public class AirlineServiceImpl implements AirlineService {
      */
     @Override
     public AirlineResponseDTO saveAirline(AirlineRequestDTO airlineDto) throws CustomAlreadyTaken {
-        Airline airline = handleSaveAirline(modelMapper.map(airlineDto, Airline.class), airlineDto);
-        return modelMapper.map(airline, AirlineResponseDTO.class);
+        Airline airline = modelMapper.map(airlineDto, Airline.class);
+        Airline savedAirline = handleSaveAirline(airline, airlineDto);
+
+        return modelMapper.map(savedAirline, AirlineResponseDTO.class);
     }
+
 
     /**
      * Guncelleme
@@ -62,6 +65,7 @@ public class AirlineServiceImpl implements AirlineService {
         return modelMapper.map(handleSaveAirline(airline, airlineDto), AirlineResponseDTO.class);
     }
 
+
     /**
      * Ekleme/ Guncelleme islemini hata kontrolu ile yapar.
      *
@@ -72,12 +76,12 @@ public class AirlineServiceImpl implements AirlineService {
      */
     private Airline handleSaveAirline(Airline airline, AirlineRequestDTO airlineDto) throws CustomAlreadyTaken {
         try {
-            airline = airlineRepository.save(airline);
+            return airlineRepository.save(airline);
         } catch (DataIntegrityViolationException e) {   //Airline Name zaten varsa
             throw new CustomAlreadyTaken("name is already taken.", airlineDto.getClass(), "name", airlineDto.getName());
         }
-        return airline;
     }
+
 
     /**
      * Silme
@@ -114,6 +118,8 @@ public class AirlineServiceImpl implements AirlineService {
      * @return                  Istenen airline modeli
      * @throws CustomNotFound   Airline id bulunamazsa
      */
+
+
     @Override
     public AirlineResponseDTO getAirline(String id) throws CustomNotFound {
         try {
@@ -122,6 +128,7 @@ public class AirlineServiceImpl implements AirlineService {
             throw new CustomNotFound(id.getClass(), "airlineId", id);
         }
     }
+
 
     /**
      * Isim ile arama
@@ -134,9 +141,11 @@ public class AirlineServiceImpl implements AirlineService {
     public List<AirlineResponseDTO> getAirlinesByName(String name) throws CustomNotFound {
         List<Airline> airlines = airlineRepository.findByNameIsContainingIgnoreCase(name);
 
-        if(airlines.size() == 0) throw new CustomNotFound(name.getClass(), "name", name);
+        if(airlines==null || airlines.size() == 0  )
+            throw new CustomNotFound(name.getClass(), "name", name);
         return airlineListToAirlineDtoList(airlines);
     }
+
 
     /**
      * AirlineList'in icinde bulunan her Airline nesnesini, AirlineResponseDto nesnesine dönüstür
@@ -146,7 +155,7 @@ public class AirlineServiceImpl implements AirlineService {
      */
     private List<AirlineResponseDTO> airlineListToAirlineDtoList(List<Airline> airlines) {
         List<AirlineResponseDTO> airlineResponseDTOList = new ArrayList<>();
-        airlines.stream().forEach(airline -> {  //Airline icindeki her bir airline
+        airlines.stream().forEach(airline -> {                                              //Airline icindeki her bir airline
             airlineResponseDTOList.add(modelMapper.map(airline, AirlineResponseDTO.class)); //AirlineResponseDto'ya dönüstür ve ekle
         });
         return airlineResponseDTOList;
