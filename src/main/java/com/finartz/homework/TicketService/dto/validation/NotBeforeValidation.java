@@ -26,8 +26,7 @@ public class NotBeforeValidation implements ConstraintValidator<NotBefore, Objec
 
         LocalDateTime departureDate = (LocalDateTime) departureValue;
         LocalDateTime arrivalDate = (LocalDateTime) arrivalValue;
-
-        if (departureDate.isBefore(arrivalDate)) {
+        if (arrivalDate.isBefore(departureDate)) {
             context.disableDefaultConstraintViolation();
             context
                     .buildConstraintViolationWithTemplate("Arrival Date("+arrivalDate.toString()+"), cannot be before from Departure Date("+departureDate.toString()+")")

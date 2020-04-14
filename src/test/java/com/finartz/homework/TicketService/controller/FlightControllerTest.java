@@ -22,6 +22,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import java.time.Duration;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.*;
 
@@ -64,6 +65,20 @@ class FlightControllerTest {
                         .content(asJsonString(flightRequestDTO)))
                 .andExpect(status().isOk());
         verify(flightService, times(1)).saveFlight(flightRequestDTO);
+    }
+
+    @Test
+    void saveFlightDepartureBeforeArrival() throws Exception {
+        FlightRequestDTO flightRequestDTO = generateFlightRequestDTO("3","32","12");
+        flightRequestDTO.setDepartureDate(LocalDateTime.of(2020,04,14,10,15));
+        flightRequestDTO.setArrivalDate(LocalDateTime.of(2020,04,14,8,15));
+
+        mockMvc.perform(
+                post("/flight/add")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(asJsonString(flightRequestDTO)))
+                .andExpect(status().isBadRequest());
+        verify(flightService, times(0)).saveFlight(flightRequestDTO);
     }
 
     @Test

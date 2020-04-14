@@ -151,18 +151,18 @@ public class FlightServiceImpl implements FlightService {
 
         oldCapasity = oldSeats.size();
 
-        if(oldCapasity < updatedCapasity){  //Kapasite artirildi ise
+        if(oldCapasity < updatedCapasity){                                  //Kapasite artirildi ise
             for(int i = oldSeats.size() + 1 ; i <= updatedCapasity;i++){    //Yeni koltuklar
-                oldSeats.put(""+i,new Seat( SeatStatus.empty,null));  //Default hale getir.
+                oldSeats.put(""+i,new Seat( SeatStatus.empty,null));  //Default hale getir ve eski koltuklara ekle.
             }
         }
-        else if(oldCapasity > updatedCapasity){ //Kapasite azaltildi ise
+        else if(oldCapasity > updatedCapasity){                 //Kapasite azaltildi ise
             Iterator<String> it2 = oldSeats.keySet().iterator();
-            while (it2.hasNext()) {     //Her bir koltuk
-                String key = it2.next();
+            while (it2.hasNext()) {                             //Her bir koltuga bak
+                String key = it2.next();                        //Koltuk no
                 if (Integer.parseInt(key) > updatedCapasity) {  //Koltuk no, yeni kapasiteden büyük ise
-                    it2.remove();   //Koltuk no'yu kaldir
-                    //Varsa, alinan ticketi kaldir.
+                    it2.remove();                               //Koltugu  kaldir
+                                                                //Varsa, alinan ticketi kaldir.
                     Ticket ticket = ticketRepository.findByFlightAndNoAndFlightClass(updatedFlight, key, FlightClass.BUSINESS);
                     if (ticket != null)
                         ticketRepository.delete(ticket);
