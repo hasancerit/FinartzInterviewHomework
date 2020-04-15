@@ -29,8 +29,7 @@ import java.util.*;
 import static org.hamcrest.collection.IsCollectionWithSize.hasSize;
 import static org.hamcrest.core.Is.is;
 import static org.mockito.Mockito.*;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -141,7 +140,15 @@ class FlightControllerTest {
 
 
     @Test
-    void deleteFlight() {
+    void deleteFlight() throws Exception {
+        String id = "1";
+
+        doNothing().when(flightService).deleteFlight(id);
+
+        mockMvc.perform(
+                delete("/flight/"+id))
+                .andExpect(status().isOk());
+        verify(flightService, times(1)).deleteFlight(id);
     }
 
     @Test

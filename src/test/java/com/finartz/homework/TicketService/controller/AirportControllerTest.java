@@ -3,6 +3,7 @@ package com.finartz.homework.TicketService.controller;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.finartz.homework.TicketService.dto.request.AirportRequestDTO;
 import com.finartz.homework.TicketService.dto.response.AirportResponseDTO;
+import com.finartz.homework.TicketService.exception.exception.CustomNotFound;
 import com.finartz.homework.TicketService.service.AirportService;
 import com.finartz.homework.TicketService.util.SearchType;
 import org.junit.jupiter.api.BeforeEach;
@@ -20,8 +21,7 @@ import java.util.List;
 import static org.hamcrest.collection.IsCollectionWithSize.hasSize;
 import static org.hamcrest.core.Is.is;
 import static org.mockito.Mockito.*;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -103,7 +103,15 @@ class AirportControllerTest {
     }
 
     @Test
-    void deleteAirport() {
+    void deleteAirport() throws Exception {
+        String id = "1";
+
+        doNothing().when(airportService).deleteAirport(id);
+
+        mockMvc.perform(
+                delete("/airport/"+id))
+                .andExpect(status().isOk());
+        verify(airportService, times(1)).deleteAirport(id);
     }
 
     @Test

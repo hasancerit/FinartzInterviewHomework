@@ -85,10 +85,10 @@ public class FlightController {
      */
     @DeleteMapping("/{id}")
     @ApiOperation(value = "deleteFlight",notes = "This endpoint deletes flight of the successfully sent Id.")
-    @ResponseStatus(code = HttpStatus.OK)
-    public void deleteFlight(
+    public ResponseEntity<String> deleteFlight(
             @ApiParam(value = "Id of the flight to be deleted.",required = true) @PathVariable String id) throws CustomNotFound {
         flightService.deleteFlight(id);
+        return new ResponseEntity<>("\"Flight with id " + id + " has been deleted\"",HttpStatus.OK);
     }
 
 

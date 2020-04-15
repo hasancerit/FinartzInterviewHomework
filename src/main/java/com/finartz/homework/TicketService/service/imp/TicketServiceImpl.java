@@ -15,6 +15,7 @@ import com.finartz.homework.TicketService.util.FlightClass;
 import com.finartz.homework.TicketService.util.SeatStatus;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -219,13 +220,11 @@ public class TicketServiceImpl implements TicketService {
      */
     @Override
     public void deleteTicket(String id) throws CustomNotFound {
-        Ticket ticket;
         try {
-            ticket = ticketRepository.findById(id).get();
-        } catch (NoSuchElementException ex) {   //ticketId yoksa
+            ticketRepository.deleteById(id);
+        } catch (EmptyResultDataAccessException ex) {   //ticketId yoksa
             throw new CustomNotFound(id.getClass(), "ticketId", id);
         }
-        ticketRepository.delete(ticket);
     }
 
 

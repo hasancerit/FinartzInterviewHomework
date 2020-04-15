@@ -26,8 +26,7 @@ import java.util.List;
 import static org.hamcrest.collection.IsCollectionWithSize.hasSize;
 import static org.hamcrest.core.Is.is;
 import static org.mockito.Mockito.*;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -120,7 +119,15 @@ class TicketControllerTest {
     }
 
     @Test
-    void deleteTicket() {
+    void deleteTicket() throws Exception {
+        String id = "1";
+
+        doNothing().when(ticketService).deleteTicket(id);
+
+        mockMvc.perform(
+                delete("/ticket/"+id))
+                .andExpect(status().isOk());
+        verify(ticketService, times(1)).deleteTicket(id);
     }
 
     @Test

@@ -32,6 +32,7 @@ import java.util.Optional;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.BDDMockito.willDoNothing;
 
 @ExtendWith(MockitoExtension.class)
 class TicketServiceTest {
@@ -204,7 +205,11 @@ class TicketServiceTest {
     }
 
     @Test
-    void deleteTicket() {
+    void deleteTicket() throws CustomNotFound {
+        String id = "1";
+
+        willDoNothing().given(ticketRepository).deleteById(id);
+        ticketService.deleteTicket(id);
     }
 
     @Test

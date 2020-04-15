@@ -37,6 +37,7 @@ import java.util.*;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.BDDMockito.willDoNothing;
 
 @ExtendWith(MockitoExtension.class)
 @MockitoSettings(strictness = Strictness.LENIENT)
@@ -174,7 +175,11 @@ class FlightServiceTest {
     }
 
     @Test
-    void deleteFlight() {
+    void deleteFlight() throws CustomNotFound {
+        String id = "1";
+
+        willDoNothing().given(flightRepository).deleteById(id);
+        flightService.deleteFlight(id);
     }
 
     @Test

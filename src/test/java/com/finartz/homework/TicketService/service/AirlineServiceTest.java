@@ -100,7 +100,11 @@ class AirlineServiceTest {
     }
 
     @Test
-    void deleteAirline() {
+    void deleteAirline() throws CustomNotFound {
+        String id = "1";
+
+        willDoNothing().given(airlineRepository).deleteById(id);
+        airlineService.deleteAirline(id);
     }
 
     @Test

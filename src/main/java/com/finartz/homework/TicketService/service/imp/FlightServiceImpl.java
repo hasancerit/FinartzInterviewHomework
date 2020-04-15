@@ -22,6 +22,7 @@ import com.finartz.homework.TicketService.util.SearchType;
 import com.finartz.homework.TicketService.util.SeatStatus;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 
 import java.time.Duration;
@@ -187,13 +188,11 @@ public class FlightServiceImpl implements FlightService {
      */
     @Override
     public void deleteFlight(String id) throws CustomNotFound {
-        Flight flight;
         try {
-            flight = flightRepository.findById(id).get();
-        } catch (NoSuchElementException ex) {   //FlightId yok ise
+            flightRepository.deleteById(id);
+        } catch (EmptyResultDataAccessException ex) {   //FlightId yok ise
             throw new CustomNotFound(id.getClass(), "flightId", id);
         }
-        flightRepository.delete(flight);
     }
 
     /**

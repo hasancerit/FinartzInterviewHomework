@@ -65,10 +65,11 @@ public class AirportController {
      */
     @DeleteMapping("/{id}")
     @ApiOperation(value = "deleteAirport",notes = "This endpoint deletes airport of the successfully sent Id.")
-    @ResponseStatus(code = HttpStatus.OK)
-    public void deleteAirport(
+    public ResponseEntity<String> deleteAirport(
             @ApiParam(value = "Id of the airport to be deleted.",required = true) @PathVariable String id) throws CustomNotFound {
         airportService.deleteAirport(id);
+        return new ResponseEntity<>("\"Airport with id " + id + " has been deleted\"",HttpStatus.OK);
+
     }
 
     /**

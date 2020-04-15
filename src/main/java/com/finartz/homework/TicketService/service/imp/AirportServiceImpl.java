@@ -11,6 +11,7 @@ import com.finartz.homework.TicketService.util.SearchType;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -90,13 +91,11 @@ public class AirportServiceImpl implements AirportService {
      */
     @Override
     public void deleteAirport(String id) throws CustomNotFound {
-        Airport airport;
         try{
-            airport = airportRepository.findById(id).get();
-        }catch (NoSuchElementException ex){ //Airport id bulunamazsa
+            airportRepository.deleteById(id);
+        }catch (EmptyResultDataAccessException ex){ //Airport id bulunamazsa
             throw new CustomNotFound(id.getClass(),"airportId",id);
         }
-        airportRepository.delete(airport);
     }
 
 

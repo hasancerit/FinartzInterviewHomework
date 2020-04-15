@@ -4,7 +4,9 @@ import com.finartz.homework.TicketService.dto.request.AirlineRequestDTO;
 import com.finartz.homework.TicketService.dto.response.AirlineResponseDTO;
 import com.finartz.homework.TicketService.exception.exception.CustomAlreadyTaken;
 import com.finartz.homework.TicketService.exception.exception.CustomNotFound;
+import org.springframework.http.ResponseEntity;
 
+import javax.xml.ws.Response;
 import java.util.List;
 
 public interface AirlineService {

@@ -11,6 +11,8 @@ import com.finartz.homework.TicketService.service.AirlineService;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -90,13 +92,11 @@ public class AirlineServiceImpl implements AirlineService {
      */
     @Override
     public void deleteAirline(String id) throws CustomNotFound{
-        Airline airline;
         try {
-            airline = airlineRepository.findById(id).get();
-        } catch (NoSuchElementException ex) {   //Airline id bulunamazsa
+            airlineRepository.deleteById(id);
+        } catch (EmptyResultDataAccessException ex) {   //Airline id bulunamazsa
             throw new CustomNotFound(id.getClass(), "airlineId", id);
         }
-        airlineRepository.delete(airline);
     }
 
 

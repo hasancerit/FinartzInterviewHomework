@@ -23,6 +23,7 @@ import java.util.Optional;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.BDDMockito.willDoNothing;
 
 @ExtendWith(MockitoExtension.class)
 class AirportServiceTest {
@@ -108,7 +109,11 @@ class AirportServiceTest {
     }
 
     @Test
-    void deleteAirport() {
+    void deleteAirport() throws CustomNotFound {
+        String id = "1";
+
+        willDoNothing().given(airportRepository).deleteById(id);
+        airportService.deleteAirport(id);
     }
 
     @Test

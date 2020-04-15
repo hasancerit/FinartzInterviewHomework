@@ -69,10 +69,10 @@ public class TicketController {
      */
     @DeleteMapping("/{id}")
     @ApiOperation(value = "deleteTicket",notes = "This endpoint deletes ticket of the successfully sent Id.")
-    @ResponseStatus(code = HttpStatus.OK)
-    public void deleteTicket(
+    public ResponseEntity<String> deleteTicket(
             @ApiParam(value = "Id of the ticket to be deleted.",required = true) @PathVariable String id) throws CustomNotFound {
         ticketService.deleteTicket(id);
+        return new ResponseEntity<>("\"Ticket with id " + id + " has been deleted\"",HttpStatus.OK);
     }
 
     /**
