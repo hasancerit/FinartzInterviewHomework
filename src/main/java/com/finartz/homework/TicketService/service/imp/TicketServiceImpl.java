@@ -13,6 +13,7 @@ import com.finartz.homework.TicketService.service.TicketService;
 import com.finartz.homework.TicketService.domain.embeddable.Seat;
 import com.finartz.homework.TicketService.util.FlightClass;
 import com.finartz.homework.TicketService.util.SeatStatus;
+import com.finartz.homework.TicketService.util.StringGenerator;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.dao.EmptyResultDataAccessException;
@@ -46,6 +47,8 @@ public class TicketServiceImpl implements TicketService {
         Ticket ticket = modelMapper.map(ticketReqDto, Ticket.class);
         ticket = handleSaveTicket(ticket, ticketReqDto);
 
+        ticket.setPnr(StringGenerator.generatePnr(ticket.getId()));
+        ticketRepository.save(ticket);
         return modelMapper.map(ticket, TicketResponseDTO.class);
     }
 
@@ -272,15 +275,15 @@ public class TicketServiceImpl implements TicketService {
     /**
      * TicketNo'ya göre bul
      *
-     * @param ticketNo          Alinmak istenen Ticket id'si
+     * @param pnr               Alinmak istenen Ticket id'si
      * @return                  Istenen Tikcet modeli
      * @throws CustomNotFound   ticketId bulunamazsa
      */
     @Override
-    public TicketResponseDTO getTickeyByPnr(String pnr) throws CustomNotFound {
+    public TicketResponseDTO getTicketByPnr(String pnr) throws CustomNotFound {
         try {
-            return modelMapper.map(ticketRepository.findByTicketNo(pnr), TicketResponseDTO.class);
-        } catch (NoSuchElementException ex) {   //ticketId yoksa
+            return modelMapper.map(ticketRepository.findByPnr(pnr), TicketResponseDTO.class);
+        } catch (IllegalArgumentException ex) {   //ticketId yoksa
             throw new CustomNotFound(pnr.getClass(), "pnr", pnr);
         }
     }

@@ -103,14 +103,14 @@ public class TicketController {
     /**
      * TicketNo'ya göre bul
      *
-     * @param ticketNo          Alinmak istenen Ticket id'si
+     * @param pnr               Alinmak istenen Ticket id'si
      * @return                  Istenen Tikcet modeli
      * @throws CustomNotFound   ticketId bulunamazsa
      */
-    @GetMapping("/pnr")
+    @GetMapping
     @ApiOperation(value = "GetTicketByTicketNo",notes = "This endpoint serves ticket of the successfully sent ticket no.")
     public ResponseEntity<TicketResponseDTO> getTicketByTicketNo(
             @ApiParam(value = "Ticket No of the ticket to be served.",required = true) @RequestParam(required = true,name = "pnr") String pnr) throws CustomNotFound {
-        return new ResponseEntity<>(ticketService.getTickeyByPnr(pnr),HttpStatus.OK);
+        return new ResponseEntity<>(ticketService.getTicketByPnr(pnr),HttpStatus.OK);
     }
 }

@@ -30,12 +30,4 @@ public class TicketServiceApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(TicketServiceApplication.class, args);
 	}
-
-	@Bean
-	public ModelMapper getModelMapper() {
-		ModelMapper modelMapper = new ModelMapper();
-		modelMapper.getConfiguration()
-				.setMatchingStrategy(MatchingStrategies.STRICT);
-		return modelMapper;
-	}
 }

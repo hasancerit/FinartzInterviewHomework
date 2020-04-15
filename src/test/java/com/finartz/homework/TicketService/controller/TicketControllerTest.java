@@ -142,9 +142,9 @@ class TicketControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$", hasSize(2)))
                 .andExpect(jsonPath("$[0].id", is("1")))
-                .andExpect(jsonPath("$[0].ticketNo", is("9T12B5")))
+                .andExpect(jsonPath("$[0].pnr", is("9T12B5")))
                 .andExpect(jsonPath("$[1].id", is("2")))
-                .andExpect(jsonPath("$[1].ticketNo", is("8C14D3")));
+                .andExpect(jsonPath("$[1].pnr", is("8C14D3")));
         verify(ticketService, times(1)).getAll();
     }
 
@@ -165,28 +165,29 @@ class TicketControllerTest {
     }
 
     @Test
-    void getTicketByTicketNo() throws Exception{
-        String ticketNo = "9T12B5";
-        TicketResponseDTO ticketResponseDTO = new TicketResponseDTO("1",ticketNo,passanger,flight,FlightClass.BUSINESS,"29");
+    void getTicketByPnr() throws Exception{
+        String pnr = "rotj1daef494";
+        TicketResponseDTO ticketResponseDTO = new TicketResponseDTO("1",pnr,passanger,flight,FlightClass.BUSINESS,"29");
+        ticketResponseDTO.setPnr("rotj1daef494");
 
-        when(ticketService.getTickeyByPnr(ticketNo)).thenReturn(ticketResponseDTO);
+        when(ticketService.getTicketByPnr(pnr)).thenReturn(ticketResponseDTO);
 
         mockMvc.perform(
-                get("/ticket/pnr").param("pnr",ticketNo))
+                get("/ticket").param("pnr",pnr))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id", is("1")))
                 .andExpect(jsonPath("$.no", is("29")))
-                .andExpect(jsonPath("$.ticketNo", is(ticketNo)));
+                .andExpect(jsonPath("$.pnr", is(pnr)));
 
-        verify(ticketService, times(1)).getTickeyByPnr(ticketNo);
+        verify(ticketService, times(1)).getTicketByPnr(pnr);
     }
 
     @Test
     void getTicketByTicketNoWithoutParam() throws Exception{
         mockMvc.perform(
-                get("/ticket/pnr"))
+                get("/ticket"))
                 .andExpect(status().isBadRequest());
-        verify(ticketService, times(0)).getTickeyByPnr(any());
+        verify(ticketService, times(0)).getTicketByPnr(any());
 
     }
 

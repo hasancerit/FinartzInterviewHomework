@@ -257,7 +257,30 @@ class TicketServiceTest {
     }
 
     @Test
-    void getTickeyByTicketNo() {
+    void getTickeyByPnr() throws CustomNotFound {
+        String pnr = "rotj1daef494";
+        Ticket ticket = new Ticket("1","23r5t7",passanger,flight,FlightClass.BUSINESS,"21");
+        ticket.setPnr(pnr);
+        given(ticketRepository.findByPnr(pnr)).willReturn(ticket);
+
+        TicketResponseDTO ticketResponseDTO = ticketService.getTicketByPnr(pnr);
+
+        assertEquals(ticketResponseDTO.getPnr(),pnr);
+        assertEquals(ticketResponseDTO.getId(),"1");
+        assertEquals(ticketResponseDTO.getNo(),"21");
+        assertEquals(ticketResponseDTO.getFlightClass(),FlightClass.BUSINESS);
+    }
+
+    @Test
+    void getTickeyByPnrNotFound() throws CustomNotFound {
+        String pnr = "rotj1daef494";
+
+        CustomNotFound e = assertThrows(CustomNotFound.class,() -> {
+            ticketService.getTicketByPnr(pnr);
+        });
+
+        assertEquals(e.getValue(),pnr);
+        assertEquals(e.getField(),"pnr");
     }
 
     public Flight createFlight(){

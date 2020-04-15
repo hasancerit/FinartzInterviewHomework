@@ -18,5 +18,5 @@ public interface TicketService {
 
     TicketResponseDTO getTicket(String id) throws CustomNotFound;
 
-    TicketResponseDTO getTickeyByPnr(String pnr) throws CustomNotFound;
+    TicketResponseDTO getTicketByPnr(String pnr) throws CustomNotFound;
 }

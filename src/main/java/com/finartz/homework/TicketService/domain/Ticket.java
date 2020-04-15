@@ -20,7 +20,7 @@ public class Ticket{
     private String id;
 
     @Column(unique = true)
-    private String ticketNo;
+    private String pnr;
     @Embedded
     private Passanger passanger;
     @ManyToOne

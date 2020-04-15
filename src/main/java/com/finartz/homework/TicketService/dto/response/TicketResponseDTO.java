@@ -17,7 +17,7 @@ public class TicketResponseDTO {
     @ApiModelProperty(position = 1)
     private String id;
     @ApiModelProperty(position = 2)
-    private String ticketNo;
+    private String pnr;
 
     private Passanger passanger;
 
