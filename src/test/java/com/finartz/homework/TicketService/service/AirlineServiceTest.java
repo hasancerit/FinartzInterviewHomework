@@ -6,7 +6,6 @@ import com.finartz.homework.TicketService.dto.response.AirlineResponseDTO;
 import com.finartz.homework.TicketService.exception.exception.CustomAlreadyTaken;
 import com.finartz.homework.TicketService.exception.exception.CustomNotFound;
 import com.finartz.homework.TicketService.repositories.AirlineRepository;
-import com.finartz.homework.TicketService.repositories.AirportRepository;
 import com.finartz.homework.TicketService.service.imp.AirlineServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -176,7 +175,7 @@ class AirlineServiceTest {
             airlineService.getAirlinesByName(name);
         });
 
-        assertEquals(e.getField(),"name");
+        assertEquals(e.getField(),"value");
         assertEquals(e.getObject(),name.getClass());
         assertEquals(e.getValue(),name);
     }

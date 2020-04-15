@@ -7,6 +7,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 @NoArgsConstructor
@@ -17,6 +19,4 @@ public class SeatsStatus {
     private List<SeatDetail> takenSeats = new ArrayList<>();
     @ApiModelProperty(position = 2)
     private List<String> emptySeats = new ArrayList<>();
-
-
 }

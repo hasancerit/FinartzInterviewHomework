@@ -3,7 +3,6 @@ package com.finartz.homework.TicketService.controller;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.finartz.homework.TicketService.dto.request.AirportRequestDTO;
 import com.finartz.homework.TicketService.dto.response.AirportResponseDTO;
-import com.finartz.homework.TicketService.exception.exception.CustomNotFound;
 import com.finartz.homework.TicketService.service.AirportService;
 import com.finartz.homework.TicketService.util.SearchType;
 import org.junit.jupiter.api.BeforeEach;
@@ -80,7 +79,7 @@ class AirportControllerTest {
         when(airportService.updateAirport(id,airportRequestDTO)).thenReturn(airportResponseDto);
 
         mockMvc.perform(
-                post("/airport/update/{id}",id)
+                put("/airport/{id}",id)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(asJsonString(airportRequestDTO)))
                 .andExpect(status().isOk());
@@ -94,7 +93,7 @@ class AirportControllerTest {
         AirportRequestDTO airportRequestDTO = new AirportRequestDTO("Sabiha Gökçen","");
 
         mockMvc.perform(
-                post("/airport/update/{id}",id)
+                put("/airport/{id}",id)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(asJsonString(airportRequestDTO)))
                 .andExpect(status().isBadRequest());
@@ -165,7 +164,7 @@ class AirportControllerTest {
         when(airportService.getAirports(searchType,nameOrCityValue)).thenReturn(airports);
 
         mockMvc.perform(
-                get("/airport/search").param("type",searchType.toString()).param("value",nameOrCityValue))
+                get("/airport").param("type",searchType.toString()).param("value",nameOrCityValue))
                 .andExpect(status().isOk());
         verify(airportService, times(1)).getAirports(searchType,nameOrCityValue);
 
@@ -175,7 +174,7 @@ class AirportControllerTest {
     void getAirportsWithoutValueParam() throws Exception {
         SearchType searchType = SearchType.bynameorcity;
         mockMvc.perform(
-                get("/airport/search").param("type",searchType.toString()))
+                get("/airport").param("type",searchType.toString()))
                 .andExpect(status().isBadRequest());
         verify(airportService, times(0)).getAirports(any(),any());
 

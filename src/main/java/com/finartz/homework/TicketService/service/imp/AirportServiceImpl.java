@@ -28,14 +28,15 @@ public class AirportServiceImpl implements AirportService {
     /**
      * Ekleme
      *
-     * @param airportDto    Kaydedilecek Airport'un modeli
+     * @param airportReqDto Kaydedilecek Airport'un modeli
      * @return              Kaydedilen Airport'un modeli
      * @throws CustomAlreadyTaken Airport Name zaten varsa
+     * @see #handleSaveAirport(Airport, AirportRequestDTO)
      */
     @Override
-    public AirportResponseDTO saveAirport(AirportRequestDTO airportDto) throws CustomAlreadyTaken {
-        Airport airport = modelMapper.map(airportDto,Airport.class);
-        airport = handleSaveAirport(airport,airportDto);
+    public AirportResponseDTO saveAirport(AirportRequestDTO airportReqDto) throws CustomAlreadyTaken {
+        Airport airport = modelMapper.map(airportReqDto,Airport.class);
+        airport = handleSaveAirport(airport,airportReqDto);
 
         return modelMapper.map(airport,AirportResponseDTO.class);
     }
@@ -45,13 +46,14 @@ public class AirportServiceImpl implements AirportService {
      * Guncelleme
      *
      * @param id                Guncellenecek Airport id'si
-     * @param airportDto        Guncellenecek Airport'un yeni alanları
+     * @param airportReqDto     Guncellenecek Airport'un yeni alanları
      * @return                  Guncellenen Airport'un modeli
      * @throws CustomNotFound         Airport id bulunamazsa
      * @throws CustomAlreadyTaken     Airport name zaten alinmissa
+     * @see #handleSaveAirport(Airport, AirportRequestDTO)
      */
     @Override
-    public AirportResponseDTO updateAirport(String id, AirportRequestDTO airportDto) throws CustomAlreadyTaken, CustomNotFound {
+    public AirportResponseDTO updateAirport(String id, AirportRequestDTO airportReqDto) throws CustomAlreadyTaken, CustomNotFound {
         Airport airport = null;
         try {
             airport = airportRepository.findById(id).get();
@@ -59,10 +61,10 @@ public class AirportServiceImpl implements AirportService {
             throw new CustomNotFound(id.getClass(),"airportId",id);
         }
 
-        airport.setCity(airportDto.getCity());
-        airport.setName(airportDto.getName());
-        airport.setDesc(airportDto.getDesc());
-        return modelMapper.map(handleSaveAirport(airport,airportDto),AirportResponseDTO.class);
+        airport.setCity(airportReqDto.getCity());
+        airport.setName(airportReqDto.getName());
+        airport.setDesc(airportReqDto.getDesc());
+        return modelMapper.map(handleSaveAirport(airport,airportReqDto),AirportResponseDTO.class);
     }
 
 
@@ -70,15 +72,15 @@ public class AirportServiceImpl implements AirportService {
      * Ekleme/ Guncelleme islemini hata kontrolu ile yapar.
      *
      * @param airport       Kaydedilecek Airport'un modeli
-     * @param airportDto    Hata durumunda anlamli mesaj döndurmek icin kullanilacak.
+     * @param airportReqDto Hata durumunda anlamli mesaj döndurmek icin kullanilacak.
      * @return              Kaydedilen Airport'un modeli
      * @throws CustomAlreadyTaken Airport Name zaten varsa
      */
-    private Airport handleSaveAirport(Airport airport,AirportRequestDTO airportDto) throws CustomAlreadyTaken {
+    private Airport handleSaveAirport(Airport airport,AirportRequestDTO airportReqDto) throws CustomAlreadyTaken {
         try {
             return  airportRepository.save(airport);
         } catch (DataIntegrityViolationException e) {   //Airport Name zaten varsa
-            throw new CustomAlreadyTaken("name is already taken.",airportDto.getClass(), "name",airportDto.getName());
+            throw new CustomAlreadyTaken("name is already taken.",airportReqDto.getClass(), "name",airportReqDto.getName());
         }
     }
 
@@ -103,6 +105,7 @@ public class AirportServiceImpl implements AirportService {
      * Hepsini cek
      *
      * @return Veritabanındaki tüm Airport'lar.
+     * @see #airportListToAirpostDtoList(List)
      */
     @Override
     public List<AirportResponseDTO> getAll() {
@@ -136,6 +139,7 @@ public class AirportServiceImpl implements AirportService {
      * @param nameOrCity        Aranacak kelime
      * @return                  Bulunan Airport modelleri.
      * @throws CustomNotFound   Aranan degerde airport bulunamazsa
+     * @see #airportListToAirpostDtoList(List)
      */
     @Override
     public List<AirportResponseDTO> getAirports(SearchType searchType, String nameOrCity) throws CustomNotFound {

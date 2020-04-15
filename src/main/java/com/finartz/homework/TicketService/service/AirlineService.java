@@ -10,9 +10,9 @@ import javax.xml.ws.Response;
 import java.util.List;
 
 public interface AirlineService {
-    AirlineResponseDTO saveAirline(AirlineRequestDTO airlineDto) throws CustomAlreadyTaken;
+    AirlineResponseDTO saveAirline(AirlineRequestDTO airlineReqDto) throws CustomAlreadyTaken;
 
-    AirlineResponseDTO updateAirline(String id, AirlineRequestDTO airlinetDto) throws CustomAlreadyTaken, CustomNotFound;
+    AirlineResponseDTO updateAirline(String id, AirlineRequestDTO airlineReqDto) throws CustomAlreadyTaken, CustomNotFound;
 
     void deleteAirline(String id) throws CustomNotFound;
 

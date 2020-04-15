@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
-public class SeatDetail {
+public class SeatDetail{
     @ApiModelProperty(position = 1)
     private String no;
 

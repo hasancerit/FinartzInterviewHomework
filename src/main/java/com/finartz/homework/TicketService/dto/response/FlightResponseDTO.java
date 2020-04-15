@@ -7,12 +7,13 @@ import com.finartz.homework.TicketService.domain.embeddable.Seat;
 import com.finartz.homework.TicketService.util.SeatStatus;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDateTime;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Map;
 
 @NoArgsConstructor
@@ -81,7 +82,7 @@ public class FlightResponseDTO {
             else
                 seatStatusEconomic.getTakenSeats().add(new SeatDetail(k,v.getTicket().getId()));
         });
-        setSeatStatusEconomi(seatStatusEconomic);
+        this.seatStatusEconomi = seatStatusEconomic;
     }
     public void setSeatsBusiness(Map<String, Seat> seatsBusiness){
         this.seatsBusiness = seatsBusiness;
@@ -93,7 +94,7 @@ public class FlightResponseDTO {
             else
                 seatStatusBusiness.getTakenSeats().add(new SeatDetail(k,v.getTicket().getId()));
         });
-        setSeatStatusBusiness(seatStatusBusiness);
+        this.seatStatusBusiness = seatStatusBusiness;
     }
 
 

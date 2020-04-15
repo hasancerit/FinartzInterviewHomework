@@ -118,7 +118,7 @@ class FlightControllerTest {
         when(flightService.updateFlight(flightId,flightRequestDTO)).thenReturn(flightResponseDTO);
 
         mockMvc.perform(
-                post("/flight/update/{id}",flightId)
+                put("/flight/{id}",flightId)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(asJsonString(flightRequestDTO)))
                 .andExpect(status().isOk());
@@ -131,7 +131,7 @@ class FlightControllerTest {
         FlightRequestDTO flightRequestDTO = generateFlightRequestDTO("1","4","");
 
         mockMvc.perform(
-                post("/flight/update/{id}",flightId)
+                put("/flight/{id}",flightId)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(asJsonString(flightRequestDTO)))
                 .andExpect(status().isBadRequest());

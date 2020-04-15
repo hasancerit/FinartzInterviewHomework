@@ -40,14 +40,15 @@ public class FlightServiceImpl implements FlightService {
     /**
      * Ekleme
      *
-     * @param flightDto Eklenecek flight
+     * @param flightReqDTO        Eklenecek flight
      * @return Eklenen flight
      * @throws CustomAlreadyTaken Flight kalkis ve varis havaalani ayni sehirde ise
      * @throws CustomNotFound     AirlineId, DepartureId,ArrivalId bulunamaz ise
+     * @see #handleSaveFlight(Flight, FlightRequestDTO)
      */
     @Override
-    public FlightResponseDTO saveFlight(FlightRequestDTO flightDto) throws CustomAlreadyTaken, CustomNotFound {
-        Flight flight = handleSaveFlight(modelMapper.map(flightDto, Flight.class), flightDto);
+    public FlightResponseDTO saveFlight(FlightRequestDTO flightReqDTO) throws CustomAlreadyTaken, CustomNotFound {
+        Flight flight = handleSaveFlight(modelMapper.map(flightReqDTO, Flight.class), flightReqDTO);
         flight.setSeatsEmpty();     //Flight yeni eklendigi icin, tum ucusları default hale getir
         flightRepository.save(flight);
 
@@ -58,14 +59,16 @@ public class FlightServiceImpl implements FlightService {
     /**
      * Guncelleme
      *
-     * @param id        Guncellenecek flight id'si
-     * @param flightDto Guncellenecek flight'in yeni alanları
+     * @param id           Guncellenecek flight id'si
+     * @param flightReqDTO Guncellenecek flight'in yeni alanları
      * @return Guncellenen Flight'in modeli
      * @throws CustomAlreadyTaken Flight kalkis ve varis havaalani ayni sehirde ise       (Validation)
      * @throws CustomNotFound     FlightId, AirlineId, DepartureId,ArrivalId bulunamaz ise
+     * @see #handleSaveFlight(Flight, FlightRequestDTO)
+     * @see #handleOldSeats(Flight, FlightClass)
      */
     @Override
-    public FlightResponseDTO updateFlight(String id, FlightRequestDTO flightDto) throws CustomAlreadyTaken, CustomNotFound {
+    public FlightResponseDTO updateFlight(String id, FlightRequestDTO flightReqDTO) throws CustomAlreadyTaken, CustomNotFound {
         Flight flight = null;
         try {
             flight = flightRepository.findById(id).get();
@@ -73,17 +76,17 @@ public class FlightServiceImpl implements FlightService {
             throw new CustomNotFound(id.getClass(), "flightId", id);
         }
 
-        flight.setDepartureDate(flightDto.getDepartureDate());
-        flight.setArrivalDate(flightDto.getArrivalDate());
-        flight.setPriceEconomic(flightDto.getPriceEconomic());
-        flight.setPriceBusiness(flightDto.getPriceBusiness());
-        flight.setCapasityEconomic(flightDto.getCapasityEconomic());
-        flight.setCapasityBusiness(flightDto.getCapasityBusiness());
+        flight.setDepartureDate(flightReqDTO.getDepartureDate());
+        flight.setArrivalDate(flightReqDTO.getArrivalDate());
+        flight.setPriceEconomic(flightReqDTO.getPriceEconomic());
+        flight.setPriceBusiness(flightReqDTO.getPriceBusiness());
+        flight.setCapasityEconomic(flightReqDTO.getCapasityEconomic());
+        flight.setCapasityBusiness(flightReqDTO.getCapasityBusiness());
 
-        flight = handleSaveFlight(flight, flightDto);
+        flight = handleSaveFlight(flight, flightReqDTO);
 
         flight.setSeatsBusiness(handleOldSeats(flight, FlightClass.BUSINESS));
-        flight.setSeatsEconomic(handleOldSeats(flight, FlightClass.ECONOMI));
+        flight.setSeatsEconomic(handleOldSeats(flight, FlightClass.ECONOMY));
 
         return modelMapper.map(flightRepository.save(flight), FlightResponseDTO.class);
     }
@@ -92,36 +95,36 @@ public class FlightServiceImpl implements FlightService {
     /**
      * Ekleme/ Guncelleme islemini hata kontrolu ile yapar.
      *
-     * @param flight    Kaydedilecek Airport'un modeli
-     * @param flightDto Hata durumunda anlamli mesaj döndurmek icin kullanilacak.
-     * @return Kaydedilen Airport'un modeli
+     * @param flight        Kaydedilecek Airport'un modeli
+     * @param flightReqDTO  Hata durumunda anlamli mesaj döndurmek icin kullanilacak.
+     * @return Kaydedilen   Airport'un modeli
      * @throws CustomAlreadyTaken Flight kalkis ve varis havaalani ayni sehirde ise       (Validation)
      * @throws CustomNotFound     AirlineId, DepartureId,ArrivalId bulunamaz ise
      */
-    private Flight handleSaveFlight(Flight flight, FlightRequestDTO flightDto)
+    private Flight handleSaveFlight(Flight flight, FlightRequestDTO flightReqDTO)
             throws CustomAlreadyTaken, CustomNotFound {
         try {
-            String airlineId = flightDto.getAirlineId();
+            String airlineId = flightReqDTO.getAirlineId();
             Airline airline = airlineRepository.findById(airlineId).get();
             flight.setAirline(airline);
         } catch (NoSuchElementException ex) {   //airlineId bulunamaz ise
-            throw new CustomNotFound(flightDto.getClass(), "airlineId", flightDto.getAirlineId());
+            throw new CustomNotFound(flightReqDTO.getClass(), "airlineId", flightReqDTO.getAirlineId());
         }
 
         try {
-            String departureAirportId = flightDto.getDepartureAirportId();
+            String departureAirportId = flightReqDTO.getDepartureAirportId();
             Airport departureAirport = airportRepository.findById(departureAirportId).get();
             flight.setDeparture(departureAirport);
         } catch (NoSuchElementException ex) {   //airportId bulunamaz ise
-            throw new CustomNotFound(flightDto.getClass(), "departureId", flightDto.getAirlineId());
+            throw new CustomNotFound(flightReqDTO.getClass(), "departureId", flightReqDTO.getAirlineId());
         }
 
         try {
-            String arrivalAirportId = flightDto.getArrivalAirportId();
+            String arrivalAirportId = flightReqDTO.getArrivalAirportId();
             Airport arrivalAirport = airportRepository.findById(arrivalAirportId).get();
             flight.setArrival(arrivalAirport);
         } catch (NoSuchElementException ex) {   //arrivalId bulunamaz ise
-            throw new CustomNotFound(flightDto.getClass(), "arrivalId", flightDto.getAirlineId());
+            throw new CustomNotFound(flightReqDTO.getClass(), "arrivalId", flightReqDTO.getAirlineId());
         }
 
 
@@ -129,9 +132,9 @@ public class FlightServiceImpl implements FlightService {
         if (flight.getArrival().getCity().equalsIgnoreCase(flight.getDeparture().getCity())) {
             throw new CustomAlreadyTaken(
                     "Cannot fly between the same cities",
-                    flightDto.getClass(),
+                    flightReqDTO.getClass(),
                     "departureAirportId,arrivalAirportId",
-                    flightDto.getAirlineId());
+                    flightReqDTO.getAirlineId());
         }
 
         //ArrivalDate ve DepartureDate'e gore duration belirle
@@ -147,7 +150,7 @@ public class FlightServiceImpl implements FlightService {
      *
      * @param updatedFlight Flight'in guncellenen hali
      * @param flightClass   İslem yapilacak FlighClass (BUSINESS or ECONOMY)
-     * @return Yeni koltuk düzeni listesi
+     * @return              Yeni koltuk düzeni listesi
      */
     private Map<String, Seat> handleOldSeats(Flight updatedFlight, FlightClass flightClass) {
         Map<String, Seat> oldSeats;
@@ -199,6 +202,7 @@ public class FlightServiceImpl implements FlightService {
      * Hepsini cek
      *
      * @return Veritabanındaki tüm flightlar.
+     * @see #flightListToFlightResponseDtoList(List)
      */
     @Override
     public List<FlightResponseDTO> getAll() {
@@ -210,7 +214,7 @@ public class FlightServiceImpl implements FlightService {
      * Id ile Arama
      *
      * @param id Alinmak istenen Airline id'si
-     * @return Istenen flight modeli
+     * @return   Istenen flight modeli
      * @throws CustomNotFound Flight id bulunamazsa
      */
     @Override
@@ -258,7 +262,8 @@ public class FlightServiceImpl implements FlightService {
      * @param nameOrCity Aranacak kelime
      * @return Havaalanı/Havaalanlarından kalkan ucus modelleri
      * @throws CustomNotFound aranan degerde havaalanı veya kalkan ucus bulunamazsa
-     * @see
+     * @see #getAirportsBySearchType(SearchType, String)
+     * @see #getDepartureFlightResponseDtoListFromAirportList(List)
      */
     @Override
     public List<FlightResponseDTO> getFlightsByDeparture(SearchType searchType, String nameOrCity) throws CustomNotFound {
@@ -281,6 +286,8 @@ public class FlightServiceImpl implements FlightService {
      * @param nameOrCity Aranacak kelime
      * @return Havaalanı/Havaalanlarından kalkan ucus modelleri
      * @throws CustomNotFound aranan degerde havaalanı veya inen ucus bulunamazsa
+     * @see #getAirportsBySearchType(SearchType, String)
+     * @see #getArrivalFlightResponseDtoListFromAirportList(List)
      */
     @Override
     public List<FlightResponseDTO> getFlightsByArrival(SearchType searchType, String nameOrCity) throws CustomNotFound {
@@ -326,6 +333,8 @@ public class FlightServiceImpl implements FlightService {
      * @param arrival    Varis havaalani
      * @return Havaalani/Havaalanlarindan kalkan ucus modelleri
      * @throws CustomNotFound Kalkıs ya da inis havaalanı veya aranan degerlerde ucus bulunamazsa
+     * @see #getIndirectFlights(SearchType, String, String)
+     * @see #flightListToFlightResponseDtoList(List)
      */
     @Override
     public FlightsResponseDTO getFlightsByDepartureAndArrival(SearchType searchType, String departure, String arrival) throws CustomNotFound {
@@ -363,6 +372,7 @@ public class FlightServiceImpl implements FlightService {
      * @param arrival    Kalkis Havalaani arama degeri
      * @return Indirect ucuslarin listesi
      * @throws CustomNotFound Kalkis havaalanı bulunamazsa
+     * @see #getDepartureFlightResponseDtoListFromAirportList(List)
      */
     private List<IndirectFlightDTO> getIndirectFlights(SearchType searchType, String departure, String arrival) throws CustomNotFound {
         ArrayList<IndirectFlightDTO> indirectFlights = new ArrayList<>();

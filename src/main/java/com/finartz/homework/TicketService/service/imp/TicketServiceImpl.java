@@ -33,17 +33,18 @@ public class TicketServiceImpl implements TicketService {
     /**
      * Ekleme
      *
-     * @param ticketDto       Kaydedilecek Ticket'ın modeli
+     * @param ticketReqDto    Kaydedilecek Ticket'ın modeli
      * @return                Kaydedilen Ticket'ın modeli
      * @throws CustomAlreadyTaken   Business,Economi dolu ise
      *                              Kapasite asildi ise,
      *                              Koltuk daha once alindi ise
      * @throws CustomNotFound       flightId bulunamazsa
+     * @see #handleSaveTicket(Ticket, TicketRequestDTO)
      */
     @Override
-    public TicketResponseDTO saveTicket(TicketRequestDTO ticketDto) throws CustomAlreadyTaken, CustomNotFound {
-        Ticket ticket = modelMapper.map(ticketDto, Ticket.class);
-        ticket = handleSaveTicket(ticket, ticketDto);
+    public TicketResponseDTO saveTicket(TicketRequestDTO ticketReqDto) throws CustomAlreadyTaken, CustomNotFound {
+        Ticket ticket = modelMapper.map(ticketReqDto, Ticket.class);
+        ticket = handleSaveTicket(ticket, ticketReqDto);
 
         return modelMapper.map(ticket, TicketResponseDTO.class);
     }
@@ -53,16 +54,17 @@ public class TicketServiceImpl implements TicketService {
      * Güncelleme
      *
      * @param id              Guncellenecek Ticket id'si
-     * @param ticketDto       Guncellenecek Ticket'ın yeni alanları
+     * @param ticketReqDto    Guncellenecek Ticket'ın yeni alanları
      * @return                Guncellenen Ticket'ın modeli
      * @throws CustomAlreadyTaken   Business,Economi dolu ise,(Validation ile)
      *                              Kapasite asildi ise,      (Validation ile)
      *                              Koltuk daha once alindi ise
      * @throws CustomNotFound       ticketId bulunamazsa
      *                              flightId bulunamazsa
+     * @see #handleSaveTicket(Ticket, TicketRequestDTO)
      */
     @Override
-    public TicketResponseDTO updateTicket(String id, TicketRequestDTO ticketDto) throws CustomAlreadyTaken, CustomNotFound {
+    public TicketResponseDTO updateTicket(String id, TicketRequestDTO ticketReqDto) throws CustomAlreadyTaken, CustomNotFound {
         Ticket ticket = null;
         try {
             ticket = ticketRepository.findById(id).get();
@@ -71,21 +73,21 @@ public class TicketServiceImpl implements TicketService {
         }
 
 
-        //Eski koltugu kaldir
+        //Eski koltugu kaldir (Yer degistirmedi ise, handleSave kisminda zaten yeniden kaydedilecek)
         Flight oldFlight = ticket.getFlight();
         FlightClass oldClass = ticket.getFlightClass();
         String oldNo = ticket.getNo();
 
         oldFlight.getSeatsByFlightClass(oldClass).replace(oldNo, new Seat(SeatStatus.empty, null));
-        setPriceByFullness(oldFlight, oldClass);
+        setPriceByFullness(oldFlight, oldClass,false);
 
         //Yeni ticketı güncelle
-        ticket.setPassanger(ticketDto.getPassanger());
-        ticket.setFlightClass(ticketDto.getFlightClass());
-        ticket.setNo(ticketDto.getNo());
+        ticket.setPassanger(ticketReqDto.getPassanger());
+        ticket.setFlightClass(ticketReqDto.getFlightClass());
+        ticket.setNo(ticketReqDto.getNo());
 
         //Bileti Almayi Dene
-        Ticket savedTicket = handleSaveTicket(ticket, ticketDto);
+        Ticket savedTicket = handleSaveTicket(ticket, ticketReqDto);
         TicketResponseDTO responseDTO = modelMapper.map(savedTicket, TicketResponseDTO.class);
 
         //Ucak degismesi durumunda, eski ucagi guncelle
@@ -100,22 +102,22 @@ public class TicketServiceImpl implements TicketService {
      * Ekleme/ Guncelleme islemini hata kontrolu ile yapar.
      *
      * @param ticket            Kaydedilecek Ticket'in modeli
-     * @param ticketDto         Hata durumunda anlamli mesaj döndurmek icin kullanilacak.
+     * @param ticketReqDto      Hata durumunda anlamli mesaj döndurmek icin kullanilacak.
      * @return                  Kaydedilen Ticket'in modeli
      * @throws CustomNotFound   Ticketın ait oldugu flightId yoksa
      * @throws CustomAlreadyTaken     Business,Economi dolu ise,(Validation ile)
      *                          Kapasite asildi ise,      (Validation ile)
      *                          Koltuk daha once alindi ise
      */
-    private Ticket handleSaveTicket(Ticket ticket, TicketRequestDTO ticketDto) throws CustomAlreadyTaken, CustomNotFound {
+    private Ticket handleSaveTicket(Ticket ticket, TicketRequestDTO ticketReqDto) throws CustomAlreadyTaken, CustomNotFound {
         try {
-            Flight flight = flightRepository.findById(ticketDto.getFlightId()).get();
+            Flight flight = flightRepository.findById(ticketReqDto.getFlightId()).get();
             ticket.setFlight(flight);
         } catch (NoSuchElementException ex) {   //FlightId yoksa hata firlat
             throw new CustomNotFound(
-                    ticketDto.getClass(),
+                    ticketReqDto.getClass(),
                     "flightId",
-                    ticketDto.getFlightId());
+                    ticketReqDto.getFlightId());
         }
 
         Flight flight = ticket.getFlight();                 //Ticketın flight'i
@@ -125,7 +127,7 @@ public class TicketServiceImpl implements TicketService {
         if(flight.isFullByFlightClass(flightClass)){
             throw new CustomAlreadyTaken(
                     flightClass.toString() + " İs Full",
-                    ticketDto.getClass(), "capasity",
+                    ticketReqDto.getClass(), "capasity",
                     "Capasity:"+flight.getCapasityBusiness());
         }
 
@@ -134,24 +136,24 @@ public class TicketServiceImpl implements TicketService {
         if (Integer.parseInt(seatNo) > capasity) {  //Sinir asildi ise
             throw new CustomAlreadyTaken(
                     flightClass.toString() + " capacity exceeded",
-                    ticketDto.getClass(),
+                    ticketReqDto.getClass(),
                     "no",
-                    ticketDto.getNo());
+                    ticketReqDto.getNo());
         }
 
         SeatStatus status = flight.getSeatsByFlightClass(flightClass).get(seatNo).getSeatStatus();
         if (status != SeatStatus.empty) {                                           //Alınan Koltuk bos degil ise hata firlat
             throw new CustomAlreadyTaken(
                     "Seat is already taken.",
-                    ticketDto.getClass(),
+                    ticketReqDto.getClass(),
                     "no",
-                    ticketDto.getNo());
+                    ticketReqDto.getNo());
         }
 
         ticket = ticketRepository.save(ticket);//Bileti Al
 
         flight.getSeatsByFlightClass(flightClass).replace(seatNo, new Seat(SeatStatus.taken, ticket));//Ucusun koltuklarini guncelle
-        setPriceByFullness(flight,flightClass); //ucusun doluluk oranina göre fiyatını belirle. isFull'u set et.
+        setPriceByFullness(flight,flightClass,true); //ucusun doluluk oranina göre fiyatını belirle. isFull'u set et.
         flightRepository.save(flight);
 
         return ticket;
@@ -164,8 +166,9 @@ public class TicketServiceImpl implements TicketService {
      *
      * @param flight        Islem yapilacak flight.
      * @param flightClass   Islem yapilacak flightClass (Business or Economy)
+     * @param isSave        true ise kayit islemi, false ise iptal islemi
      */
-    private void setPriceByFullness(Flight flight,FlightClass flightClass) {
+    private void setPriceByFullness(Flight flight,FlightClass flightClass,boolean isSave) {
         int fullnes;            //kac kisi koltuk almis
         int capacity;           //Toplam kapasite
 
@@ -173,7 +176,7 @@ public class TicketServiceImpl implements TicketService {
         capacity = flight.getCapasityByFlightClass(flightClass);
         lastPrice = flight.getPriceByFlightClass(flightClass);
 
-        if(flightClass == FlightClass.ECONOMI){
+        if(flightClass == FlightClass.ECONOMY){
             fullnes = modelMapper.map(flight, FlightResponseDTO.class).getSeatStatusEconomi().getTakenSeats().size();
             if(capacity == fullnes) flight.setFullEconomy(true);
         }
@@ -182,7 +185,10 @@ public class TicketServiceImpl implements TicketService {
             if(capacity == fullnes) flight.setFullBusiness(true);
         }
 
-        double percentFullnessPrev = (double) (fullnes-1) / capacity;   //Bir onceki doluluk yuzdesi
+        double percentFullnessPrev;                                     //Bir onceki doluluk yuzdesi
+        if(isSave) percentFullnessPrev = (double) (fullnes-1) / capacity;
+        else percentFullnessPrev = (double) (fullnes+1) / capacity;
+
         double percentFullness = (double) fullnes / capacity;           //Doluluk yuzdesi
 
         //0.0, 0.1, 0.2, 0.3 vs yuvarlama
@@ -193,19 +199,21 @@ public class TicketServiceImpl implements TicketService {
         Double firstPrice = lastPrice;                                //Son Ucret
         for (int i = 0; i < countIncreasePrev; i++) {
             firstPrice = firstPrice * (10.0 / 11.0);                  //İlk ücreti bul(Bu yöntemin kullanılma sebebi,
-                                                                      //                      update'lerde de kullanmak)
+                                                                      //                      iptallerde de kullanmak)
         }
 
         int countIncrease = countIncreasePrev;                         //Suan kac kere %10 zam gelecek
-        if((percentFullness * 10) > countIncreasePrev)                 //Eger onceki ucak, onceki yolcuya göre seviye atladi ise artir
-            countIncrease += 1;
+        if((percentFullness * 10) > countIncreasePrev)                 //Eger ucak, onceki yolcuya göre seviye atladi ise artir
+           countIncrease += 1;
+        if((percentFullness * 10) < countIncreasePrev)                 //                               seviye düstü ise azalt
+            countIncrease -= 1;
 
         Double increasedPrice = firstPrice;                             //Artirilacak ucret
         for (int i = 0; i < countIncrease; i++) {
             increasedPrice += (increasedPrice * 0.1);                   //Ilk ucreti zamli olan ucrete dondur.
         }
 
-        if(flightClass == FlightClass.ECONOMI)                          //Değerleri set et
+        if(flightClass == FlightClass.ECONOMY)                          //Değerleri set et
             flight.setPriceEconomic((Math.round(increasedPrice * 100.0)/ 100.0));
         else
             flight.setPriceBusiness((Math.round(increasedPrice * 100.0)/ 100.0));
@@ -269,11 +277,11 @@ public class TicketServiceImpl implements TicketService {
      * @throws CustomNotFound   ticketId bulunamazsa
      */
     @Override
-    public TicketResponseDTO getTickeyByTicketNo(String ticketNo) throws CustomNotFound {
+    public TicketResponseDTO getTickeyByPnr(String pnr) throws CustomNotFound {
         try {
-            return modelMapper.map(ticketRepository.findByTicketNo(ticketNo), TicketResponseDTO.class);
+            return modelMapper.map(ticketRepository.findByTicketNo(pnr), TicketResponseDTO.class);
         } catch (NoSuchElementException ex) {   //ticketId yoksa
-            throw new CustomNotFound(ticketNo.getClass(), "ticketNo", ticketNo);
+            throw new CustomNotFound(pnr.getClass(), "pnr", pnr);
         }
     }
 }

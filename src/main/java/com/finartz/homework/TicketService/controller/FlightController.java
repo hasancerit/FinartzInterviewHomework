@@ -27,54 +27,54 @@ public class FlightController {
 
     /**Ekleme
      *
-     * @param flightRequestDTO  Eklenecek flight
+     * @param flightReqDTO      Eklenecek flight
      * @return                  Eklenen flight
      * @throws CustomAlreadyTaken               Flight kalkis ve varis havaalani ayni sehirde ise
      * @throws CustomNotFound                   AirlineId, DepartureId,ArrivalId bulunamaz ise
      */
     @PostMapping("/add")
-    @ApiOperation(value = "saveFlight",notes = "This endpoint saves the successfully sent flight.")
+    @ApiOperation(value = "Save Flight",notes = "This endpoint saves the successfully sent flight.")
     public ResponseEntity<FlightResponseDTO> saveFlight(
-            @ApiParam(value = "Flight Model to will be saved",required = true) @Valid @RequestBody FlightRequestDTO flightRequestDTO)
+            @ApiParam(value = "Flight Model to will be saved",required = true) @Valid @RequestBody FlightRequestDTO flightReqDTO)
             throws CustomAlreadyTaken, CustomNotFound {
-        return new ResponseEntity<>(flightService.saveFlight(flightRequestDTO), HttpStatus.OK);
+        return new ResponseEntity<>(flightService.saveFlight(flightReqDTO), HttpStatus.OK);
     }
 
     /**
      * Havayoluna ucus ekle (FlightController'a taşınacak)
      *
      * @param id                Ucus eklenecek airline id'si
-     * @param flightRequestDTO  Eklenecek ucus
+     * @param flightReqDTO      Eklenecek ucus
      * @return                  Eklenen ucus
      * @throws CustomAlreadyTaken               Flight kalkis ve varis havaalani ayni sehirde ise
      * @throws CustomNotFound                   AirlineId, DepartureId,ArrivalId bulunamaz ise
      */
     @PostMapping("/add/toairline/{airlineId}")
-    @ApiOperation(value = "addFlightToAirline",notes = "This endpoint saves flight to airline of the successfully sent name")
+    @ApiOperation(value = "Add Flight To Airline",notes = "This endpoint saves flight to airline of the successfully sent name")
     public ResponseEntity<FlightResponseDTO> addFlightToAirline(
             @ApiParam(value = "Id of the alirline to be saved new flight.",required = true) @PathVariable String airlineId,
-            @ApiParam(value = "Airline Model to will be saved",required = true) @Valid @RequestBody FlightRequestDTO flightRequestDTO)
+            @ApiParam(value = "Airline Model to will be saved",required = true) @Valid @RequestBody FlightRequestDTO flightReqDTO)
             throws CustomAlreadyTaken, CustomNotFound {
-        flightRequestDTO.setAirlineId(airlineId);
-        return new ResponseEntity<>(flightService.saveFlight(flightRequestDTO), HttpStatus.OK);
+        flightReqDTO.setAirlineId(airlineId);
+        return new ResponseEntity<>(flightService.saveFlight(flightReqDTO), HttpStatus.OK);
     }
 
     /**
      * Guncelleme
      *
      * @param id            Guncellenecek flight id'si
-     * @param flightDto     Guncellenecek flight'ın yeni alanları
+     * @param flightReqDTO  Guncellenecek flight'ın yeni alanları
      * @return              Guncellenen Flight'ın modeli
      * @throws CustomAlreadyTaken               Flight kalk havaalani ayni sehirde ise
      * @throws CustomNotFound                   FlightId, AirlineId, DepartureId,ArrivalId bulunamaz ise
      */
-    @ApiOperation(value = "updateFlight",notes = "This endpoint updates the successfully sent flight.")
-    @PostMapping("/update/{id}")
+    @ApiOperation(value = "Update Flight",notes = "This endpoint updates the successfully sent flight.")
+    @PutMapping("/{id}")
     public ResponseEntity<FlightResponseDTO> updateFlight(
             @ApiParam(value = "Id of the flight to be updated.",required = true) @PathVariable String id,
-            @ApiParam(value = "Flight Model to will be updated.",required = true)@Valid @RequestBody FlightRequestDTO flightDto)
+            @ApiParam(value = "Flight Model to will be updated.",required = true)@Valid @RequestBody FlightRequestDTO flightReqDTO)
             throws CustomAlreadyTaken, CustomNotFound {
-        return new ResponseEntity<>(flightService.updateFlight(id,flightDto),HttpStatus.OK);
+        return new ResponseEntity<>(flightService.updateFlight(id,flightReqDTO),HttpStatus.OK);
     }
 
     /**
@@ -84,7 +84,7 @@ public class FlightController {
      * @throws CustomNotFound   Flight id bulunamazsa
      */
     @DeleteMapping("/{id}")
-    @ApiOperation(value = "deleteFlight",notes = "This endpoint deletes flight of the successfully sent Id.")
+    @ApiOperation(value = "Delete Flight",notes = "This endpoint deletes flight of the successfully sent Id.")
     public ResponseEntity<String> deleteFlight(
             @ApiParam(value = "Id of the flight to be deleted.",required = true) @PathVariable String id) throws CustomNotFound {
         flightService.deleteFlight(id);
@@ -98,8 +98,8 @@ public class FlightController {
      * @return Veritabanındaki tüm flightlar.
      */
     @GetMapping("/all")
-    @ApiOperation(value = "getAll",notes = "This endpoint serves all flights.")
-    public ResponseEntity<List<FlightResponseDTO>> getAll(){
+    @ApiOperation(value = "Get All Flights",notes = "This endpoint serves all flights.")
+    public ResponseEntity<List<FlightResponseDTO>> getAllFlights(){
         return new ResponseEntity<>(flightService.getAll(), HttpStatus.OK);
     }
 
@@ -111,8 +111,8 @@ public class FlightController {
      * @throws CustomNotFound   Flight id bulunamazsa
      */
     @GetMapping("/{id}")
-    @ApiOperation(value = "getFlight",notes = "This endpoint serves flight of the successfully sent Id.")
-    public ResponseEntity<FlightResponseDTO> getFlight(
+    @ApiOperation(value = "Get Flight By Id",notes = "This endpoint serves flight of the successfully sent Id.")
+    public ResponseEntity<FlightResponseDTO> getFlightById(
             @ApiParam(value = "Id of the flight to be served.",required = true) @PathVariable String id) throws CustomNotFound {
         return new ResponseEntity<>(flightService.getFlight(id), HttpStatus.OK);
     }
@@ -125,7 +125,7 @@ public class FlightController {
      * @throws CustomNotFound   Aranan airlineName bulunamazsa
      */
     @GetMapping("/airline")
-    @ApiOperation(value = "getAirport",notes = "This endpoint serves airport of the successfully airline name.")
+    @ApiOperation(value = "Get Flights By Airline",notes = "This endpoint serves airport of the successfully airline name.")
     public ResponseEntity<List<FlightResponseDTO>> getFlightsByAirline(
             @ApiParam(value = "Search Value.",required = true) @RequestParam(required = true,name = "name") String airlineName) throws CustomNotFound {
         return new ResponseEntity<>(flightService.getFlightsByAirlineName(airlineName), HttpStatus.OK);
@@ -144,7 +144,7 @@ public class FlightController {
      * @throws CustomNotFound aranan degerde havaalanı veya kalkan ucus bulunamazsa
      */
     @GetMapping("/departure")
-    @ApiOperation(value = "getFlightsByDeparture",notes = "This endpoint serves the flights by departure airports according to the search parameter sent.")
+    @ApiOperation(value = "Get Flights By Departure Airport",notes = "This endpoint serves the flights by departure airports according to the search parameter sent.")
     public ResponseEntity<List<FlightResponseDTO>> getFlightsByDeparture(
             @ApiParam(value = "Search Parameter.",required = true) @RequestParam(required = true,name = "type") SearchType searchType,
             @ApiParam(value = "Search Value.",required = true) @RequestParam(required = true,name = "value") String nameOrCity) throws CustomNotFound {
@@ -162,7 +162,7 @@ public class FlightController {
      * @throws CustomNotFound aranan degerde havaalanı veya inen ucus bulunamazsa
      */
     @GetMapping("/arrival")
-    @ApiOperation(value = "getFlightsByArrival",notes = "This endpoint serves the flights by arrival airports according to the search parameter sent.")
+    @ApiOperation(value = "Get Flights By Arrival Airport",notes = "This endpoint serves the flights by arrival airports according to the search parameter sent.")
     public ResponseEntity<List<FlightResponseDTO>> getFlightsByArrival(
             @ApiParam(value = "Search Parameter.",required = true) @RequestParam(required = true,name = "type") SearchType searchType,
             @ApiParam(value = "Search Value.",required = true) @RequestParam(required = true,name = "value") String nameOrCity) throws CustomNotFound {
@@ -182,7 +182,7 @@ public class FlightController {
      * @throws CustomNotFound Kalkıs ya da inis havaalanı veya aranan degerlerde ucus bulunamazsa
      */
     @GetMapping("/temp")
-    @ApiOperation(value = "getFlightsByDepartureAndArrival",notes = "This endpoint serves the flights by arrival and departure airports according to the search parameter sent.")
+    @ApiOperation(value = "Get Flights By Departure And Arrival Airport",notes = "This endpoint serves the flights by arrival and departure airports according to the search parameter sent.")
     public ResponseEntity<FlightsResponseDTO> getFlightsByDepartureAndArrival(
             @ApiParam(value = "Search Parameter.",required = true) @RequestParam(required = true,name = "type") SearchType searchType,
             @ApiParam(value = "Search Value.",required = true) @RequestParam(required = true,name = "departure") String departure,

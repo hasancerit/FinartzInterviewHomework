@@ -9,9 +9,9 @@ import com.finartz.homework.TicketService.util.SearchType;
 import java.util.List;
 
 public interface AirportService {
-    AirportResponseDTO saveAirport(AirportRequestDTO airportDto) throws CustomAlreadyTaken;
+    AirportResponseDTO saveAirport(AirportRequestDTO airportReqDto) throws CustomAlreadyTaken;
 
-    AirportResponseDTO updateAirport(String id, AirportRequestDTO airportDto) throws CustomAlreadyTaken, CustomNotFound;
+    AirportResponseDTO updateAirport(String id, AirportRequestDTO airportReqDto) throws CustomAlreadyTaken, CustomNotFound;
 
     void deleteAirport(String id) throws CustomNotFound;
 

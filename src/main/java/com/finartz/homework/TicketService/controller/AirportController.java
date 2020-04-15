@@ -29,32 +29,32 @@ public class AirportController {
     /**
      * Ekleme
      *
-     * @param airportDto    Kaydedilecek Airport'un modeli
+     * @param airportReqDto Kaydedilecek Airport'un modeli
      * @return              Kaydedilen Airport'un modeli
      * @throws CustomAlreadyTaken Airport Name zaten varsa
      */
-    @ApiOperation(value = "saveAirport",notes = "This endpoint saves the successfully sent airport.")
     @PostMapping("/add")
+    @ApiOperation(value = "Save Airport",notes = "This endpoint saves the successfully sent airport.")
     public ResponseEntity<AirportResponseDTO> saveAirport(
-            @ApiParam(value = "Airport Model to will be saved",required = true) @Valid @RequestBody AirportRequestDTO airportDto) throws CustomAlreadyTaken {
-        return new ResponseEntity<>(airportService.saveAirport(airportDto), HttpStatus.OK);
+            @ApiParam(value = "Airport Model to will be saved",required = true) @Valid @RequestBody AirportRequestDTO airportReqDto) throws CustomAlreadyTaken {
+        return new ResponseEntity<>(airportService.saveAirport(airportReqDto), HttpStatus.OK);
     }
 
     /**
      * Guncelleme
      *
      * @param id            Guncellenecek Airport id'si
-     * @param airportDto    Guncellenecek Airport'un yeni alanları
+     * @param airportReqDto Guncellenecek Airport'un yeni alanları
      * @return              Guncellenen Airport'un modeli
      * @throws CustomNotFound     Airport id bulunamazsa
      * @throws CustomAlreadyTaken Airport name zaten alinmissa
      */
-    @ApiOperation(value = "updateAirport",notes = "This endpoint updates the successfully sent airport.")
-    @PostMapping("/update/{id}")
+    @PutMapping("/{id}")
+    @ApiOperation(value = "Update Airport",notes = "This endpoint updates the successfully sent airport.")
     public ResponseEntity<AirportResponseDTO> updateAirport(
             @ApiParam(value = "Id of the airport to be updated.",required = true) @PathVariable String id,
-            @ApiParam(value = "Airport Model to will be updated.",required = true)@Valid @RequestBody AirportRequestDTO airportDto) throws CustomAlreadyTaken, CustomNotFound {
-        return new ResponseEntity<>( airportService.updateAirport(id,airportDto),HttpStatus.OK);
+            @ApiParam(value = "Airport Model to will be updated.",required = true)@Valid @RequestBody AirportRequestDTO airportReqDto) throws CustomAlreadyTaken, CustomNotFound {
+        return new ResponseEntity<>( airportService.updateAirport(id,airportReqDto),HttpStatus.OK);
     }
 
     /**
@@ -64,12 +64,11 @@ public class AirportController {
      * @throws CustomNotFound   Airport id bulunamazsa
      */
     @DeleteMapping("/{id}")
-    @ApiOperation(value = "deleteAirport",notes = "This endpoint deletes airport of the successfully sent Id.")
+    @ApiOperation(value = "Delete Airport",notes = "This endpoint deletes airport of the successfully sent Id.")
     public ResponseEntity<String> deleteAirport(
             @ApiParam(value = "Id of the airport to be deleted.",required = true) @PathVariable String id) throws CustomNotFound {
         airportService.deleteAirport(id);
         return new ResponseEntity<>("\"Airport with id " + id + " has been deleted\"",HttpStatus.OK);
-
     }
 
     /**
@@ -78,8 +77,8 @@ public class AirportController {
      * @return Veritabanındaki tüm Airport'lar.
      */
     @GetMapping("/all")
-    @ApiOperation(value = "getAll",notes = "This endpoint serves all airports.")
-    public ResponseEntity<List<AirportResponseDTO>> getAll(){
+    @ApiOperation(value = "Get All Airports",notes = "This endpoint serves all airports.")
+    public ResponseEntity<List<AirportResponseDTO>> getAllAirports(){
         return new ResponseEntity<>(airportService.getAll(), HttpStatus.OK);
     }
 
@@ -91,8 +90,8 @@ public class AirportController {
      * @throws CustomNotFound   Airport id bulunamazsa
      */
     @GetMapping("/{id}")
-    @ApiOperation(value = "getAirport",notes = "This endpoint serves airport of the successfully sent Id.")
-    public ResponseEntity<AirportResponseDTO> getAirport(
+    @ApiOperation(value = "Get Airport By Id",notes = "This endpoint serves airport of the successfully sent Id.")
+    public ResponseEntity<AirportResponseDTO> getAirportById(
             @ApiParam(value = "Id of the airport to be served.",required = true) @PathVariable String id) throws CustomNotFound {
         return new ResponseEntity<>(airportService.getAirport(id),HttpStatus.OK);
     }
@@ -107,9 +106,9 @@ public class AirportController {
      * @return              Bulunan Airport modelleri.
      * @throws CustomNotFound   Aranan degerde airport bulunamazsa
      */
-    @GetMapping("/search")
-    @ApiOperation(value = "getAirports",notes = "This endpoint serves the airports according to the search parameter sent.")
-    public ResponseEntity<List<AirportResponseDTO>> getAirports(
+    @GetMapping
+    @ApiOperation(value = "Get Airports By Search Type",notes = "This endpoint serves the airports according to the search parameter sent.")
+    public ResponseEntity<List<AirportResponseDTO>> getAirportsBySearchType(
             @ApiParam(value = "Search Parameter.",required = true) @RequestParam(required = true,name = "type") SearchType searchType,
             @ApiParam(value = "Search Value.",required = true) @RequestParam(required = true,name = "value") String nameOrCity) throws CustomNotFound {
         return new ResponseEntity<>(airportService.getAirports(searchType,nameOrCity),HttpStatus.OK);

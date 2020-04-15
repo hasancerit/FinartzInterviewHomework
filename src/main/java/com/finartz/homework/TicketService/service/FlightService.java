@@ -10,9 +10,9 @@ import com.finartz.homework.TicketService.util.SearchType;
 import java.util.List;
 
 public interface FlightService {
-    FlightResponseDTO saveFlight(FlightRequestDTO flightDto) throws  CustomAlreadyTaken, CustomNotFound;
+    FlightResponseDTO saveFlight(FlightRequestDTO flightReqDTO) throws  CustomAlreadyTaken, CustomNotFound;
 
-    FlightResponseDTO updateFlight(String id, FlightRequestDTO flightDto) throws CustomAlreadyTaken, CustomNotFound;
+    FlightResponseDTO updateFlight(String id, FlightRequestDTO flightReqDTO) throws CustomAlreadyTaken, CustomNotFound;
 
     void  deleteFlight(String id) throws CustomNotFound;
 

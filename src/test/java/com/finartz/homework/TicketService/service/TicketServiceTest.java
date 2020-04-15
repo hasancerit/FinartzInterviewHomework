@@ -165,7 +165,7 @@ class TicketServiceTest {
 
         //Guncellenecek Ticket
         passanger.setFullName("Batuhan Cerit");
-        TicketRequestDTO ticketRequestDTO = new TicketRequestDTO(flight.getId(), FlightClass.ECONOMI,passanger,"24");
+        TicketRequestDTO ticketRequestDTO = new TicketRequestDTO(flight.getId(), FlightClass.ECONOMY,passanger,"24");
 
         //Vt'ye kaydedilip donecek ticket
         Ticket ticket = modelMapper.map(ticketRequestDTO,Ticket.class);
@@ -179,7 +179,7 @@ class TicketServiceTest {
 
         assertEquals(ticketResponseDTO.getId(),"3");
         assertEquals(ticketResponseDTO.getNo(),"24");
-        assertEquals(ticketResponseDTO.getFlightClass(),FlightClass.ECONOMI);
+        assertEquals(ticketResponseDTO.getFlightClass(),FlightClass.ECONOMY);
 
         assertEquals(ticketResponseDTO.getFlight().getId(),"1");
         assertEquals(ticketResponseDTO.getFlight().getDeparture().getName(),"Sabiha Gökçen");
@@ -194,7 +194,7 @@ class TicketServiceTest {
         String id = "3"; //Guncellenecek ticket id
 
         //Guncellenecek Ticket
-        TicketRequestDTO ticketRequestDTO = new TicketRequestDTO(flight.getId(), FlightClass.ECONOMI,passanger,"24");
+        TicketRequestDTO ticketRequestDTO = new TicketRequestDTO(flight.getId(), FlightClass.ECONOMY,passanger,"24");
 
         CustomNotFound e = assertThrows(CustomNotFound.class,() -> {
             ticketService.updateTicket(id,ticketRequestDTO);
@@ -216,7 +216,7 @@ class TicketServiceTest {
     void getAll() {
         List<Ticket> tickets = Arrays.asList(
                 new Ticket("1","23r5t7",passanger,flight,FlightClass.BUSINESS,"21"),
-                new Ticket("2","25x3h8",passanger,flight,FlightClass.ECONOMI,"24")
+                new Ticket("2","25x3h8",passanger,flight,FlightClass.ECONOMY,"24")
         );
 
         given(ticketRepository.findAll()).willReturn(tickets);
@@ -227,7 +227,7 @@ class TicketServiceTest {
         assertEquals(responseDTOS.get(0).getFlightClass(),FlightClass.BUSINESS);
         assertEquals(responseDTOS.get(0).getNo(),"21");
         assertEquals(responseDTOS.get(1).getId(),"2");
-        assertEquals(responseDTOS.get(1).getFlightClass(),FlightClass.ECONOMI);
+        assertEquals(responseDTOS.get(1).getFlightClass(),FlightClass.ECONOMY);
         assertEquals(responseDTOS.get(1).getNo(),"24");
 
     }

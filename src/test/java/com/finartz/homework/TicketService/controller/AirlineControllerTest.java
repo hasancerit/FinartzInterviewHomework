@@ -78,7 +78,7 @@ class AirlineControllerTest {
         when(airlineService.updateAirline(id,airlineRequestDTO)).thenReturn(airlineResponseDTO);
 
         mockMvc.perform(
-                post("/airline/update/{id}",id)
+                put("/airline/{id}",id)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(asJsonString(airlineRequestDTO)))
                 .andExpect(status().isOk());
@@ -90,7 +90,7 @@ class AirlineControllerTest {
         AirlineRequestDTO airlineRequestDTO = new AirlineRequestDTO("");
 
         mockMvc.perform(
-                post("/airline/update/"+id)
+                put("/airline/"+id)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(asJsonString(airlineRequestDTO)))
                 .andExpect(status().isBadRequest());
@@ -153,7 +153,7 @@ class AirlineControllerTest {
         when(airlineService.getAirlinesByName(searchValue)).thenReturn(airlines);
 
         mockMvc.perform(
-                get("/airline/name").param("name",searchValue))
+                get("/airline").param("value",searchValue))
                 .andExpect(status().isOk());
         verify(airlineService, times(1)).getAirlinesByName(searchValue);
 
@@ -161,7 +161,7 @@ class AirlineControllerTest {
     @Test
     void getAirlinesWithoutParam() throws Exception {
         mockMvc.perform(
-                get("/airline/name"))
+                get("/airline"))
                 .andExpect(status().isBadRequest());
         verify(airlineService, times(0)).getAirlinesByName(any());
 

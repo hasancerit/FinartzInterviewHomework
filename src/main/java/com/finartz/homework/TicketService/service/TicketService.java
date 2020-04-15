@@ -8,9 +8,9 @@ import com.finartz.homework.TicketService.exception.exception.CustomNotFound;
 import java.util.List;
 
 public interface TicketService {
-    TicketResponseDTO saveTicket(TicketRequestDTO ticketDto) throws CustomAlreadyTaken, CustomNotFound;
+    TicketResponseDTO saveTicket(TicketRequestDTO ticketReqDto) throws CustomAlreadyTaken, CustomNotFound;
 
-    TicketResponseDTO updateTicket(String id, TicketRequestDTO ticketDto) throws CustomAlreadyTaken, CustomNotFound;
+    TicketResponseDTO updateTicket(String id, TicketRequestDTO ticketReqDto) throws CustomAlreadyTaken, CustomNotFound;
 
     void deleteTicket(String id) throws CustomNotFound;
 
@@ -18,5 +18,5 @@ public interface TicketService {
 
     TicketResponseDTO getTicket(String id) throws CustomNotFound;
 
-    TicketResponseDTO getTickeyByTicketNo(String ticketNo) throws CustomNotFound;
+    TicketResponseDTO getTickeyByPnr(String pnr) throws CustomNotFound;
 }

@@ -97,7 +97,7 @@ class TicketControllerTest {
         when(ticketService.updateTicket(ticketId,ticketRequestDTO)).thenReturn(ticketResponseDTO);
 
         mockMvc.perform(
-                post("/ticket/update/{id}",ticketId)
+                put("/ticket/{id}",ticketId)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(asJsonString(ticketRequestDTO)))
                 .andExpect(status().isOk());
@@ -110,7 +110,7 @@ class TicketControllerTest {
         TicketRequestDTO ticketRequestDTO = new TicketRequestDTO(flight.getId(), FlightClass.BUSINESS,passanger,"iki");
 
         mockMvc.perform(
-                post("/ticket/update/{id}",ticketId)
+                put("/ticket/{id}",ticketId)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(asJsonString(ticketRequestDTO)))
                 .andExpect(status().isBadRequest());
@@ -134,7 +134,7 @@ class TicketControllerTest {
     void getAll() throws Exception {
         List<TicketResponseDTO> tickets = Arrays.asList(
                 new TicketResponseDTO("1","9T12B5",passanger,flight,FlightClass.BUSINESS,"29"),
-                new TicketResponseDTO("2","8C14D3",passanger,flight,FlightClass.ECONOMI,"3"));
+                new TicketResponseDTO("2","8C14D3",passanger,flight,FlightClass.ECONOMY,"3"));
         when(ticketService.getAll()).thenReturn(tickets);
 
         mockMvc.perform(
@@ -169,7 +169,7 @@ class TicketControllerTest {
         String ticketNo = "9T12B5";
         TicketResponseDTO ticketResponseDTO = new TicketResponseDTO("1",ticketNo,passanger,flight,FlightClass.BUSINESS,"29");
 
-        when(ticketService.getTickeyByTicketNo(ticketNo)).thenReturn(ticketResponseDTO);
+        when(ticketService.getTickeyByPnr(ticketNo)).thenReturn(ticketResponseDTO);
 
         mockMvc.perform(
                 get("/ticket/pnr").param("pnr",ticketNo))
@@ -178,7 +178,7 @@ class TicketControllerTest {
                 .andExpect(jsonPath("$.no", is("29")))
                 .andExpect(jsonPath("$.ticketNo", is(ticketNo)));
 
-        verify(ticketService, times(1)).getTickeyByTicketNo(ticketNo);
+        verify(ticketService, times(1)).getTickeyByPnr(ticketNo);
     }
 
     @Test
@@ -186,7 +186,7 @@ class TicketControllerTest {
         mockMvc.perform(
                 get("/ticket/pnr"))
                 .andExpect(status().isBadRequest());
-        verify(ticketService, times(0)).getTickeyByTicketNo(any());
+        verify(ticketService, times(0)).getTickeyByPnr(any());
 
     }
 
