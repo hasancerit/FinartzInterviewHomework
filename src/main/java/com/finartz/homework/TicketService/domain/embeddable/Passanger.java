@@ -3,7 +3,9 @@ package com.finartz.homework.TicketService.domain.embeddable;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.finartz.homework.TicketService.util.Gender;
 import io.swagger.annotations.ApiModelProperty;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.springframework.format.annotation.NumberFormat;
 
@@ -17,6 +19,8 @@ import java.util.Date;
 import java.util.Objects;
 
 /*Passanger veritabanında tutulmayacak, Bilet içinde yolcu bilgilerinin görünmesi icin olusturuldu*/
+@NoArgsConstructor
+@AllArgsConstructor
 @Getter
 @Setter
 @Embeddable

@@ -88,7 +88,7 @@ class TicketServiceTest {
     }
 
     @Test
-    void saveTicketFlightNotFound() throws CustomAlreadyTaken, CustomNotFound {
+    void saveTicketFlightNotFound(){
         //Kaydedilecek Ticket
         TicketRequestDTO ticketRequestDTO = new TicketRequestDTO(flight.getId(), FlightClass.BUSINESS,passanger,"23");
 
@@ -102,7 +102,7 @@ class TicketServiceTest {
     }
 
     @Test
-    void saveTicketToFullFlight() throws CustomAlreadyTaken, CustomNotFound {
+    void saveTicketToFullFlight(){
         flight.setFullBusiness(true);
         //Kaydedilecek Ticket
         TicketRequestDTO ticketRequestDTO = new TicketRequestDTO(flight.getId(), FlightClass.BUSINESS,passanger,"23");
@@ -119,7 +119,7 @@ class TicketServiceTest {
     }
 
     @Test
-    void saveTicketCapasityExceed() throws CustomAlreadyTaken, CustomNotFound {
+    void saveTicketCapasityExceed(){
         //Kaydedilecek Ticket
         TicketRequestDTO ticketRequestDTO = new TicketRequestDTO(flight.getId(),
                 FlightClass.BUSINESS,
@@ -138,7 +138,7 @@ class TicketServiceTest {
     }
 
     @Test
-    void saveTicketTakenSeat() throws CustomAlreadyTaken, CustomNotFound {
+    void saveTicketTakenSeat(){
         flight.getSeatsByFlightClass(FlightClass.BUSINESS).replace("23",new Seat(SeatStatus.taken,null));
         //Kaydedilecek Ticket
         TicketRequestDTO ticketRequestDTO = new TicketRequestDTO(flight.getId(), FlightClass.BUSINESS, passanger, "23");
@@ -189,7 +189,7 @@ class TicketServiceTest {
     }
 
     @Test
-    void updateTicketTicketNotFound() throws CustomAlreadyTaken, CustomNotFound {
+    void updateTicketTicketNotFound(){
         String id = "3"; //Guncellenecek ticket id
 
         //Guncellenecek Ticket
@@ -241,7 +241,7 @@ class TicketServiceTest {
     }
 
     @Test
-    void getTicketTicketNotFound() throws CustomNotFound {
+    void getTicketTicketNotFound(){
         String id = "1";
         CustomNotFound e = assertThrows(CustomNotFound.class,() -> {
             ticketService.getTicket(id);

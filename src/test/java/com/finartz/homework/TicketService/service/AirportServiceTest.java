@@ -187,7 +187,7 @@ class AirportServiceTest {
     }
 
     @Test
-    void getAirports404() throws CustomNotFound {
+    void getAirports404(){
         SearchType searchType = SearchType.bycity;
         String nameOrCityValue = "ney";
 

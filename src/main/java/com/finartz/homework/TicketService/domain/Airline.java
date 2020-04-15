@@ -22,4 +22,10 @@ public class Airline{
 
     @OneToMany(mappedBy="airline",cascade = {CascadeType.REMOVE})
     private List<Flight> activeFlights = new ArrayList<>();
+
+    public Airline(String id,String name, String desc) {
+        this.id = id;
+        this.name = name;
+        this.desc = desc;
+    }
 }

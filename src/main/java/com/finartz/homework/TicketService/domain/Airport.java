@@ -1,14 +1,13 @@
 package com.finartz.homework.TicketService.domain;
 
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 
+@AllArgsConstructor
+@NoArgsConstructor
 @Getter
 @Setter
 @Entity
@@ -27,4 +26,11 @@ public class Airport{
 
     @OneToMany(mappedBy = "arrival",cascade = {CascadeType.REMOVE})
     private List<Flight> arrivalFlights = new ArrayList<>();
+
+    public Airport(String id,String name, String city, String desc) {
+        this.id = id;
+        this.name = name;
+        this.city = city;
+        this.desc = desc;
+    }
 }
