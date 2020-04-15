@@ -160,7 +160,7 @@ class TicketServiceTest {
         String id = "3"; //Guncellenecek ticket id
 
         //Eski Ticket
-        Ticket oldTicket = new Ticket(id,"2b56u7",passanger,flight,FlightClass.BUSINESS,"23");
+        Ticket oldTicket = new Ticket(id,"23",FlightClass.BUSINESS,"2b56u7",passanger,flight);
         given(ticketRepository.findById(id)).willReturn(Optional.of(oldTicket));
 
         //Guncellenecek Ticket
@@ -215,9 +215,8 @@ class TicketServiceTest {
     @Test
     void getAll() {
         List<Ticket> tickets = Arrays.asList(
-                new Ticket("1","23r5t7",passanger,flight,FlightClass.BUSINESS,"21"),
-                new Ticket("2","25x3h8",passanger,flight,FlightClass.ECONOMY,"24")
-        );
+                new Ticket("1","21",FlightClass.BUSINESS,"23r5t7",passanger,flight),
+                new Ticket("2","24",FlightClass.ECONOMY,"25x3h8",passanger,flight));
 
         given(ticketRepository.findAll()).willReturn(tickets);
 
@@ -235,7 +234,8 @@ class TicketServiceTest {
     @Test
     void getTicket() throws CustomNotFound {
         String id = "1";
-        Ticket ticket = new Ticket("1","23r5t7",passanger,flight,FlightClass.BUSINESS,"21");
+        Ticket ticket = new Ticket("1","21",FlightClass.BUSINESS,"23r5t7",passanger,flight);
+
         given(ticketRepository.findById(id)).willReturn(Optional.of(ticket));
 
         TicketResponseDTO ticketResponseDTO = ticketService.getTicket(id);
@@ -259,8 +259,8 @@ class TicketServiceTest {
     @Test
     void getTickeyByPnr() throws CustomNotFound {
         String pnr = "rotj1daef494";
-        Ticket ticket = new Ticket("1","23r5t7",passanger,flight,FlightClass.BUSINESS,"21");
-        ticket.setPnr(pnr);
+        Ticket ticket = new Ticket("1","21",FlightClass.BUSINESS,pnr,passanger,flight);
+
         given(ticketRepository.findByPnr(pnr)).willReturn(ticket);
 
         TicketResponseDTO ticketResponseDTO = ticketService.getTicketByPnr(pnr);

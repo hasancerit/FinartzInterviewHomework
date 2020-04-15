@@ -19,14 +19,15 @@ public class Ticket{
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private String id;
 
+    private String no;
+
+    @Enumerated(EnumType.STRING)
+    private FlightClass flightClass;
+
     @Column(unique = true)
     private String pnr;
     @Embedded
     private Passanger passanger;
     @ManyToOne
     private Flight flight;
-
-    @Enumerated(EnumType.STRING)
-    private FlightClass flightClass;
-    private String no;
 }

@@ -16,18 +16,20 @@ import lombok.NoArgsConstructor;
 public class TicketResponseDTO {
     @ApiModelProperty(position = 1)
     private String id;
-    @ApiModelProperty(position = 2)
-    private String pnr;
 
-    private Passanger passanger;
+    @ApiModelProperty(position = 2)
+    private String no;
 
     @ApiModelProperty(position = 3)
-    @JsonIgnoreProperties({"seatsEconomic","seatsBusiness"})
-    private FlightResponseDTO flight;
-
-    @ApiModelProperty(position = 4)
     private FlightClass flightClass;
 
+    @ApiModelProperty(position = 4)
+    private String pnr;
+
     @ApiModelProperty(position = 5)
-    private String no;
+    private Passanger passanger;
+
+    @ApiModelProperty(position = 6)
+    @JsonIgnoreProperties({"seatsEconomic","seatsBusiness"})
+    private FlightResponseDTO flight;
 }

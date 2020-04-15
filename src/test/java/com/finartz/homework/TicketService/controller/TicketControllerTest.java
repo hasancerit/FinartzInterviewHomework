@@ -65,7 +65,8 @@ class TicketControllerTest {
     @Test
     void saveTicket() throws Exception {
         TicketRequestDTO ticketRequestDTO = new TicketRequestDTO(flight.getId(), FlightClass.BUSINESS,passanger,"29");
-        TicketResponseDTO ticketResponseDTO = new TicketResponseDTO("1","9T12B5",passanger,flight,FlightClass.BUSINESS,"29");
+        TicketResponseDTO ticketResponseDTO = new TicketResponseDTO("1","29",FlightClass.BUSINESS,"9T12B5",passanger,flight);
+        new TicketResponseDTO("1","29",FlightClass.BUSINESS,"9T12B5",passanger,flight);
         when(ticketService.saveTicket(ticketRequestDTO)).thenReturn(ticketResponseDTO);
 
         mockMvc.perform(
@@ -92,7 +93,7 @@ class TicketControllerTest {
     void updateTicket() throws Exception {
         String ticketId = "1";
         TicketRequestDTO ticketRequestDTO = new TicketRequestDTO(flight.getId(), FlightClass.BUSINESS,passanger,"34");
-        TicketResponseDTO ticketResponseDTO = new TicketResponseDTO(ticketId,"9T12S5",passanger,flight,FlightClass.BUSINESS,"34");
+        TicketResponseDTO ticketResponseDTO = new TicketResponseDTO(ticketId,"34",FlightClass.BUSINESS,"9T12S5",passanger,flight);
 
         when(ticketService.updateTicket(ticketId,ticketRequestDTO)).thenReturn(ticketResponseDTO);
 
@@ -133,8 +134,8 @@ class TicketControllerTest {
     @Test
     void getAll() throws Exception {
         List<TicketResponseDTO> tickets = Arrays.asList(
-                new TicketResponseDTO("1","9T12B5",passanger,flight,FlightClass.BUSINESS,"29"),
-                new TicketResponseDTO("2","8C14D3",passanger,flight,FlightClass.ECONOMY,"3"));
+                new TicketResponseDTO("1","29",FlightClass.BUSINESS,"9T12B5",passanger,flight),
+                new TicketResponseDTO("2","3",FlightClass.ECONOMY,"8C14D3",passanger,flight));
         when(ticketService.getAll()).thenReturn(tickets);
 
         mockMvc.perform(
@@ -151,7 +152,7 @@ class TicketControllerTest {
     @Test
     void getTicket() throws Exception {
         String id = "5";
-        TicketResponseDTO ticketResponseDTO = new TicketResponseDTO(id,"9T12B5",passanger,flight,FlightClass.BUSINESS,"29");
+        TicketResponseDTO ticketResponseDTO = new TicketResponseDTO(id,"29",FlightClass.BUSINESS,"9T12B5",passanger,flight);
 
         when(ticketService.getTicket(id)).thenReturn(ticketResponseDTO);
 
@@ -167,7 +168,7 @@ class TicketControllerTest {
     @Test
     void getTicketByPnr() throws Exception{
         String pnr = "rotj1daef494";
-        TicketResponseDTO ticketResponseDTO = new TicketResponseDTO("1",pnr,passanger,flight,FlightClass.BUSINESS,"29");
+        TicketResponseDTO ticketResponseDTO = new TicketResponseDTO("1","29",FlightClass.BUSINESS,pnr,passanger,flight);
         ticketResponseDTO.setPnr("rotj1daef494");
 
         when(ticketService.getTicketByPnr(pnr)).thenReturn(ticketResponseDTO);
