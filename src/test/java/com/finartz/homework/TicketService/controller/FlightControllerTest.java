@@ -51,7 +51,6 @@ class FlightControllerTest {
                 .build();
     }
 
-
     @Test
     void saveFlight() throws Exception {
         FlightRequestDTO flightRequestDTO = generateFlightRequestDTO("3","32","12");

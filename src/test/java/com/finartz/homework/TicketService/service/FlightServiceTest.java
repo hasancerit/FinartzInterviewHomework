@@ -504,6 +504,99 @@ class FlightServiceTest {
         assertEquals(flightsResponseDTO.getIndirectFlights().size(),1);
     }
 
+    @Test
+    void getFlightsByDepartureAndArrivalByName() throws CustomNotFound{
+        SearchType searchType = SearchType.byname;
+        String departureValue = "Sabiha Gökçen";
+        String arrivalValue = "Adnan Menderes";
+
+
+        Airline airline = new Airline("1", "Thy", "");
+
+        Airport airport = new Airport("1", "Sabiha Gökçen", "İstanbul", ""); //Departure
+        Airport airport2 = new Airport("2", "Çıldır", "Aydın", "");
+        Airport airport4 = new Airport("4", "Adnan Menderes", "İzmir", "");  //Arrival
+
+        //Direkt istanbuldan izmire
+        Flight directFlight1 = generateFlight(generateFlightRequestDTO("1","1","4"),airline,airport,airport4);
+        Flight directFlight2 = generateFlight(generateFlightRequestDTO("1","1","4"),airline,airport,airport4);
+
+        //İstanbuldan kalkar ama aydına gider.
+        Flight indirectFlight11 = generateFlight(generateFlightRequestDTO("1","1","2"),airline,airport,airport2);
+        indirectFlight11.setDepartureDate(LocalDateTime.of(2020,4,15,8,0));
+        indirectFlight11.setArrivalDate(LocalDateTime.of(2020,4,15,12,0));
+
+        //Aydından kalkar izmire gider.
+        Flight indirectFlight12 = generateFlight(generateFlightRequestDTO("1","2","4"),airline,airport2,airport4);
+        indirectFlight12.setDepartureDate(LocalDateTime.of(2020,4,15,15,0));
+        indirectFlight12.setArrivalDate(LocalDateTime.of(2020,4,15,17,0));
+
+        given(flightRepository.findByDepartureAndArrivalName(departureValue,arrivalValue)).willReturn(Arrays.asList(directFlight1,directFlight2));
+
+        //İstanbul'dan kalkanlar
+        airport.setDepartureFlights(Arrays.asList(directFlight1,directFlight2,indirectFlight11));
+        //İzmire inenler
+        airport4.setArrivalFlights(Arrays.asList(directFlight1,directFlight2,indirectFlight12));
+        //Aydından Kalkanlar
+        airport2.setDepartureFlights(Collections.singletonList(indirectFlight12));
+        //Aydına inenler
+        airport2.setArrivalFlights(Collections.singletonList(indirectFlight11));
+
+        given(airportRepository.findByNameIsContainingIgnoreCase(departureValue)).willReturn(Collections.singletonList(airport));
+
+        FlightsResponseDTO flightsResponseDTO = flightService.getFlightsByDepartureAndArrival(searchType,departureValue,arrivalValue);
+
+        assertEquals(flightsResponseDTO.getDirectFlights().size(),2);
+        assertEquals(flightsResponseDTO.getIndirectFlights().size(),1);
+    }
+
+    @Test
+    void getFlightsByDepartureAndArrivalByNameOrCity() throws CustomNotFound{
+        SearchType searchType = SearchType.bynameorcity;
+        String departureValue = "Sabiha Gökçen";
+        String arrivalValue = "İzmir";
+
+
+        Airline airline = new Airline("1", "Thy", "");
+
+        Airport airport = new Airport("1", "Sabiha Gökçen", "İstanbul", ""); //Departure
+        Airport airport2 = new Airport("2", "Çıldır", "Aydın", "");
+        Airport airport4 = new Airport("4", "Adnan Menderes", "İzmir", "");  //Arrival
+
+        //Direkt istanbuldan izmire
+        Flight directFlight1 = generateFlight(generateFlightRequestDTO("1","1","4"),airline,airport,airport4);
+        Flight directFlight2 = generateFlight(generateFlightRequestDTO("1","1","4"),airline,airport,airport4);
+
+        //İstanbuldan kalkar ama aydına gider.
+        Flight indirectFlight11 = generateFlight(generateFlightRequestDTO("1","1","2"),airline,airport,airport2);
+        indirectFlight11.setDepartureDate(LocalDateTime.of(2020,4,15,8,0));
+        indirectFlight11.setArrivalDate(LocalDateTime.of(2020,4,15,12,0));
+
+        //Aydından kalkar izmire gider.
+        Flight indirectFlight12 = generateFlight(generateFlightRequestDTO("1","2","4"),airline,airport2,airport4);
+        indirectFlight12.setDepartureDate(LocalDateTime.of(2020,4,15,15,0));
+        indirectFlight12.setArrivalDate(LocalDateTime.of(2020,4,15,17,0));
+
+        given(flightRepository.findByDepartureAndArrivalCityOrName(departureValue,arrivalValue)).willReturn(Arrays.asList(directFlight1,directFlight2));
+
+        //İstanbul'dan kalkanlar
+        airport.setDepartureFlights(Arrays.asList(directFlight1,directFlight2,indirectFlight11));
+        //İzmire inenler
+        airport4.setArrivalFlights(Arrays.asList(directFlight1,directFlight2,indirectFlight12));
+        //Aydından Kalkanlar
+        airport2.setDepartureFlights(Collections.singletonList(indirectFlight12));
+        //Aydına inenler
+        airport2.setArrivalFlights(Collections.singletonList(indirectFlight11));
+
+        given(airportRepository.findByNameOrCity(departureValue)).willReturn(Collections.singletonList(airport));
+
+        FlightsResponseDTO flightsResponseDTO = flightService.getFlightsByDepartureAndArrival(searchType,departureValue,arrivalValue);
+
+        assertEquals(flightsResponseDTO.getDirectFlights().size(),2);
+        assertEquals(flightsResponseDTO.getIndirectFlights().size(),1);
+    }
+
+
     /**
      * FlightRequestDto cok alanlı bir sınıf old icin,kod kalabalıgini engellemek adina, sadece airlineId,departureAirportId
      * ve arrivalAirportId'sinin belirlendigi, diger alanlarin rastgele(Servis katmanında hata olsuturmayacak bicimde) olusturularak

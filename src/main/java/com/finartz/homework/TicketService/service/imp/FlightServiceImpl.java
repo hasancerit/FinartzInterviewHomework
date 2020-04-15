@@ -375,7 +375,6 @@ public class FlightServiceImpl implements FlightService {
         possibleFirstFlights.stream().forEach(possibleFirstFlight -> {            //Her olası ilk ucus
             AirportResponseDTO possibleArrival = possibleFirstFlight.getArrival();//Olası ilk varis noktası
 
-            System.out.println(possibleFirstFlight.getDeparture().getCity()+"'dan Kalkan ve "+possibleFirstFlight.getArrival().getCity()+ "'e inen");
             List<FlightResponseDTO> possibleSecondFlights = possibleArrival.getDepartureFlights();//Olasi 2. ucuslar
             possibleSecondFlights.stream().forEach(possibleSecondFlight -> {                      //Olasi 2. ucusların her biri
                 /**
