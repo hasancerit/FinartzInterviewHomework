@@ -183,8 +183,8 @@ class TicketServiceTest {
 
         assertEquals(ticketResponseDTO.getFlight().getId(),"1");
         assertEquals(ticketResponseDTO.getFlight().getDeparture().getName(),"Sabiha Gökçen");
-        assertEquals(ticketResponseDTO.getFlight().getSeatsEconomic().get("24").getTicket().getId(), "3");
-        assertEquals(ticketResponseDTO.getFlight().getSeatsEconomic().get("24").getSeatStatus(), SeatStatus.taken);
+        assertEquals(ticketResponseDTO.getFlight().getSeatsEconomy().get("24").getTicket().getId(), "3");
+        assertEquals(ticketResponseDTO.getFlight().getSeatsEconomy().get("24").getSeatStatus(), SeatStatus.taken);
 
         assertEquals(ticketResponseDTO.getPassanger().getFullName(),"Batuhan Cerit");
     }
@@ -287,9 +287,9 @@ class TicketServiceTest {
         Flight flight = new Flight();
         flight.setId("1");
         flight.setPriceBusiness(300.0);
-        flight.setPriceEconomic(140.0);
+        flight.setPriceEconomy(140.0);
         flight.setCapasityBusiness(50);
-        flight.setCapasityEconomic(100);
+        flight.setCapasityEconomy(100);
         flight.setSeatsEmpty();
 
         flight.setDepartureDate(LocalDateTime.of(2020,04,13,10,15));

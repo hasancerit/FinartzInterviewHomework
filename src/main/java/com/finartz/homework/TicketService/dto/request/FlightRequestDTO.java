@@ -40,8 +40,8 @@ public class FlightRequestDTO {
     private LocalDateTime arrivalDate;
 
     @ApiModelProperty(example = "200", required = true, position = 6)
-    @NotNull(message = "priceEconomic cannot be null.")
-    private Double priceEconomic;
+    @NotNull(message = "priceEconomy cannot be null.")
+    private Double priceEconomy;
 
     @ApiModelProperty(example = "400", required = true, position = 6)
     @NotNull(message = "priceBusiness cannot be null.")
@@ -52,8 +52,8 @@ public class FlightRequestDTO {
     private int capasityBusiness;
 
     @ApiModelProperty(example = "150", required = true, position = 6)
-    @NotNull(message = "capasityEconomic cannot be null.")
-    private int capasityEconomic;
+    @NotNull(message = "capasityEconomy cannot be null.")
+    private int capasityEconomy;
 
 
 }

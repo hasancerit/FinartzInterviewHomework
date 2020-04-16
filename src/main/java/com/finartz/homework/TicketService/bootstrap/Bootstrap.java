@@ -169,9 +169,9 @@ public class Bootstrap implements CommandLineRunner {
             flight.setDepartureDate(time1);
             flight.setArrivalDate(time2);
             flight.setCapasityBusiness(50);
-            flight.setCapasityEconomic(60);
+            flight.setCapasityEconomy(60);
             flight.setPriceBusiness(500.0);
-            flight.setPriceEconomic(170.99);
+            flight.setPriceEconomy(170.99);
             flight.setSeatsEmpty();
             flightRepository.save(flight);
         }

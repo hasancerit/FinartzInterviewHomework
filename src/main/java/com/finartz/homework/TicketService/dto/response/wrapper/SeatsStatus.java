@@ -19,4 +19,9 @@ public class SeatsStatus {
     private List<SeatDetail> takenSeats = new ArrayList<>();
     @ApiModelProperty(position = 2)
     private List<String> emptySeats = new ArrayList<>();
+
+    public void sort(){
+        Collections.sort(takenSeats, Comparator.comparing(o -> Integer.valueOf(o.getNo())));
+        Collections.sort(emptySeats, Comparator.comparing(Integer::valueOf));
+    }
 }

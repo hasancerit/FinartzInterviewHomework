@@ -6,6 +6,6 @@ import com.finartz.homework.TicketService.util.FlightClass;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface TicketRepository extends JpaRepository<Ticket,String> {
-    Ticket findByPnr(String tickeNo);
+    Ticket findByPnr(String pnr);
     Ticket findByFlightAndNoAndFlightClass(Flight flight, String no, FlightClass flightClass);
 }

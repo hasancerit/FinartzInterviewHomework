@@ -8,16 +8,14 @@ import com.finartz.homework.TicketService.util.SeatStatus;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.*;
+import org.hibernate.mapping.Collection;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDateTime;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.Map;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @NoArgsConstructor
-@Data
 @ApiModel(description="Sample Flight Model for Responses")
 public class FlightResponseDTO {
     @ApiModelProperty(position = 1)
@@ -48,59 +46,179 @@ public class FlightResponseDTO {
     private String duration;
 
     @ApiModelProperty(position = 8)
-    private Double priceEconomic;
+    private Double priceEconomy;
     @ApiModelProperty(position = 9)
     private Double priceBusiness;
 
     @ApiModelProperty(position = 10)
     private int capasityBusiness;
     @ApiModelProperty(position = 11)
-    private int capasityEconomic;
+    private int capasityEconomy;
 
-    /*Bunlar veritabanından direkt gelen koltuklar, ekonomik ve business ayrı ayrı fakat dolu-boş koltuklar karışık.
-    * Yani, seatsEconomic icinde, Ekonomi sınıfının boş ve dolu koltukları ortak, farklı farklı değil. Business için de öyle.
+    /*Bunlar veritabanından direkt gelen koltuklar, ekonomi ve business ayrı ayrı fakat dolu-boş koltuklar karisik.
+    * Yani, seatsEconomy icinde, Ekonomi sınıfının boş ve dolu koltukları ortak, farklı farklı değil. Business için de öyle.
     *
     * Bu yüzden kullanıcıya koltuklar, hem ekonomi hem de business için dolu ve boş koltukların ayrı ayrı gösterilecek bir
     * formda gönderilmek isteniyor.
     *
-    * Bunun için kullanıcıya bunları değil, alttaki seatStatusEconomi,seatStatusBusiness wrapperlarını,
-    * ayarlayarak(seatsEconomic ve seatsBusiness set edildiğinde, wrapper objeleri de set et) gönderilecek.
+    * Bunun icin kullaniciya bunlari degil, alttaki seatStatusEconomy,seatStatusBusiness wrapperlarını,
+    * ayarlayarak(seatsEconomy ve seatsBusiness set edildiğinde, wrapper objeleri de set et) gönderilecek.
     * */
     @JsonIgnore
-    private Map<String, Seat> seatsEconomic;
+    private Map<String, Seat> seatsEconomy;
     @JsonIgnore
     private Map<String, Seat> seatsBusiness;
 
-    public void setSeatsEconomic(Map<String, Seat> seatsEconomic){
-        this.seatsEconomic = seatsEconomic;
+    public void setSeatsEconomy(Map<String, Seat> seatsEconomy){
+        this.seatsEconomy = seatsEconomy;
 
-        /*Economi için dolu ve boş koltukları, kullanıcıya gidecek wrapper nesneye ayrı ayrı ekle*/
-        SeatsStatus seatStatusEconomic = new SeatsStatus();
-        seatsEconomic.forEach((k,v)->{
+        /*Economy için dolu ve boş koltukları, kullanıcıya gidecek wrapper nesneye ayrı ayrı ekle*/
+        SeatsStatus tempSeatStatusEconomy = new SeatsStatus();
+        seatsEconomy.forEach((k,v)->{
             if(v.getSeatStatus() == SeatStatus.empty)
-                seatStatusEconomic.getEmptySeats().add(k);
+                tempSeatStatusEconomy.getEmptySeats().add(k);
             else
-                seatStatusEconomic.getTakenSeats().add(new SeatDetail(k,v.getTicket().getId()));
+                tempSeatStatusEconomy.getTakenSeats().add(new SeatDetail(k,v.getTicket().getId()));
         });
-        this.seatStatusEconomi = seatStatusEconomic;
+
+        tempSeatStatusEconomy.sort();
+        setSeatStatusEconomy(tempSeatStatusEconomy);
     }
+
     public void setSeatsBusiness(Map<String, Seat> seatsBusiness){
         this.seatsBusiness = seatsBusiness;
+
         /*Business için dolu ve boş koltukları, kullanıcıya gidecek wrapper nesneye ayrı ayrı ekle*/
-        SeatsStatus seatStatusBusiness = new SeatsStatus();
+        SeatsStatus seatStatusBusinessTemp = new SeatsStatus();
         seatsBusiness.forEach((k,v)->{
             if(v.getSeatStatus() == SeatStatus.empty)
-                seatStatusBusiness.getEmptySeats().add(k);
+                seatStatusBusinessTemp.getEmptySeats().add(""+k);
             else
-                seatStatusBusiness.getTakenSeats().add(new SeatDetail(k,v.getTicket().getId()));
+                seatStatusBusinessTemp.getTakenSeats().add(new SeatDetail(""+k,v.getTicket().getId()));
         });
-        this.seatStatusBusiness = seatStatusBusiness;
+
+        seatStatusBusinessTemp.sort();
+        setSeatStatusBusiness(seatStatusBusinessTemp);
     }
 
 
     /*Bu nesneler ekonomi ve business icin boş-dolu koltukları ayrı ayrı tutacak. Kullanıcıya bunlar gideecek*/
     @ApiModelProperty(position = 12,notes = "Keeps Empty and Taken Seats in the Economy Class Separately.")
-    private SeatsStatus seatStatusEconomi;
+    private SeatsStatus seatStatusEconomy;
     @ApiModelProperty(position = 13,notes = "Keeps Empty and Taken Seats in the Business Class Separately.")
     private SeatsStatus seatStatusBusiness;
+
+
+    /*Getters Setters*/
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public AirlineResponseDTO getAirline() {
+        return airline;
+    }
+
+    public void setAirline(AirlineResponseDTO airline) {
+        this.airline = airline;
+    }
+
+    public AirportResponseDTO getDeparture() {
+        return departure;
+    }
+
+    public void setDeparture(AirportResponseDTO departure) {
+        this.departure = departure;
+    }
+
+    public AirportResponseDTO getArrival() {
+        return arrival;
+    }
+
+    public void setArrival(AirportResponseDTO arrival) {
+        this.arrival = arrival;
+    }
+
+    public LocalDateTime getDepartureDate() {
+        return departureDate;
+    }
+
+    public void setDepartureDate(LocalDateTime departureDate) {
+        this.departureDate = departureDate;
+    }
+
+    public LocalDateTime getArrivalDate() {
+        return arrivalDate;
+    }
+
+    public void setArrivalDate(LocalDateTime arrivalDate) {
+        this.arrivalDate = arrivalDate;
+    }
+
+    public String getDuration() {
+        return duration;
+    }
+
+    public void setDuration(String duration) {
+        this.duration = duration;
+    }
+
+    public Double getPriceEconomy() {
+        return priceEconomy;
+    }
+
+    public void setPriceEconomy(Double priceEconomy) {
+        this.priceEconomy = priceEconomy;
+    }
+
+    public Double getPriceBusiness() {
+        return priceBusiness;
+    }
+
+    public void setPriceBusiness(Double priceBusiness) {
+        this.priceBusiness = priceBusiness;
+    }
+
+    public int getCapasityBusiness() {
+        return capasityBusiness;
+    }
+
+    public void setCapasityBusiness(int capasityBusiness) {
+        this.capasityBusiness = capasityBusiness;
+    }
+
+    public int getCapasityEconomy(){
+        return capasityEconomy;
+    }
+
+    public void setCapasityEconomy(int capasityEconomy) {
+        this.capasityEconomy = capasityEconomy;
+    }
+
+    public Map<String, Seat> getSeatsEconomy() {
+        return seatsEconomy;
+    }
+
+    public Map<String, Seat> getSeatsBusiness() {
+        return seatsBusiness;
+    }
+
+    public SeatsStatus getSeatStatusEconomy() {
+        return seatStatusEconomy;
+    }
+
+    public void setSeatStatusEconomy(SeatsStatus seatStatusEconomy) {
+        this.seatStatusEconomy = seatStatusEconomy;
+    }
+
+    public SeatsStatus getSeatStatusBusiness() {
+        return seatStatusBusiness;
+    }
+
+    public void setSeatStatusBusiness(SeatsStatus seatStatusBusiness) {
+        this.seatStatusBusiness = seatStatusBusiness;
+    }
 }

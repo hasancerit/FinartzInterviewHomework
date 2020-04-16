@@ -345,10 +345,10 @@ class FlightControllerTest {
         /*Degeri rastgele(fakat anlamlı) olusturuldugu alanlar*/
         flight.setDepartureDate(time1);
         flight.setArrivalDate(time2);
-        flight.setCapasityEconomic(60+random.nextInt(200));
-        flight.setCapasityBusiness(flight.getCapasityEconomic() + random.nextInt(100));
-        flight.setPriceEconomic(Double.valueOf(100+random.nextInt(300)));
-        flight.setPriceBusiness(Double.valueOf(flight.getPriceEconomic()+random.nextInt(300)));
+        flight.setCapasityEconomy(60+random.nextInt(200));
+        flight.setCapasityBusiness(flight.getCapasityEconomy() + random.nextInt(100));
+        flight.setPriceEconomy(Double.valueOf(100+random.nextInt(300)));
+        flight.setPriceBusiness(Double.valueOf(flight.getPriceEconomy()+random.nextInt(300)));
 
         return flight;
     }
@@ -390,14 +390,14 @@ class FlightControllerTest {
         flightResponseDTO.setDuration(duration.replace("-", " ").substring(3));
 
         flightResponseDTO.setPriceBusiness(flightRequestDTO.getPriceBusiness());
-        flightResponseDTO.setPriceEconomic(flightRequestDTO.getPriceEconomic());
+        flightResponseDTO.setPriceEconomy(flightRequestDTO.getPriceEconomy());
         flightResponseDTO.setCapasityBusiness(flightRequestDTO.getCapasityBusiness());
-        flightResponseDTO.setCapasityEconomic(flightRequestDTO.getCapasityEconomic());
+        flightResponseDTO.setCapasityEconomy(flightRequestDTO.getCapasityEconomy());
 
         Map<String, Seat> seatsEconomic = new HashMap<>();
         Map<String, Seat> seatsBusiness = new HashMap<>();
         //Koltuklari default hale getir.
-        for(int i = 1 ; i <= flightResponseDTO.getCapasityEconomic() ;  i++){
+        for(int i = 1 ; i <= flightResponseDTO.getCapasityEconomy() ;  i++){
             seatsEconomic.put(""+i,new Seat(SeatStatus.empty,null));
         }
         for(int i = 1 ; i <= flightResponseDTO.getCapasityBusiness() ; i++){

@@ -141,7 +141,7 @@ public class TicketServiceImpl implements TicketService {
                     flightClass.toString() + " capacity exceeded",
                     ticketReqDto.getClass(),
                     "no",
-                    ticketReqDto.getNo());
+                    ""+ticketReqDto.getNo());
         }
 
         SeatStatus status = flight.getSeatsByFlightClass(flightClass).get(seatNo).getSeatStatus();
@@ -150,12 +150,12 @@ public class TicketServiceImpl implements TicketService {
                     "Seat is already taken.",
                     ticketReqDto.getClass(),
                     "no",
-                    ticketReqDto.getNo());
+                    ""+ticketReqDto.getNo());
         }
 
         ticket = ticketRepository.save(ticket);//Bileti Al
 
-        flight.getSeatsByFlightClass(flightClass).replace(seatNo, new Seat(SeatStatus.taken, ticket));//Ucusun koltuklarini guncelle
+        flight.getSeatsByFlightClass(flightClass).replace(""+seatNo, new Seat(SeatStatus.taken, ticket));//Ucusun koltuklarini guncelle
         setPriceByFullness(flight,flightClass,true); //ucusun doluluk oranina göre fiyatını belirle. isFull'u set et.
         flightRepository.save(flight);
 
@@ -180,7 +180,7 @@ public class TicketServiceImpl implements TicketService {
         lastPrice = flight.getPriceByFlightClass(flightClass);
 
         if(flightClass == FlightClass.ECONOMY){
-            fullnes = modelMapper.map(flight, FlightResponseDTO.class).getSeatStatusEconomi().getTakenSeats().size();
+            fullnes = modelMapper.map(flight, FlightResponseDTO.class).getSeatStatusEconomy().getTakenSeats().size();
             if(capacity == fullnes) flight.setFullEconomy(true);
         }
         else{
@@ -217,7 +217,7 @@ public class TicketServiceImpl implements TicketService {
         }
 
         if(flightClass == FlightClass.ECONOMY)                          //Değerleri set et
-            flight.setPriceEconomic((Math.round(increasedPrice * 100.0)/ 100.0));
+            flight.setPriceEconomy((Math.round(increasedPrice * 100.0)/ 100.0));
         else
             flight.setPriceBusiness((Math.round(increasedPrice * 100.0)/ 100.0));
     }

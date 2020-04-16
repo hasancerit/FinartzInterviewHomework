@@ -48,11 +48,16 @@ public class FlightServiceImpl implements FlightService {
      */
     @Override
     public FlightResponseDTO saveFlight(FlightRequestDTO flightReqDTO) throws CustomAlreadyTaken, CustomNotFound {
-        Flight flight = handleSaveFlight(modelMapper.map(flightReqDTO, Flight.class), flightReqDTO);
+        Flight flight = modelMapper.map(flightReqDTO, Flight.class);
+        flight = handleSaveFlight(flight, flightReqDTO);
         flight.setSeatsEmpty();     //Flight yeni eklendigi icin, tum ucusları default hale getir
         flightRepository.save(flight);
 
-        return modelMapper.map(flight, FlightResponseDTO.class);
+        FlightResponseDTO flightResponseDTO = modelMapper.map(flight, FlightResponseDTO.class);
+        for(String s : flightResponseDTO.getSeatStatusEconomy().getEmptySeats()){
+             System.out.println(s);
+        }
+        return flightResponseDTO;
     }
 
 
@@ -78,15 +83,15 @@ public class FlightServiceImpl implements FlightService {
 
         flight.setDepartureDate(flightReqDTO.getDepartureDate());
         flight.setArrivalDate(flightReqDTO.getArrivalDate());
-        flight.setPriceEconomic(flightReqDTO.getPriceEconomic());
+        flight.setPriceEconomy(flightReqDTO.getPriceEconomy());
         flight.setPriceBusiness(flightReqDTO.getPriceBusiness());
-        flight.setCapasityEconomic(flightReqDTO.getCapasityEconomic());
+        flight.setCapasityEconomy(flightReqDTO.getCapasityEconomy());
         flight.setCapasityBusiness(flightReqDTO.getCapasityBusiness());
 
         flight = handleSaveFlight(flight, flightReqDTO);
 
         flight.setSeatsBusiness(handleOldSeats(flight, FlightClass.BUSINESS));
-        flight.setSeatsEconomic(handleOldSeats(flight, FlightClass.ECONOMY));
+        flight.setSeatsEconomy(handleOldSeats(flight, FlightClass.ECONOMY));
 
         return modelMapper.map(flightRepository.save(flight), FlightResponseDTO.class);
     }
@@ -98,7 +103,7 @@ public class FlightServiceImpl implements FlightService {
      * @param flight        Kaydedilecek Airport'un modeli
      * @param flightReqDTO  Hata durumunda anlamli mesaj döndurmek icin kullanilacak.
      * @return Kaydedilen   Airport'un modeli
-     * @throws CustomAlreadyTaken Flight kalkis ve varis havaalani ayni sehirde ise       (Validation)
+     * @throws CustomAlreadyTaken Flight kalkis ve varis havaalani ayni sehirde ise
      * @throws CustomNotFound     AirlineId, DepartureId,ArrivalId bulunamaz ise
      */
     private Flight handleSaveFlight(Flight flight, FlightRequestDTO flightReqDTO)
@@ -164,7 +169,7 @@ public class FlightServiceImpl implements FlightService {
 
         if (oldCapasity < updatedCapasity) {                                  //Kapasite artirildi ise
             for (int i = oldSeats.size() + 1; i <= updatedCapasity; i++) {    //Yeni koltuklar
-                oldSeats.put("" + i, new Seat(SeatStatus.empty, null));  //Default hale getir ve eski koltuklara ekle.
+                oldSeats.put(""+i, new Seat(SeatStatus.empty, null));  //Default hale getir ve eski koltuklara ekle.
             }
         } else if (oldCapasity > updatedCapasity) {                 //Kapasite azaltildi ise
             Iterator<String> it2 = oldSeats.keySet().iterator();

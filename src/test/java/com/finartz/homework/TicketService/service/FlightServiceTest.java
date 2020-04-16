@@ -638,10 +638,10 @@ class FlightServiceTest {
         /*Degeri rastgele(fakat anlamlı) olusturuldugu alanlar*/
         flight.setDepartureDate(time1);
         flight.setArrivalDate(time2);
-        flight.setCapasityEconomic(60 + random.nextInt(200));
-        flight.setCapasityBusiness(flight.getCapasityEconomic() + random.nextInt(100));
-        flight.setPriceEconomic(Double.valueOf(100 + random.nextInt(300)));
-        flight.setPriceBusiness(Double.valueOf(flight.getPriceEconomic() + random.nextInt(300)));
+        flight.setCapasityEconomy(60 + random.nextInt(200));
+        flight.setCapasityBusiness(flight.getCapasityEconomy() + random.nextInt(100));
+        flight.setPriceEconomy(Double.valueOf(100 + random.nextInt(300)));
+        flight.setPriceBusiness(Double.valueOf(flight.getPriceEconomy() + random.nextInt(300)));
 
         return flight;
     }

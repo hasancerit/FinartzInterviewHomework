@@ -35,6 +35,4 @@ public class TicketRequestDTO {
     @NotBlank(message = "no cannot be null.")
     @Pattern(regexp="[0-9]+",message = "no must have only numbers.")
     private String no;
-
-
 }
