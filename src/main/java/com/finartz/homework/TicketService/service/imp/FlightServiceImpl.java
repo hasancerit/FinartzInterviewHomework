@@ -54,9 +54,6 @@ public class FlightServiceImpl implements FlightService {
         flightRepository.save(flight);
 
         FlightResponseDTO flightResponseDTO = modelMapper.map(flight, FlightResponseDTO.class);
-        for(String s : flightResponseDTO.getSeatStatusEconomy().getEmptySeats()){
-             System.out.println(s);
-        }
         return flightResponseDTO;
     }
 
