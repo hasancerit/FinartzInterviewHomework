@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 
+import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.*;
 
@@ -28,7 +29,6 @@ public class Bootstrap implements CommandLineRunner {
 
     @Override
     public void run(String... args) throws Exception {
-        System.out.println("Boostrtap Calisti");
         Airline thy = new Airline();
         thy.setName("THY");
         thy.setDesc("THY Aciklama");
@@ -131,7 +131,7 @@ public class Bootstrap implements CommandLineRunner {
         airportRepository.save(airport15);
 
 
-        for(int i = 0 ; i < 10; i++){
+        for(int i = 0 ; i < 40; i++){
             Flight flight = new Flight();
             Random random = new Random();
 
@@ -166,13 +166,17 @@ public class Bootstrap implements CommandLineRunner {
                 time2 = LocalDateTime.of(2020,4,day,hour2,minute2);
             }while(time2.isBefore(time1));
 
+
+
             flight.setDepartureDate(time1);
             flight.setArrivalDate(time2);
-            flight.setCapasityBusiness(50);
-            flight.setCapasityEconomy(60);
+            flight.setCapasityBusiness(10);
+            flight.setCapasityEconomy(20);
             flight.setPriceBusiness(500.0);
             flight.setPriceEconomy(170.99);
             flight.setSeatsEmpty();
+            String duration = Duration.between(flight.getArrivalDate(), flight.getDepartureDate()).toString();
+            flight.setDuration(duration.replace("-", " ").substring(3));
             flightRepository.save(flight);
         }
     }

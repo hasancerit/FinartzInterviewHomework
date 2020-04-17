@@ -127,7 +127,7 @@ public class FlightController {
     @GetMapping("/airline")
     @ApiOperation(value = "Get Flights By Airline",notes = "This endpoint serves airport of the successfully airline name.")
     public ResponseEntity<List<FlightResponseDTO>> getFlightsByAirline(
-            @ApiParam(value = "Search Value.",required = true) @RequestParam(required = true,name = "name") String airlineName) throws CustomNotFound {
+            @ApiParam(value = "Search Value.",required = true) @RequestParam(required = true,name = "value") String airlineName) throws CustomNotFound {
         return new ResponseEntity<>(flightService.getFlightsByAirlineName(airlineName), HttpStatus.OK);
     }
 
@@ -181,7 +181,7 @@ public class FlightController {
      * @return             Havaalanı/Havaalanlarından kalkan ucus modelleri
      * @throws CustomNotFound Kalkıs ya da inis havaalanı veya aranan degerlerde ucus bulunamazsa
      */
-    @GetMapping("/temp")
+    @GetMapping
     @ApiOperation(value = "Get Flights By Departure And Arrival Airport",notes = "This endpoint serves the flights by arrival and departure airports according to the search parameter sent.")
     public ResponseEntity<FlightsResponseDTO> getFlightsByDepartureAndArrival(
             @ApiParam(value = "Search Parameter.",required = true) @RequestParam(required = true,name = "type") SearchType searchType,

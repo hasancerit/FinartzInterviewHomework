@@ -231,11 +231,19 @@ public class TicketServiceImpl implements TicketService {
      */
     @Override
     public void deleteTicket(String id) throws CustomNotFound {
+        Ticket ticket;
         try {
-            ticketRepository.deleteById(id);
-        } catch (EmptyResultDataAccessException ex) {   //ticketId yoksa
+            ticket = ticketRepository.findById(id).get();
+        } catch (NoSuchElementException ex) {   //ticketId yoksa
             throw new CustomNotFound(id.getClass(), "ticketId", id);
         }
+
+        Flight flight = ticket.getFlight();
+        String no = ticket.getNo();
+        flight.getSeatsByFlightClass(ticket.getFlightClass()).replace(no,new Seat(SeatStatus.empty,null));
+
+        flightRepository.save(flight);
+        ticketRepository.delete(ticket);
     }
 
 

@@ -14,17 +14,17 @@ import javax.validation.constraints.Size;
 @ApiModel(description="Sample Airport Model for the Post/Update Requests.")
 public class AirportRequestDTO {
     @ApiModelProperty(example = "Sabiha Gökçen Havaalanı", required = true, position = 1)
-    @Size(max = 30,message = "name cannot be longer than 30 characters.")
+    @Size(max = 50,message = "name cannot be longer than 50 characters.")
     @NotBlank(message = "name cannot be null.")
     private String name;
 
     @ApiModelProperty(example = "İstanbul", required = true, position = 2)
-    @Size(max = 20,message = "city cannot be longer than 20 characters.")
-    @NotBlank(message = "name cannot be null.")
-    private String city; //Maple
+    @Size(max = 30,message = "city cannot be longer than 30 characters.")
+    @NotBlank(message = "city cannot be null.")
+    private String city;
 
     @ApiModelProperty(notes = "Optional Description for Airport",required = false, position = 3)
-    @Size(max = 30,message = "desc cannot be longer than 30 characters.")
+    @Size(max = 100,message = "desc cannot be longer than 100 characters.")
     private String desc;
 
     public AirportRequestDTO(

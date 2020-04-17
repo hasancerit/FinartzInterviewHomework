@@ -194,7 +194,7 @@ class FlightControllerTest {
         when(flightService.getFlightsByAirlineName(airlineName)).thenReturn(flights);
 
         mockMvc.perform(
-                get("/flight/airline").param("name",airlineName))
+                get("/flight/airline").param("value",airlineName))
                 .andExpect(status().isOk());
         verify(flightService, times(1)).getFlightsByAirlineName(airlineName);
     }
@@ -286,7 +286,7 @@ class FlightControllerTest {
 
         when(flightService.getFlightsByDepartureAndArrival(searchType,departure,arrival)).thenReturn(result);
         mockMvc.perform(
-                get("/flight/temp")
+                get("/flight")
                         .param("type",searchType.toString())
                         .param("departure",departure)
                         .param("arrival",arrival))
@@ -301,7 +301,7 @@ class FlightControllerTest {
         String departure = "Airport 1";
 
         mockMvc.perform(
-                get("/flight/temp")
+                get("/flight")
                         .param("type",searchType.toString())
                         .param("departure",departure))
                 .andExpect(status().isBadRequest());

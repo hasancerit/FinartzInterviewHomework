@@ -15,12 +15,12 @@ import java.util.Objects;
 public class AirlineRequestDTO {
 
     @ApiModelProperty(example = "Türk Hava Yolları", required = true, position = 1)
-    @Size(max = 30,message = "name cannot be longer than 30 characters.")
+    @Size(max = 50,message = "name cannot be longer than 50 characters.")
     @NotBlank(message = "name cannot be null.")
     private String name;
 
     @ApiModelProperty(notes = "Optional Description for Airline",required = false, position = 2)
-    @Size(max = 30,message = "desc cannot be longer than 30 characters.")
+    @Size(max = 100,message = "desc cannot be longer than 100 characters.")
     private String desc;
 
     public AirlineRequestDTO(

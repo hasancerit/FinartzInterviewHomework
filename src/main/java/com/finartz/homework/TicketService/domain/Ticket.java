@@ -28,6 +28,6 @@ public class Ticket{
     private String pnr;
     @Embedded
     private Passanger passanger;
-    @ManyToOne
+    @ManyToOne(cascade = {})
     private Flight flight;
 }

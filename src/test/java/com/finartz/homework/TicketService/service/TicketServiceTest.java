@@ -207,8 +207,12 @@ class TicketServiceTest {
     @Test
     void deleteTicket() throws CustomNotFound {
         String id = "1";
-
-        willDoNothing().given(ticketRepository).deleteById(id);
+        Flight flight = createFlight();
+        Ticket ticket = new Ticket();
+        ticket.setPnr(id);
+        ticket.setFlight(flight);
+        given(ticketRepository.findById(id)).willReturn(Optional.of(ticket));
+        willDoNothing().given(ticketRepository).delete(any());
         ticketService.deleteTicket(id);
     }
 
